@@ -6,6 +6,7 @@ plugins {
 android {
     namespace = "io.agora.chatroom.uikit"
     compileSdk = 33
+    buildToolsVersion = "33.0.2"
 
     defaultConfig {
         applicationId = "io.agora.chatroom.uikit"
@@ -42,11 +43,7 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.3"
     }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
+
 }
 
 dependencies {
