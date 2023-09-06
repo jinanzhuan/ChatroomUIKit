@@ -16,3 +16,4 @@ dependencyResolutionManagement {
 rootProject.name = "ChatroomUIKit"
 include(":app")
 include(":ChatroomUIKit")
+include(":ChatroomService")

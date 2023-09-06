@@ -4,9 +4,8 @@ plugins {
 }
 
 android {
-    namespace = "io.agora.chatroom"
+    namespace = "io.agora.chatroom.uikit"
     compileSdk = 33
-    buildToolsVersion = "33.0.2"
 
     defaultConfig {
         minSdk = 21
