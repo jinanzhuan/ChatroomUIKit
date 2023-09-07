@@ -32,5 +32,5 @@ android {
 }
 
 dependencies {
-
+    implementation("io.agora.rtc:chat-sdk:1.1.0")
 }
