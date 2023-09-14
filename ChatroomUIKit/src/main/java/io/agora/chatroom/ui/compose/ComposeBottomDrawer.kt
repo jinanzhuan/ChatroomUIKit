@@ -1,5 +1,6 @@
-package io.agora.chatroom.ui
+package io.agora.chatroom.ui.compose
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -21,6 +22,8 @@ import androidx.compose.ui.unit.dp
 import io.agora.chatroom.ui.model.UIComposeDrawerItem
 import io.agora.chatroom.ui.theme.AlphabetBodyLarge
 import io.agora.chatroom.ui.theme.AlphabetBodyMedium
+import io.agora.chatroom.ui.theme.errorColor5
+import io.agora.chatroom.ui.theme.errorColor6
 import io.agora.chatroom.ui.theme.neutralColor0
 import io.agora.chatroom.ui.theme.neutralColor1
 import io.agora.chatroom.ui.theme.neutralColor2
@@ -31,37 +34,54 @@ import io.agora.chatroom.ui.theme.neutralColor98
 import io.agora.chatroom.ui.theme.primaryColor5
 import io.agora.chatroom.ui.theme.primaryColor6
 import io.agora.chatroom.uikit.R
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 var darkTheme: Boolean = false
+@OptIn(ExperimentalMaterialApi::class)
+lateinit var drawerState:BottomDrawerState
+lateinit var scope: CoroutineScope
+lateinit var drawerType: DrawerType
+
+
+enum class DrawerType {
+    MENU_LIST,//长按菜单
+    MUTED_LIST,//禁言列表
+    PARTICIPANTS_LIST,//成员列表
+    MUTED_MENU,//禁言菜单
+    CUSTOM,//自定义类型
+    DEFAULT,//默认类型
+}
 
 @ExperimentalMaterialApi
 @Composable
 fun ComposeBottomDrawer(
-    title:String,
+    title:String="",
+    @SuppressLint("ModifierParameter") modifier: Modifier = Modifier,
     isShowTitle:Boolean = true,
+    isShowCancel:Boolean = true,
+    drawerType: DrawerType = DrawerType.DEFAULT,
     listData: List<UIComposeDrawerItem> = emptyList(),
     onListItemClick: (Int, UIComposeDrawerItem) -> Unit = { index:Int, item: UIComposeDrawerItem ->},
     drawerContent: @Composable () -> Unit = { DefaultDrawerContent(listData,onListItemClick) },
-    screenContent: @Composable () -> Unit,
+    screenContent: @Composable () -> Unit = {},
     onCancelListener:() -> Unit = {}
 ) {
     darkTheme = isSystemInDarkTheme()
+    scope = rememberCoroutineScope()
 
-    val drawerState = rememberBottomDrawerState(BottomDrawerValue.Expanded)
+    drawerState = rememberBottomDrawerState(BottomDrawerValue.Closed)
 
     BottomDrawer(
-        modifier = Modifier
-            .fillMaxWidth()
-//            .height(
-//                (LocalConfiguration.current.screenHeightDp/2).dp
-//            )
-        ,
+        modifier = modifier,
         drawerShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
         drawerBackgroundColor = if (darkTheme) neutralColor1 else neutralColor98,
         drawerState = drawerState,
         gesturesEnabled = drawerState.isOpen,
         drawerContent = {
-            Column(){
+            Column(
+                modifier = modifier
+            ){
                 Image(
                     modifier = Modifier
                         .padding(top = 6.dp)
@@ -87,24 +107,25 @@ fun ComposeBottomDrawer(
 
                 drawerContent()
 
-                Divider(
-                    modifier = Modifier
-                        .height(8.dp)
-                        .background(if (darkTheme) neutralColor0 else neutralColor98)
-                )
-
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding( top = 13.dp, bottom = 13.dp)
-                        .clickable {
-                            onCancelListener()
-                        },
-                    textAlign = TextAlign.Center,
-                    text = "Cancel",
-                    color = if (darkTheme) primaryColor6 else primaryColor5,
-                    style = AlphabetBodyLarge
-                )
+                if (isShowCancel){
+                    Divider(
+                        modifier = Modifier
+                            .height(8.dp)
+                            .background(if (darkTheme) neutralColor0 else neutralColor98)
+                    )
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding( top = 13.dp, bottom = 13.dp)
+                            .clickable {
+                                onCancelListener()
+                            },
+                        textAlign = TextAlign.Center,
+                        text = "Cancel",
+                        color = if (darkTheme) primaryColor6 else primaryColor5,
+                        style = AlphabetBodyLarge
+                    )
+                }
             }
         },
         content = {
@@ -122,7 +143,7 @@ fun DefaultDrawerContent(listData: List<UIComposeDrawerItem>, onListItemClick: (
     items.addAll(listData)
     LazyColumn(
         modifier = Modifier
-            .padding(horizontal = 16.dp)
+            .padding( start = 16.dp, end = 16.dp, bottom = 8.dp)
             .fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
@@ -141,11 +162,38 @@ fun DefaultDrawerContent(listData: List<UIComposeDrawerItem>, onListItemClick: (
                             .fillMaxWidth()
                             .padding(top = 10.dp, bottom = 10.dp),
                         textAlign = TextAlign.Center,
+                        style = AlphabetBodyLarge,
+                        color = if (item.title == "Report"){
+                            if (darkTheme) errorColor6 else errorColor5
+                        }else{
+                            if (darkTheme) primaryColor6 else primaryColor5
+                        },
+
                         text = item.title
                     )
                 },
-                modifier = Modifier.clickable { onListItemClick(index, item) }
+                modifier = Modifier
+                    .background(if (darkTheme) neutralColor1 else neutralColor98)
+                    .clickable { onListItemClick(index, item) }
             )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+fun showComposeBottomDrawer() {
+    scope.launch {
+        if (drawerState.isClosed){
+            drawerState.open()
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+fun hindComposeBottomDrawer(){
+    scope.launch {
+        if (!drawerState.isClosed){
+            drawerState.close()
         }
     }
 }
