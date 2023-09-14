@@ -17,7 +17,7 @@ private val mDarkColorScheme = darkColors(
     primaryVariant = primaryColor2,
     secondary = secondaryColor6,
     onError = errorColor6,
-    background = neutralColor0,
+    background = neutralColor1,
     onBackground = neutralColor98,
 )
 
@@ -26,7 +26,7 @@ private val mLightColorScheme = lightColors(
     primaryVariant = primaryColor95,
     secondary = secondaryColor4,
     onError = errorColor5,
-    background = neutralColor100,
+    background = neutralColor98,
     onBackground = neutralColor1,
 )
 
