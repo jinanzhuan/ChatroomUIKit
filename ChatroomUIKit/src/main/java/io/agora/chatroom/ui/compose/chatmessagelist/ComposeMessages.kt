@@ -1,7 +1,6 @@
 package io.agora.chatroom.ui.compose.chatmessagelist
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.PaddingValues
@@ -73,12 +72,7 @@ public fun ComposeMessages(
             reverseLayout = true,
             contentPadding = contentPadding
         ){
-            itemsIndexed(
-                messages,
-                key = { a, item ->
-                    Log.e("apex"," $a - $item")
-                }
-            ){index, item ->
+            itemsIndexed(messages){index, item ->
                 val messageItemModifier = if (item is ComposeMessageItemState && item.focusState == MessageFocused) {
                     Modifier.onGloballyPositioned {
                         if (messagesState.focusedMessageOffset.value == null) {

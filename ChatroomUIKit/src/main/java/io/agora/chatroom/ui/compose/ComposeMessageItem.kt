@@ -115,16 +115,16 @@ public fun ComposeMessageItem(
                 fontFamily = FontFamily.Default,
             )) {
 //                append(userName)
-                append("apex")
+                append("apex");append("  ")
+
             }
+            append(content);append("  ")
 
-            append(content)
-
-//            if (isShowGift){
-//                withStyle(style = SpanStyle()) {
-//                    appendInlineContent("Gift")
-//                }
-//            }
+            if (isShowGift){
+                withStyle(style = SpanStyle()) {
+                    appendInlineContent("Gift")
+                }
+            }
 
         }
 
@@ -142,7 +142,7 @@ public fun ComposeMessageItem(
 
         if (isShowAvatar){
             inlineMap["Avatar"] = InlineTextContent(
-                placeholder = Placeholder(18.sp,18.sp, PlaceholderVerticalAlign.Center),
+                placeholder = Placeholder(28.sp,28.sp, PlaceholderVerticalAlign.Center),
                 children = {
                     DrawAvatarImage(UserInfoProtocol())
 //                    userInfo?.let { it1 -> DrawAvatarImage(it1) }
@@ -150,12 +150,12 @@ public fun ComposeMessageItem(
             )
         }
 
-//        if (isShowGift){
-//            inlineMap["Gift"] = InlineTextContent(
-//                placeholder = Placeholder(18.sp,18.sp, PlaceholderVerticalAlign.Center),
-//                children = { DrawGiftImage(message) }
-//            )
-//        }
+        if (isShowGift){
+            inlineMap["Gift"] = InlineTextContent(
+                placeholder = Placeholder(20.sp,20.sp, PlaceholderVerticalAlign.Center),
+                children = { DrawGiftImage(message) }
+            )
+        }
 
         Text(
             modifier = Modifier.padding(start = 8.dp, top = 4.dp, bottom = 4.dp, end = 8.dp),
@@ -213,7 +213,7 @@ fun DrawAvatarImage(userInfo:UserInfoProtocol){
         model = avatarUrl
     )
     Image(
-        modifier = Modifier.size(18.dp,18.dp).padding(start = 4.dp, end = 4.dp),
+        modifier = Modifier.size(28.dp,28.dp).padding(start = 4.dp, end = 4.dp),
         painter = if (avatarUrl.isNullOrEmpty())painterResource(id = R.drawable.icon_default_avatar) else painter,
         contentDescription = "Avatar"
     )
@@ -225,7 +225,7 @@ fun DrawGiftImage(msg:ChatMessage){
         model = giftUrl
     )
     Image(
-        modifier = Modifier.size(18.dp,18.dp),
+        modifier = Modifier.size(20.dp,20.dp),
         painter = if (giftUrl.isEmpty())painterResource(id = R.drawable.icon_bottom_bar_gift) else painter,
         contentDescription = "Gift"
     )

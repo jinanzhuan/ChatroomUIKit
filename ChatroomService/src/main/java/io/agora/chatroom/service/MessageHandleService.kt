@@ -80,6 +80,8 @@ interface MessageListener {
      * @param message The message received.
      */
     fun onMessageReceived(message: ChatMessage){}
+
+    fun refreshMessage(message: ChatMessage){}
 }
 
 interface GiftReceiveListener {
