@@ -57,7 +57,7 @@ interface MessageHandleService {
     fun sendMessage(message: ChatMessage?,
                     onSuccess: OnValueSuccess<ChatMessage>,
                     onError: OnError,
-                    onProgress: OnProgress)
+                    onProgress: OnProgress = {})
 
     /**
      * Translate a text message.
@@ -79,10 +79,10 @@ interface MessageListener {
      * The callback to indicate a message is received.
      * @param message The message received.
      */
-    fun onMessageReceived(message: ChatMessage)
+    fun onMessageReceived(message: ChatMessage){}
 }
 
 interface GiftReceiveListener {
 
-    fun onGiftReceived(gift: GiftEntity)
+    fun onGiftReceived(gift: GiftEntity){}
 }

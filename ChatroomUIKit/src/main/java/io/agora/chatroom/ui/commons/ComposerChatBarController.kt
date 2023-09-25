@@ -1,8 +1,12 @@
 package io.agora.chatroom.ui.commons
 
-import io.agora.chatroom.model.UIMessage
+import io.agora.chat.TextMessageBody
+import io.agora.chatroom.model.UserInfoProtocol
+import io.agora.chatroom.service.ChatMessage
+import io.agora.chatroom.service.ChatMessageType
+import io.agora.chatroom.service.ChatType
+import io.agora.chatroom.service.ChatroomService
 import io.agora.chatroom.ui.compose.utils.DispatcherProvider
-import io.agora.chatroom.ui.model.UIUserThumbnailInfo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,14 +14,15 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
-class MessageComposerController(
+class ComposerChatBarController(
     private val roomId: String,
-){
+    private val chatService: ChatroomService
+):ComposeMessageController(){
 
     /**
      * Full message composer state holding all the required information.
      */
-    public val state: MutableStateFlow<MessageComposerState> = MutableStateFlow(MessageComposerState())
+    public val state: MutableStateFlow<ComposerMessageState> = MutableStateFlow(ComposerMessageState())
 
     /**
      * UI state of the current composer input.
@@ -37,13 +42,13 @@ class MessageComposerController(
     /**
      * Represents the list of validation errors for the current text input and the currently selected attachments.
      */
-    public val UIValidationErrors: MutableStateFlow<List<UIValidationError>> = MutableStateFlow(emptyList())
+    public val validationErrors: MutableStateFlow<List<UIValidationError>> = MutableStateFlow(emptyList())
 
 
     /**
      * Represents the list of users in the channel.
      */
-    private var users: List<UIUserThumbnailInfo> = emptyList()
+    private var users: List<UserInfoProtocol> = emptyList()
 
     /**
      * Represents the maximum allowed message length in the message input.
@@ -57,34 +62,16 @@ class MessageComposerController(
         get() = input.value
 
 
-    public fun sendMessage(message: UIMessage) {
-
-    }
-
     public fun buildNewMessage(
         message: String
-    ): UIMessage {
-        //todo 构建消息
-        return UIMessage()
+    ): ChatMessage {
+        val sendMessage = ChatMessage.createSendMessage(ChatMessageType.TXT)
+        val textMessageBody = TextMessageBody(message)
+        sendMessage.to = roomId
+        sendMessage.chatType = ChatType.ChatRoom
+        sendMessage.body = textMessageBody
+        return sendMessage
     }
-
-    /**
-     * Autocompletes the current text input with the mention from the selected user.
-     *
-     * @param user The user that is used to autocomplete the mention.
-     */
-    public fun selectMention(user: UIUserThumbnailInfo) {
-        val augmentedMessageText = "${messageText.substringBeforeLast("@")}@${user.userName} "
-
-        setMessageInput(augmentedMessageText)
-        selectedMentions += user
-    }
-
-
-    /**
-     * Represents the selected mentions based on the message suggestion list.
-     */
-    private val selectedMentions: MutableSet<UIUserThumbnailInfo> = mutableSetOf()
 
     /**
      * Called when the input changes and the internal state needs to be updated.
@@ -98,13 +85,20 @@ class MessageComposerController(
 
     public fun clearData() {
         input.value = ""
-        UIValidationErrors.value = emptyList()
+        validationErrors.value = emptyList()
     }
 
 
     init {
-
         setupComposerState()
+    }
+    @OptIn(FlowPreview::class)
+    fun updateInputValue(){
+        input.onEach { input ->
+            state.value = state.value.copy(inputValue = input)
+
+            handleValidationErrors()
+        }.debounce(ComputeMentionSuggestionsDebounceTime).launchIn(scope)
     }
 
     /**
@@ -118,8 +112,8 @@ class MessageComposerController(
             handleValidationErrors()
         }.debounce(ComputeMentionSuggestionsDebounceTime).launchIn(scope)
 
-        UIValidationErrors.onEach { validationErrors ->
-            state.value = state.value.copy(UIValidationErrors = validationErrors)
+        validationErrors.onEach { validationErrors ->
+            state.value = state.value.copy(validationErrors = validationErrors)
         }.launchIn(scope)
 
     }
@@ -128,7 +122,7 @@ class MessageComposerController(
      * Checks the current input for validation errors.
      */
     private fun handleValidationErrors() {
-        UIValidationErrors.value = mutableListOf<UIValidationError>().apply {
+        validationErrors.value = mutableListOf<UIValidationError>().apply {
             val message = input.value
             val messageLength = message.length
 

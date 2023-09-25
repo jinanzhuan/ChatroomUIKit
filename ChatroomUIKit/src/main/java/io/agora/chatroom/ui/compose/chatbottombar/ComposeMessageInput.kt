@@ -1,4 +1,4 @@
-package io.agora.chatroom.ui.compose
+package io.agora.chatroom.ui.compose.chatbottombar
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,15 +12,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
-import io.agora.chatroom.ui.commons.MessageComposerState
-import io.agora.chatroom.ui.compose.chatbottombar.DefaultComposerLabel
+import io.agora.chatroom.ui.commons.ComposerMessageState
 import io.agora.chatroom.ui.widget.WidgetInputField
 
 /**
  * Input field for the Messages/Conversation screen. Allows label customization, as well as handlers
  * when the input changes.
  *
- * @param messageComposerState The state of the input.
+ * @param composerMessageState The state of the input.
  * @param onValueChange Handler when the value changes.
  * @param modifier Modifier for styling.
  * @param maxLines The number of lines that are allowed in the input.
@@ -30,20 +29,21 @@ import io.agora.chatroom.ui.widget.WidgetInputField
  * @param innerTrailingContent Composable that represents the persistent inner trailing content.
  */
 @Composable
-public fun MessageComposeInput(
+public fun ComposeMessageInput(
     isDarkTheme:Boolean = false,
-    messageComposerState: MessageComposerState,
+    composerMessageState: ComposerMessageState,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
+    isShowKeyboard: Boolean,
     maxLines: Int = DefaultMessageInputMaxLines,
     keyboardOptions: KeyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
-    label: @Composable (MessageComposerState) -> Unit = {
-        DefaultComposerLabel(isDarkTheme = isDarkTheme,ownCapabilities = messageComposerState.ownCapabilities)
+    label: @Composable (ComposerMessageState) -> Unit = {
+        DefaultComposerLabel(isDarkTheme = isDarkTheme,ownCapabilities = composerMessageState.ownCapabilities)
     },
     innerLeadingContent: @Composable RowScope.() -> Unit = {},
     innerTrailingContent: @Composable RowScope.() -> Unit = {},
 ) {
-    val (value) = messageComposerState
+    val (value) = composerMessageState
 
     WidgetInputField(
         isDarkTheme = isDarkTheme,
@@ -52,6 +52,7 @@ public fun MessageComposeInput(
         maxLines = maxLines,
         onValueChange = onValueChange,
         enabled = true,
+        isShowKeyboard = isShowKeyboard,
         innerPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
         keyboardOptions = keyboardOptions,
         decorationBox = { innerTextField ->
@@ -67,7 +68,7 @@ public fun MessageComposeInput(
                         innerTextField()
 
                         if (value.isEmpty()) {
-                            label(messageComposerState)
+                            label(composerMessageState)
                         }
                     }
 

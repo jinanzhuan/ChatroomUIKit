@@ -1,20 +1,28 @@
 package io.agora.chatroom.ui.widget
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -28,6 +36,8 @@ import io.agora.chatroom.ui.theme.neutralColor2
 import io.agora.chatroom.ui.theme.neutralColor95
 import io.agora.chatroom.ui.theme.primaryColor5
 import io.agora.chatroom.uikit.R
+import kotlinx.coroutines.delay
+
 
 /**
  * Custom input field that we use for our UI. It's fairly simple - shows a basic input with clipped
@@ -46,6 +56,7 @@ import io.agora.chatroom.uikit.R
  * @param keyboardOptions The [KeyboardOptions] to be applied to the input.
  * @param decorationBox Composable function that represents the input field decoration as it's filled with content.
  */
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 public fun WidgetInputField(
     isDarkTheme:Boolean = false,
@@ -53,13 +64,31 @@ public fun WidgetInputField(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    isShowKeyboard: Boolean = false,
     maxLines: Int = Int.MAX_VALUE,
     border: BorderStroke = BorderStroke(1.dp, if (isDarkTheme) neutralColor2 else neutralColor95),
     innerPadding: PaddingValues = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
     keyboardOptions: KeyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
     decorationBox: @Composable (innerTextField: @Composable () -> Unit) -> Unit,
 ) {
+    Log.e("apex","WidgetInputField: $value")
+
     var textFieldValueState by remember { mutableStateOf(TextFieldValue(text = value)) }
+
+    val showKeyBoard = remember {
+        mutableStateOf(isShowKeyboard)
+    }
+    val isShowKeyBoard by showKeyBoard
+
+    val focusManager = LocalFocusManager.current
+
+    // 创建一个软键盘控制器
+    val keyboard = LocalSoftwareKeyboardController.current
+
+    // 创建一个焦点请求器
+    val focus = remember {
+        FocusRequester()
+    }
 
     // Workaround to move cursor to the end after selecting a suggestion
     val selection = if (textFieldValueState.isCursorAtTheEnd()) {
@@ -76,14 +105,16 @@ public fun WidgetInputField(
     val description = stringResource(id = R.string.stream_compose_cd_message_input)
 
     BasicTextField(
-        modifier = modifier
+        modifier = Modifier
+            .focusRequester(focus)
             .border(border = border, shape = LargeCorner)
             .clip(LargeCorner)
-            .background(if(isDarkTheme) neutralColor2 else neutralColor95)
+            .background(if (isDarkTheme) neutralColor2 else neutralColor95)
             .padding(innerPadding)
             .semantics { contentDescription = description },
         value = textFieldValue,
         onValueChange = {
+            Log.e("apex","onValueChange ${it.text} - ${it.selection}")
             textFieldValueState = it
             if (value != it.text) {
                 onValueChange(it.text)
@@ -95,8 +126,23 @@ public fun WidgetInputField(
         maxLines = maxLines,
         singleLine = maxLines == 1,
         enabled = enabled,
-        keyboardOptions = keyboardOptions
+        keyboardOptions = keyboardOptions,
+        keyboardActions = KeyboardActions(onDone = {
+            focusManager.clearFocus()
+        }),
     )
+
+    LaunchedEffect(isShowKeyBoard) {
+        if (isShowKeyBoard){
+            delay(200)
+            focus.requestFocus()
+            keyboard?.show()
+        }else{
+            delay(200)
+            focusManager.clearFocus()
+            keyboard?.hide()
+        }
+    }
 }
 
 /**
@@ -108,6 +154,8 @@ private fun TextFieldValue.isCursorAtTheEnd(): Boolean {
     val textLength = text.length
     val selectionStart = selection.start
     val selectionEnd = selection.end
+
+    Log.e("apex","isCursorAtTheEnd:  ${textLength == selectionStart && textLength == selectionEnd}  $textLength  - $selectionStart - $selectionEnd")
 
     return textLength == selectionStart && textLength == selectionEnd
 }

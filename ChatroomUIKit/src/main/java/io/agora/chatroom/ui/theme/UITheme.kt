@@ -6,10 +6,16 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+
+private val LocalDimens = compositionLocalOf<UIDimens> {
+    error("No dimens provided! Make sure to wrap all usages of Stream components in a ChatTheme.")
+}
 
 
 private val mDarkColorScheme = darkColors(
@@ -31,7 +37,7 @@ private val mLightColorScheme = lightColors(
 )
 
 @Composable
-fun ChatroomUIKitTheme(
+public fun ChatroomUIKitTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
 //    dynamicColor: Boolean = true,
@@ -59,4 +65,15 @@ fun ChatroomUIKitTheme(
         typography = Typography,
         content = content
     )
+}
+
+public object ChatroomUIKitTheme {
+
+    /**
+     * Retrieves the current [UIDimens] at the call site's position in the hierarchy.
+     */
+    public val dimens: UIDimens
+        @Composable
+        @ReadOnlyComposable
+        get() = LocalDimens.current
 }

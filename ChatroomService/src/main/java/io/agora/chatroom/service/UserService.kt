@@ -1,17 +1,21 @@
 package io.agora.chatroom.service
 
+import io.agora.chatroom.model.UserInfoProtocol
+
 
 interface UserService {
     fun bindUserStateChangeListener(listener: UserStateChangeListener)
     fun unbindUserStateChangeListener(listener: UserStateChangeListener)
 
-    fun getUserInfo(userId: String, onSuccess: OnValueSuccess<UserEntity>, onError: OnError)
+    fun getUserInfo(userId: String, onSuccess: OnValueSuccess<UserInfoProtocol>, onError: OnError)
 
-    fun getUserInfoList(userIdList: List<String>, onSuccess: OnValueSuccess<List<UserEntity>>, onError: OnError)
+    fun getUserInfoList(userIdList: List<String>, onSuccess: OnValueSuccess<List<UserInfoProtocol>>, onError: OnError)
 
-    fun updateUserInfo(userEntity: UserEntity, onSuccess: OnSuccess, onError: OnError)
+    fun updateUserInfo(userEntity: UserInfoProtocol, onSuccess: OnSuccess, onError: OnError)
 
     fun login(userId: String, token: String, onSuccess: OnSuccess, onError: OnError)
+
+    fun login(user: UserInfoProtocol,token: String,userProperties: Boolean = true,onSuccess: OnSuccess, onError: OnError)
 
     fun logout(userId: String, onSuccess: OnSuccess, onFailure: OnError)
 }
@@ -20,8 +24,10 @@ interface UserStateChangeListener {
 
 }
 
-data class UserEntity(val userId: String,
+data class UserEntity(
+    val userId: String,
     val nickname: String,
     val avatar: String,
     val gender: Int,
-    val identify: String)
+    val identify: String
+)
