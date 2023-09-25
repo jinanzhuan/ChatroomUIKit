@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -13,6 +15,11 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+
+        val localProperties = Properties()
+        localProperties.load(project.rootProject.file("local.properties").inputStream())
+
+        buildConfigField("String", "CHATROOM_APP_KEY", "\"${localProperties.getProperty("CHATROOM_APP_KEY")}\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

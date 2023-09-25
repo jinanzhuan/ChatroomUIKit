@@ -20,4 +20,8 @@
     <!-- Message Composer -->
     <string name="stream_compose_message_composer_error_message_length">Max message length (%1$d) exceeded.</string>
 
+    <string name="stream_compose_message_list_empty_messages">No messages</string>
+
+    <string name="stream_compose_cd_message_item" translatable="false">Message item</string>
+
 </resources>

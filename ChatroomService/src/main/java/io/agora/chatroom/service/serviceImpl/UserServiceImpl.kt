@@ -1,7 +1,10 @@
 package io.agora.chatroom.service.serviceImpl
 
+import io.agora.chatroom.model.UIConstant
+import io.agora.chatroom.model.UserInfoProtocol
 import io.agora.chatroom.service.CallbackImpl
 import io.agora.chatroom.service.ChatClient
+import io.agora.chatroom.service.ChatError
 import io.agora.chatroom.service.ChatUserInfo
 import io.agora.chatroom.service.ChatValueCallback
 import io.agora.chatroom.service.OnError
@@ -10,15 +13,16 @@ import io.agora.chatroom.service.OnValueSuccess
 import io.agora.chatroom.service.UserEntity
 import io.agora.chatroom.service.UserService
 import io.agora.chatroom.service.UserStateChangeListener
+import io.agora.chatroom.service.cache.UIChatroomCacheManager
 
-fun ChatUserInfo.transfer() = UserEntity(userId, nickname, avatarUrl, gender, ext)
-fun UserEntity.transfer(): ChatUserInfo {
-    val user = ChatUserInfo()
+fun ChatUserInfo.transfer() = UserEntity(userId, nickname, avatarUrl, gender,ext )
+fun UserEntity.transfer(): UserInfoProtocol {
+    val user = UserInfoProtocol()
     user.userId = userId
     user.nickname = nickname
     user.avatarUrl = avatar
     user.gender = gender
-    user.ext = identify
+    user.identify = identify
     return user
 }
 
@@ -34,7 +38,7 @@ class UserServiceImpl: UserService {
     }
 
     override fun getUserInfo(userId: String,
-                             onSuccess: OnValueSuccess<UserEntity>,
+                             onSuccess: OnValueSuccess<UserInfoProtocol>,
                              onError: OnError
     ) {
         getUserInfoList(arrayListOf(userId), onSuccess = { onSuccess.invoke(it[0]) }, onError)
@@ -42,13 +46,13 @@ class UserServiceImpl: UserService {
 
     override fun getUserInfoList(
         userIdList: List<String>,
-        onSuccess: OnValueSuccess<List<UserEntity>>,
+        onSuccess: OnValueSuccess<List<UserInfoProtocol>>,
         onError: OnError
     ) {
         userInfoManager.fetchUserInfoByUserId(userIdList.toTypedArray(), object :ChatValueCallback<Map<String, ChatUserInfo>> {
             override fun onSuccess(value: Map<String, ChatUserInfo>?) {
                 val userEntities = value?.map {
-                    it.value.transfer()
+                    it.value.transfer().transfer()
                 } ?: listOf()
                 onSuccess.invoke(userEntities)
             }
@@ -60,11 +64,11 @@ class UserServiceImpl: UserService {
     }
 
     override fun updateUserInfo(
-        userEntity: UserEntity,
+        userEntity: UserInfoProtocol,
         onSuccess: OnSuccess,
         onError: OnError
     ) {
-        userInfoManager.updateOwnInfo(userEntity.transfer(), object :ChatValueCallback<String> {
+        userInfoManager.updateOwnInfo(userEntity, object :ChatValueCallback<String> {
             override fun onSuccess(value: String?) {
                 onSuccess.invoke()
             }
@@ -77,6 +81,19 @@ class UserServiceImpl: UserService {
 
     override fun login(userId: String, token: String, onSuccess: OnSuccess, onError: OnError) {
         ChatClient.getInstance().loginWithAgoraToken(userId, token, CallbackImpl(onSuccess, onError))
+    }
+
+    override fun login(
+        user: UserInfoProtocol,
+        token: String,
+        userProperties: Boolean,
+        onSuccess: OnSuccess,
+        onError: OnError
+    ) {
+        UIChatroomCacheManager.cacheManager.saveUserInfo(userId = user.userId, userInfo = user)
+        UIChatroomCacheManager.cacheManager.setUseProperties(UIConstant.CHATROOM_UIKIT_USER_JOIN,userProperties)
+        if (user.userId.isEmpty()) return onError(ChatError.USER_AUTHENTICATION_FAILED,"The user ID or password is incorrect")
+        ChatClient.getInstance().loginWithAgoraToken(user.userId, token, CallbackImpl(onSuccess, onError))
     }
 
     override fun logout(userId: String, onSuccess: OnSuccess, onError: OnError) {

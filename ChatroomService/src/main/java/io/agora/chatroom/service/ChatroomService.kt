@@ -89,54 +89,54 @@ interface ChatroomChangeListener: MessageListener {
      * @param roomId The id of the chatroom.
      * @param userId The id of the user.
      */
-    fun onUserJoined(roomId: String, userId: String)
+    fun onUserJoined(roomId: String, userId: String){}
 
     /**
      * Callback when the user left the chatroom.
      * @param roomId The id of the chatroom.
      * @param userId The id of the user.
      */
-    fun onUserLeft(roomId: String, userId: String)
+    fun onUserLeft(roomId: String, userId: String){}
 
     /**
      * Callback when the user is kicked.
      * @param roomId The id of the chatroom.
      * @param userId The id of the user.
      */
-    fun onUserBeKicked(roomId: String, userId: String)
+    fun onUserBeKicked(roomId: String, userId: String){}
 
     /**
      * Callback when the user is muted.
      * @param roomId The id of the chatroom.
      * @param userId The id of the user.
      */
-    fun onUserMuted(roomId: String, userId: String)
+    fun onUserMuted(roomId: String, userId: String){}
 
     /**
      * Callback when the user is unmuted.
      * @param roomId The id of the chatroom.
      * @param userId The id of the user.
      */
-    fun onUserUnmuted(roomId: String, userId: String)
+    fun onUserUnmuted(roomId: String, userId: String){}
 
     /**
      * Callback when the user is been added to admins.
      * @param roomId The id of the chatroom.
      * @param userId The id of the user.
      */
-    fun onAdminAdded(roomId: String, userId: String)
+    fun onAdminAdded(roomId: String, userId: String){}
 
     /**
      * Callback when the user is been removed from admins.
      * @param roomId The id of the chatroom.
      * @param userId The id of the user.
      */
-    fun onAdminRemoved(roomId: String, userId: String)
+    fun onAdminRemoved(roomId: String, userId: String){}
 
     /**
      * Callback when the announcement of the chatroom is updated.
      * @param roomId The id of the chatroom.
      * @param announcement The announcement of the chatroom.
      */
-    fun onAnnouncementUpdated(roomId: String, announcement: String)
+    fun onAnnouncementUpdated(roomId: String, announcement: String){}
 }
