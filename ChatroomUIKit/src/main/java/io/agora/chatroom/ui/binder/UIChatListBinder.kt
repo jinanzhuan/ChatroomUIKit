@@ -31,8 +31,8 @@ class UIChatListBinder(
                     viewModel = listViewModel,
                     modifier = Modifier
                         .fillMaxSize(),
-                    onLongItemClick = {
-                        Log.e("apex","onLongItemClick $it")
+                    onLongItemClick = { index,message->
+                        Log.e("apex","onLongItemClick $index $message")
                     }
                 )
             }
@@ -46,7 +46,6 @@ class UIChatListBinder(
     override fun unBind() {
         service.getChatService().unbindListener(this)
     }
-
 
 
     override fun onMessageReceived(message: ChatMessage) {

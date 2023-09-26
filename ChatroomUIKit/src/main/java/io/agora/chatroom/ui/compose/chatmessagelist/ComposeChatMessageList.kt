@@ -31,11 +31,12 @@ fun ComposeChatMessageList(
     viewModel: MessageListViewModel,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(vertical = 16.dp),
-    onLongItemClick: (ChatMessage) -> Unit = {  },
+    onLongItemClick: (Int,ComposeMessageListItemState) -> Unit = {index,message->},
     loadingContent: @Composable () -> Unit = { DefaultMessageListLoadingIndicator(modifier) },
     emptyContent: @Composable () -> Unit = { DefaultMessageListEmptyContent(modifier) },
-    itemContent: @Composable (ComposeMessageListItemState) -> Unit = { messageListItem ->
+    itemContent: @Composable (Int,ComposeMessageListItemState) -> Unit = { index,messageListItem ->
         DefaultMessageContainer(
+            itemIndex = index,
             viewModel = viewModel,
             messageListItem = messageListItem,
             onLongItemClick = onLongItemClick,
@@ -59,11 +60,12 @@ fun MessageList(
     viewModel: MessageListViewModel,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(vertical = 16.dp),
-    onLongItemClick: (ChatMessage) -> Unit = {},
+    onLongItemClick: (Int,ComposeMessageListItemState) -> Unit = {index,message->},
     loadingContent: @Composable () -> Unit = { DefaultMessageListLoadingIndicator(modifier) },
     emptyContent: @Composable () -> Unit = { DefaultMessageListEmptyContent(modifier) },
-    itemContent: @Composable (ComposeMessageListItemState) -> Unit = {
+    itemContent: @Composable (Int,ComposeMessageListItemState) -> Unit = {index,it->
         DefaultMessageContainer(
+            itemIndex = index,
             viewModel = viewModel,
             messageListItem = it,
             onLongItemClick = onLongItemClick,
@@ -139,11 +141,13 @@ internal fun DefaultMessagesLoadingMoreIndicator() {
 
 @Composable
 internal fun DefaultMessageContainer(
+    itemIndex:Int,
     viewModel: MessageListViewModel,
     messageListItem: ComposeMessageListItemState,
-    onLongItemClick: (ChatMessage) -> Unit,
+    onLongItemClick: (Int,ComposeMessageListItemState) -> Unit,
 ) {
     MessageContainer(
+        itemIndex = itemIndex,
         viewModel = viewModel,
         messageListItem = messageListItem,
         onLongItemClick = onLongItemClick,

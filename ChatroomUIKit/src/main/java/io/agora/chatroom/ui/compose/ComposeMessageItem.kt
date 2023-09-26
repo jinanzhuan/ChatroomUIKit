@@ -1,6 +1,5 @@
 package io.agora.chatroom.ui.compose
 
-import android.text.format.DateUtils
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -38,10 +37,14 @@ import io.agora.chatroom.ui.theme.neutralColor98
 import io.agora.chatroom.ui.theme.primaryColor8
 import io.agora.chatroom.ui.theme.secondaryColor8
 import io.agora.chatroom.uikit.R
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-public fun ComposeMessageItem(
+fun ComposeMessageItem(
+    itemIndex: Int,
     isDarkTheme: Boolean = false,
     isShowDateSeparator: Boolean = true,
     isShowLabel: Boolean = true,
@@ -51,7 +54,7 @@ public fun ComposeMessageItem(
     userNameColor: Color = primaryColor8,
     messageItem: ComposeMessageListItemState,
     itemType:ComposeItemType = ComposeItemType.NORMAL,
-    onLongItemClick: (ChatMessage) -> Unit,
+    onLongItemClick: (Int,ComposeMessageListItemState) -> Unit,
 ){
     val message = if (itemType == ComposeItemType.NORMAL) {
         (messageItem as ComposeMessageItemState).message
@@ -62,19 +65,21 @@ public fun ComposeMessageItem(
     Row (
         modifier = Modifier
             .padding(start = 16.dp, top = 4.dp, bottom = 4.dp, end = 16.dp)
-            .combinedClickable {
-                onLongItemClick(message)
-            }
+            .combinedClickable(
+                onLongClick = {onLongItemClick(itemIndex,messageItem)}
+            ){}
             .wrapContentWidth()
             .wrapContentHeight()
             .background(
                 if (isDarkTheme) barrageLightColor2 else barrageDarkColor1,
                 shape = SmallCorner
             ),
-
     ){
 
-        val dateSeparator = defaultMessageDateSeparatorContent(message)
+//        val dateSeparator = convertMillisTo24HourFormat(message.msgTime)
+
+        val dateSeparator =convertMillisTo24HourFormat(System.currentTimeMillis())
+
         val content =  if(message.body is TextMessageBody){
             (message.body as TextMessageBody).message
         }else{
@@ -91,8 +96,8 @@ public fun ComposeMessageItem(
 
             if (isShowDateSeparator){
                 withStyle(style = SpanStyle(color = dateSeparatorColor)) {
-//                    append(dateSeparator)
-                    append("23:00")
+                    append(dateSeparator)
+//                    append("23:00")
                 }
             }
 
@@ -116,16 +121,17 @@ public fun ComposeMessageItem(
             )) {
 //                append(userName)
                 append("apex");append("  ")
-
             }
-            append(content);append("  ")
+
+            if (!content.isNullOrEmpty()){
+                append(content);append("  ")
+            }
 
             if (isShowGift){
                 withStyle(style = SpanStyle()) {
                     appendInlineContent("Gift")
                 }
             }
-
         }
 
         val inlineMap = mutableMapOf<String,InlineTextContent>()
@@ -134,8 +140,7 @@ public fun ComposeMessageItem(
             inlineMap["Label"] = InlineTextContent(
                 placeholder = Placeholder(18.sp,18.sp, PlaceholderVerticalAlign.Center),
                 children = {
-                    DrawLabelImage(UserInfoProtocol())
-//                    userInfo?.let { it1 -> DrawLabelImage(it1) }
+                    DrawLabelImage(userInfo)
                 }
             )
         }
@@ -144,8 +149,7 @@ public fun ComposeMessageItem(
             inlineMap["Avatar"] = InlineTextContent(
                 placeholder = Placeholder(28.sp,28.sp, PlaceholderVerticalAlign.Center),
                 children = {
-                    DrawAvatarImage(UserInfoProtocol())
-//                    userInfo?.let { it1 -> DrawAvatarImage(it1) }
+                    DrawAvatarImage(userInfo)
                 }
             )
         }
@@ -168,53 +172,33 @@ public fun ComposeMessageItem(
     }
 }
 
-
-/**
- * Represents a date separator item that shows whenever messages are too far apart in time.
- *
- * @param messageItem The data used to show the separator text.
- */
-fun defaultMessageDateSeparatorContent(
-    message: ChatMessage,
-):String {
-    return DateUtils.getRelativeTimeSpanString(
-        message.msgTime,
-        System.currentTimeMillis(),
-        DateUtils.DAY_IN_MILLIS,
-        DateUtils.FORMAT_ABBREV_RELATIVE
-    ).toString()
-}
-
-
 @Composable
-fun DrawLabelImage(userInfo:UserInfoProtocol) {
-//    val labelUrl = userInfo.identify
-//    val labelUrl = ""
-//    val painter = rememberAsyncImagePainter(
-//        model = labelUrl
-//    )
-//    Image(
-//        modifier = Modifier.size(18.dp,18.dp),
-//        painter = if (labelUrl.isNullOrEmpty()) painterResource(id = R.drawable.icon_default_label) else painter,
-//        contentDescription = "Label"
-//    )
-
+fun DrawLabelImage(userInfo:UserInfoProtocol?) {
+    var labelUrl = ""
+    userInfo?.let {
+        labelUrl = it.identify.toString()
+    }
+    val painter = rememberAsyncImagePainter(
+        model = labelUrl
+    )
     Image(
         modifier = Modifier.size(18.dp,18.dp).padding(start = 4.dp),
-        painter = painterResource(id = R.drawable.icon_default_label),
+        painter = if (labelUrl.isEmpty()) painterResource(id = R.drawable.icon_default_label) else painter,
         contentDescription = "Label"
     )
 }
 @Composable
-fun DrawAvatarImage(userInfo:UserInfoProtocol){
-//    val avatarUrl = userInfo.avatarUrl
-    val avatarUrl = ""
+fun DrawAvatarImage(userInfo:UserInfoProtocol?){
+    var avatarUrl = ""
+    userInfo?.let {
+        avatarUrl = it.avatarUrl
+    }
     val painter = rememberAsyncImagePainter(
         model = avatarUrl
     )
     Image(
         modifier = Modifier.size(28.dp,28.dp).padding(start = 4.dp, end = 4.dp),
-        painter = if (avatarUrl.isNullOrEmpty())painterResource(id = R.drawable.icon_default_avatar) else painter,
+        painter = if (avatarUrl.isEmpty())painterResource(id = R.drawable.icon_default_avatar) else painter,
         contentDescription = "Avatar"
     )
 }
@@ -229,4 +213,9 @@ fun DrawGiftImage(msg:ChatMessage){
         painter = if (giftUrl.isEmpty())painterResource(id = R.drawable.icon_bottom_bar_gift) else painter,
         contentDescription = "Gift"
     )
+}
+
+fun convertMillisTo24HourFormat(millis: Long): String {
+    val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
+    return sdf.format(Date(millis))
 }

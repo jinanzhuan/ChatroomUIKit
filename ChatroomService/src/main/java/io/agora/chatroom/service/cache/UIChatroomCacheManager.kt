@@ -21,7 +21,6 @@ class UIChatroomCacheManager {
     private var mEditor: SharedPreferences.Editor? = null
     private var mSharedPreferences: SharedPreferences? = null
     private var userCache:MutableMap<String, UserInfoProtocol> = mutableMapOf()
-    private var currentMsgList:MutableList<ChatMessage> = mutableListOf()
 
     companion object {
         const val TAG = "UIChatroomCacheManager"
@@ -45,28 +44,6 @@ class UIChatroomCacheManager {
             return userCache[userId]
         }
         return null
-    }
-
-    fun addMessage(newMsg:ChatMessage){
-        currentMsgList.add(0,newMsg)
-    }
-
-    fun removeMessage(msg:ChatMessage){
-        if (currentMsgList.contains(msg)){
-            currentMsgList.remove(msg)
-        }
-    }
-
-    fun updateMessage(msgList:ArrayList<ChatMessage>){
-        currentMsgList = msgList
-    }
-
-    val getCurrentMsgList:List<ChatMessage>
-        get() = currentMsgList
-
-
-    fun clearCache(){
-        currentMsgList.clear()
     }
 
     fun setUseProperties(key:String,use:Boolean){

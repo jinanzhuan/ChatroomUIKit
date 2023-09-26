@@ -1,7 +1,6 @@
 package io.agora.chatroom.ui.commons
 
 import io.agora.chatroom.model.UserInfoProtocol
-import io.agora.chatroom.ui.model.UICapabilities
 
 /**
  * Represents the state within the message input.
@@ -10,9 +9,9 @@ import io.agora.chatroom.ui.model.UICapabilities
  * @param currentUser The currently logged in user.
  */
 
-public data class ComposerInputMessageState(
+data class ComposerInputMessageState(
     val inputValue: String = "",
-    val ownCapabilities: Set<String> = setOf(UICapabilities.SEND_MESSAGE),
+    val ownCapabilities: Set<String> = setOf(),
     val validationErrors: List<UIValidationError> = emptyList(),
     val currentUser: UserInfoProtocol? = null,
 )

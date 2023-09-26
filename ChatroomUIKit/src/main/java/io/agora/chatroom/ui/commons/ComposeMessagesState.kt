@@ -24,7 +24,13 @@ data class ComposeMessagesState(
         _messages.add(0, msg)
     }
     fun removeMessage(msg: ComposeMessageListItemState){
-        _messages.remove(msg)
+        if (_messages.contains(msg)  ){
+            _messages.remove(msg)
+        }
+    }
+
+    fun clearMessage(){
+        _messages.clear()
     }
 
     /**

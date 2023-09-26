@@ -7,6 +7,7 @@ import io.agora.chatroom.ui.UIChatroomService
 import io.agora.chatroom.ui.commons.ComposeChatListController
 import io.agora.chatroom.ui.commons.ComposeMessagesState
 import io.agora.chatroom.ui.commons.ComposerChatBarController
+import io.agora.chatroom.ui.model.UICapabilities
 import io.agora.chatroom.ui.model.UIChatBarMenuItem
 import io.agora.chatroom.ui.theme.primaryColor8
 import io.agora.chatroom.ui.theme.secondaryColor8
@@ -37,7 +38,8 @@ class MessagesViewModelFactory(
                 menuItemResource = menuItemResource,
                 composerChatBarController = ComposerChatBarController(
                     roomId = service.getRoomInfo().roomId,
-                    chatService = service.getChatService()
+                    chatService = service.getChatService(),
+                    capabilities = setOf(UICapabilities.SEND_MESSAGE)
                 )
             )
         },

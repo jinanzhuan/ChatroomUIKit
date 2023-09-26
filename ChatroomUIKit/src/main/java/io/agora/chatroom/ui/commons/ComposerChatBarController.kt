@@ -12,18 +12,22 @@ import kotlinx.coroutines.flow.onEach
 
 class ComposerChatBarController(
     private val roomId: String,
-    private val chatService: ChatroomService
+    private val chatService: ChatroomService,
+    private val capabilities: Set<String> = setOf(),
 ){
 
     /**
      * Full message composer state holding all the required information.
      */
-    public val state: MutableStateFlow<ComposerInputMessageState> = MutableStateFlow(ComposerInputMessageState())
+    val state: MutableStateFlow<ComposerInputMessageState> = MutableStateFlow(ComposerInputMessageState())
 
     /**
      * UI state of the current composer input.
      */
-    public val input: MutableStateFlow<String> = MutableStateFlow("")
+    val input: MutableStateFlow<String> = MutableStateFlow("")
+
+    private val ownCapabilities = MutableStateFlow<Set<String>>(capabilities)
+
 
     /**
      * Creates a [CoroutineScope] that allows us to cancel the ongoing work when the parent
@@ -38,7 +42,7 @@ class ComposerChatBarController(
     /**
      * Represents the list of validation errors for the current text input and the currently selected attachments.
      */
-    public val validationErrors: MutableStateFlow<List<UIValidationError>> = MutableStateFlow(emptyList())
+    val validationErrors: MutableStateFlow<List<UIValidationError>> = MutableStateFlow(emptyList())
 
 
     /**
@@ -98,6 +102,10 @@ class ComposerChatBarController(
 
         validationErrors.onEach { validationErrors ->
             state.value = state.value.copy(validationErrors = validationErrors)
+        }.launchIn(scope)
+
+        ownCapabilities.onEach { ownCapabilities ->
+            state.value = state.value.copy(ownCapabilities = ownCapabilities)
         }.launchIn(scope)
 
     }

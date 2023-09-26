@@ -16,12 +16,12 @@ class MessageComposerViewModel(
     /**
      * The full UI state that has all the required data.
      */
-    public val composerMessageState: StateFlow<ComposerInputMessageState> = composerChatBarController.state
+    val composerMessageState: StateFlow<ComposerInputMessageState> = composerChatBarController.state
 
     /**
      * UI state of the current composer input.
      */
-    public val input: MutableStateFlow<String> = composerChatBarController.input
+    val input: MutableStateFlow<String> = composerChatBarController.input
 
     fun updateInputValue(){
         composerChatBarController.updateInputValue()
@@ -38,13 +38,13 @@ class MessageComposerViewModel(
      *
      * @param value Current state value.
      */
-    public fun setMessageInput(value: String): Unit = composerChatBarController.setMessageInput(value)
+    fun setMessageInput(value: String): Unit = composerChatBarController.setMessageInput(value)
 
 
     /**
      * Clears the input and the current state of the composer.
      */
-    public fun clearData(): Unit = composerChatBarController.clearData()
+    fun clearData(): Unit = composerChatBarController.clearData()
 
 
     /**

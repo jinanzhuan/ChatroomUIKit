@@ -20,16 +20,16 @@ class MessageListViewModel(
     private val composeChatListController: ComposeChatListController
     ): ViewModel() {
 
-    init {
-        composeChatListController.analysisMessage()
-    }
-
     fun addTextMessage(message:ChatMessage){
         composeChatListController.addTextMessage(message = message)
     }
 
     fun removeMessage(message: ComposeMessageListItemState){
-        composeChatListController.removeMessage(message = message)
+        composeChatListController.removeMessage(message)
+    }
+
+    fun clearMessage(){
+        composeChatListController.clearMessage()
     }
 
     val currentComposeMessagesState: ComposeMessagesState
@@ -57,22 +57,4 @@ class MessageListViewModel(
     val getNickNameColor:Color
         get() = nickNameColor
 
-    internal companion object {
-        /**
-         * The default threshold for showing date separators. If the message difference in hours is equal to this
-         * number, then we show a separator, if it's enabled in the list.
-         */
-        internal const val DateSeparatorDefaultHourThreshold: Long = 4
-
-        /**
-         * The default limit for messages count in requests.
-         */
-        internal const val DefaultMessageLimit: Int = 30
-
-        /**
-         * Time in millis, after which the focus is removed.
-         */
-        private const val RemoveMessageFocusDelay: Long = 2000
-
-    }
 }

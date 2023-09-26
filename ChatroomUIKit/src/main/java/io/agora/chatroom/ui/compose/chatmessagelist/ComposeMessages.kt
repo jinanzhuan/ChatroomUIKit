@@ -21,11 +21,11 @@ import io.agora.chatroom.ui.compose.ComposeMessageItemState
 import io.agora.chatroom.ui.compose.ComposeMessageListItemState
 
 @Composable
-public fun ComposeMessages(
+fun ComposeMessages(
     modifier: Modifier = Modifier,
     messagesState: ComposeMessagesState,
     contentPadding: PaddingValues = PaddingValues(vertical = 16.dp),
-    itemContent: @Composable (ComposeMessageListItemState) -> Unit,
+    itemContent: @Composable (Int,ComposeMessageListItemState) -> Unit,
 ) {
     val messages = messagesState.messages
 
@@ -65,7 +65,7 @@ public fun ComposeMessages(
                 }
 
                 Box(modifier = messageItemModifier) {
-                    itemContent(item)
+                    itemContent(index,item)
                 }
             }
         }

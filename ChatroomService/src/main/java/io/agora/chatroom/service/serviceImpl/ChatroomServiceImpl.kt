@@ -1,6 +1,5 @@
 package io.agora.chatroom.service.serviceImpl
 
-import android.util.Log
 import io.agora.chatroom.service.CallbackImpl
 import io.agora.chatroom.service.ChatCallback
 import io.agora.chatroom.service.ChatClient
@@ -16,7 +15,6 @@ import io.agora.chatroom.service.OnSuccess
 import io.agora.chatroom.service.OnValueSuccess
 import io.agora.chatroom.service.UserOperationType
 import io.agora.chatroom.service.ValueCallbackImpl
-import io.agora.chatroom.service.cache.UIChatroomCacheManager
 
 class ChatroomServiceImpl: ChatroomService {
 
@@ -128,7 +126,7 @@ class ChatroomServiceImpl: ChatroomService {
         val textSendMessage = ChatMessage.createTextSendMessage(message, roomId)
         textSendMessage?.chatType = ChatType.ChatRoom
         sendMessage(textSendMessage, onSuccess, onError) {}
-        UIChatroomCacheManager.cacheManager.addMessage(textSendMessage)
+
         if (listeners.size > 0){
             listeners.forEach {
                 it.onRefreshMessage(textSendMessage)

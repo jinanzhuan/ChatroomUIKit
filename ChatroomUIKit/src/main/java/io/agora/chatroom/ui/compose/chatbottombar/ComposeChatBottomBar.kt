@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.SnackbarHost
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -41,11 +40,8 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Popup
-import io.agora.chatroom.service.ChatMessage
 import io.agora.chatroom.ui.commons.ComposerInputMessageState
 import io.agora.chatroom.ui.commons.UIValidationError
-import io.agora.chatroom.ui.compose.utils.AboveAnchorPopupPositionProvider
 import io.agora.chatroom.ui.compose.utils.mirrorRtl
 import io.agora.chatroom.ui.model.UICapabilities
 import io.agora.chatroom.ui.model.UIChatBarMenuItem
@@ -74,7 +70,7 @@ import io.agora.chatroom.uikit.R
  * by default.
  */
 @Composable
-public fun ComposeChatBottomBar(
+fun ComposeChatBottomBar(
     viewModel: MessageComposerViewModel,
     modifier: Modifier = Modifier,
     showInput: Boolean = false,
@@ -116,7 +112,6 @@ public fun ComposeChatBottomBar(
     emojiContent: @Composable (ComposerInputMessageState, onEmojiClick: (isShowFace:Boolean) -> Unit) -> Unit = { it, status->
         DefaultMessageComposerEmojiContent(
             isDarkTheme = viewModel.getTheme,
-            ownCapabilities = it.ownCapabilities,
             onEmojiClick = {
                 status(it)
             }
@@ -175,7 +170,7 @@ public fun ComposeChatBottomBar(
  * by default.
  */
 @Composable
-public fun ComposeChatBottomBar(
+fun ComposeChatBottomBar(
     isDarkTheme: Boolean,
     composerMessageState: ComposerInputMessageState,
     onSendMessage: (String) -> Unit,
@@ -215,7 +210,6 @@ public fun ComposeChatBottomBar(
     emojiContent: @Composable (ComposerInputMessageState, onEmojiClick: (isShowFace:Boolean) -> Unit) -> Unit = { it, status->
         DefaultMessageComposerEmojiContent(
             isDarkTheme = isDarkTheme,
-            ownCapabilities = it.ownCapabilities,
             onEmojiClick = {
                 status(it)
             }
@@ -315,11 +309,6 @@ public fun ComposeChatBottomBar(
             }
         }
 
-
-        if (snackbarHostState.currentSnackbarData != null) {
-            SnackbarPopup(snackbarHostState = snackbarHostState)
-        }
-
     }
 }
 
@@ -361,12 +350,12 @@ internal fun DefaultComposerLabel(
             "    innerLeadingContent: @Composable RowScope.() -> Unit," +
             "    innerTrailingContent: @Composable RowScope.() -> Unit" +
             ")",
-        imports = arrayOf("io.getstream.chat.android.compose.ui.components.composer.ComposeMessageInput")
+        imports = arrayOf("ComposeMessageInput")
     ),
     level = DeprecationLevel.ERROR,
 )
 @Composable
-public fun RowScope.DefaultComposerInputContent(
+fun RowScope.DefaultComposerInputContent(
     isDarkTheme: Boolean = false,
     isShowKeyboard: Boolean,
     composerMessageState: ComposerInputMessageState,
@@ -460,7 +449,6 @@ internal fun DefaultMessageComposerVoiceContent(
 @Composable
 internal fun DefaultMessageComposerEmojiContent(
     isDarkTheme: Boolean = false,
-    ownCapabilities: Set<String>,
     onEmojiClick: (isShowFace:Boolean) -> Unit,
 ) {
     val resourceId = remember { mutableStateOf(R.drawable.icon_face) }
@@ -608,19 +596,5 @@ private fun MessageInputValidationError(validationErrors: List<UIValidationError
         LaunchedEffect(validationErrors.size) {
             Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
         }
-    }
-}
-
-/**
- * A snackbar wrapped inside of a popup allowing it be
- * displayed above the Composable it's anchored to.
- *
- * @param snackbarHostState The state of the snackbar host. Contains
- * the snackbar data necessary to display the snackbar.
- */
-@Composable
-private fun SnackbarPopup(snackbarHostState: SnackbarHostState) {
-    Popup(popupPositionProvider = AboveAnchorPopupPositionProvider()) {
-        SnackbarHost(hostState = snackbarHostState)
     }
 }
