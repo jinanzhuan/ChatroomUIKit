@@ -14,7 +14,6 @@ import io.agora.chatroom.uikit.R
 
 class UIChatroomActivity : ComponentActivity(){
 
-//    private val composeView: ComposeView by lazy { findViewById(R.id.compose_chat_room) }
     private val roomView: UIChatRoomView by lazy { findViewById(R.id.room_view) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

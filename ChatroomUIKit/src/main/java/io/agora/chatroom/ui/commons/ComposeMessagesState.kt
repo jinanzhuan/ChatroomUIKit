@@ -1,8 +1,7 @@
 package io.agora.chatroom.ui.commons
 
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.unit.IntSize
-import io.agora.chatroom.model.UserInfoProtocol
-import io.agora.chatroom.ui.compose.ComposeMessageDirectionState
 import io.agora.chatroom.ui.compose.ComposeMessageListItemState
 import io.agora.chatroom.ui.compose.ComposeSelectedMessageState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,20 +11,27 @@ import kotlinx.coroutines.flow.StateFlow
  * UI representation of the Conversation/Messages screen. Holds all the data required to show messages.
  *
  * @param messageItems Message items to represent in the list.
- * @param currentUser The data of the current user, required for various UI states.
- * @param messageDirectionState The state that represents any new messages.
  */
-public data class ComposeMessagesState(
-    val isLoading: Boolean = false,
-    val isLoadingMore: Boolean = false,
-    val endOfMessages: Boolean = false,
-    val messageItems: List<ComposeMessageListItemState> = emptyList(),
-    val selectedMessageState: ComposeSelectedMessageState? = null,
-    val currentUser: UserInfoProtocol? = null,
-    val parentMessageId: String? = null,
-    val messageDirectionState: ComposeMessageDirectionState? = null,
-    val unreadCount: Int = 0,
+data class ComposeMessagesState(
+    var isLoading: Boolean = false,
+    private val messageItems: List<ComposeMessageListItemState> = emptyList(),
+    private val selectedMessageState: ComposeSelectedMessageState? = null,
 ) {
+    private val _messages: MutableList<ComposeMessageListItemState> = messageItems.toMutableStateList()
+    val messages: List<ComposeMessageListItemState> = _messages
+
+    fun addMessage(msg: ComposeMessageListItemState) {
+        _messages.add(0, msg)
+    }
+    fun removeMessage(msg: ComposeMessageListItemState){
+        if (_messages.contains(msg)  ){
+            _messages.remove(msg)
+        }
+    }
+
+    fun clearMessage(){
+        _messages.clear()
+    }
 
     /**
      * Notifies the UI of the calculated message offset to center it on the screen.

@@ -22,7 +22,7 @@ class ChatroomServiceImpl: ChatroomService {
     private val chatroomManager by lazy { ChatClient.getInstance().chatroomManager() }
     private val chatManager by lazy { ChatClient.getInstance().chatManager() }
     override fun bindListener(listener: ChatroomChangeListener) {
-        if (listeners.contains(listener)) listeners.add(listener)
+        if (!listeners.contains(listener)) listeners.add(listener)
     }
 
     override fun unbindListener(listener: ChatroomChangeListener) {
@@ -126,6 +126,12 @@ class ChatroomServiceImpl: ChatroomService {
         val textSendMessage = ChatMessage.createTextSendMessage(message, roomId)
         textSendMessage?.chatType = ChatType.ChatRoom
         sendMessage(textSendMessage, onSuccess, onError) {}
+
+        if (listeners.size > 0){
+            listeners.forEach {
+                it.onRefreshMessage(textSendMessage)
+            }
+        }
     }
 
     override fun sendTargetTextMessage(

@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
+import io.agora.chatroom.service.ChatroomChangeListener
 import io.agora.chatroom.service.ChatroomService
 import io.agora.chatroom.ui.UIChatroomService
 import io.agora.chatroom.ui.compose.chatbottombar.ComposeChatBottomBar
@@ -21,7 +22,7 @@ class UIChatBottomBarBinder(
     private val chatBottomBar: ComposeView,
     private val service: UIChatroomService,
     private val factory:MessagesViewModelFactory,
-) :UIBinder{
+) :UIBinder, ChatroomChangeListener {
     private val inputField: MutableState<Boolean> = mutableStateOf(false)
     private val chatService: ChatroomService = service.getChatService()
 
@@ -37,14 +38,15 @@ class UIChatBottomBarBinder(
                         .fillMaxSize(),
                     viewModel = composerViewModel,
                     showInput = isShowInput,
-                    onSendMessage = { message->
+                    onSendMessage = { input->
                         Log.e("apex","onSendMessage")
-                        composerViewModel.refreshMessage(message = message)
-//                        chatService.sendMessage(message,
-//                            onSuccess = {},
-//                            onError = {code, error ->
-//
-//                            })
+                        chatService.sendTextMessage(
+                            message = input,
+                            roomId = "123",//service.getRoomInfo().roomId
+                            onSuccess = {},
+                            onError = {code, error ->
+
+                            })
                     },
                     onMenuClick = {
                         Log.e("apex","onMenuClick:  $it")
@@ -62,6 +64,7 @@ class UIChatBottomBarBinder(
         baseLayout.setOnClickListener {
             inputField.value = false
         }
+        chatService.bindListener(this)
     }
 
     override fun unBind() {

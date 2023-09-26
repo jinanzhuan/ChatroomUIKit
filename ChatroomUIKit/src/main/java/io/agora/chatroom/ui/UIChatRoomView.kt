@@ -37,7 +37,6 @@ class UIChatRoomView : FrameLayout{
     private fun viewBinderConnected(service: UIChatroomService){
 
         val factory = buildViewModelFactory(
-            context = UIChatroomContext().shared()?.getCommonConfig()?.context,
             isDarkTheme = isDarkTheme,
             service = service
         )
@@ -65,7 +64,6 @@ class UIChatRoomView : FrameLayout{
     }
 
     private fun buildViewModelFactory(
-        context: Context?,
         isDarkTheme:Boolean,
         service: UIChatroomService,
         showDateSeparators: Boolean = true,
@@ -76,7 +74,6 @@ class UIChatRoomView : FrameLayout{
         nickNameColor: Color = primaryColor8,
     ): MessagesViewModelFactory {
         return MessagesViewModelFactory(
-            context = context,
             isDarkTheme = isDarkTheme,
             service = service,
             showDateSeparators = showDateSeparators,

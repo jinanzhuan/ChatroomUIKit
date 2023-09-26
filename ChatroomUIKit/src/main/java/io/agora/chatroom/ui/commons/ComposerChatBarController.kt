@@ -1,10 +1,6 @@
 package io.agora.chatroom.ui.commons
 
-import io.agora.chat.TextMessageBody
 import io.agora.chatroom.model.UserInfoProtocol
-import io.agora.chatroom.service.ChatMessage
-import io.agora.chatroom.service.ChatMessageType
-import io.agora.chatroom.service.ChatType
 import io.agora.chatroom.service.ChatroomService
 import io.agora.chatroom.ui.compose.utils.DispatcherProvider
 import kotlinx.coroutines.CoroutineScope
@@ -16,18 +12,22 @@ import kotlinx.coroutines.flow.onEach
 
 class ComposerChatBarController(
     private val roomId: String,
-    private val chatService: ChatroomService
-):ComposeMessageController(){
+    private val chatService: ChatroomService,
+    private val capabilities: Set<String> = setOf(),
+){
 
     /**
      * Full message composer state holding all the required information.
      */
-    public val state: MutableStateFlow<ComposerMessageState> = MutableStateFlow(ComposerMessageState())
+    val state: MutableStateFlow<ComposerInputMessageState> = MutableStateFlow(ComposerInputMessageState())
 
     /**
      * UI state of the current composer input.
      */
-    public val input: MutableStateFlow<String> = MutableStateFlow("")
+    val input: MutableStateFlow<String> = MutableStateFlow("")
+
+    private val ownCapabilities = MutableStateFlow<Set<String>>(capabilities)
+
 
     /**
      * Creates a [CoroutineScope] that allows us to cancel the ongoing work when the parent
@@ -42,7 +42,7 @@ class ComposerChatBarController(
     /**
      * Represents the list of validation errors for the current text input and the currently selected attachments.
      */
-    public val validationErrors: MutableStateFlow<List<UIValidationError>> = MutableStateFlow(emptyList())
+    val validationErrors: MutableStateFlow<List<UIValidationError>> = MutableStateFlow(emptyList())
 
 
     /**
@@ -60,18 +60,6 @@ class ComposerChatBarController(
      */
     private val messageText: String
         get() = input.value
-
-
-    public fun buildNewMessage(
-        message: String
-    ): ChatMessage {
-        val sendMessage = ChatMessage.createSendMessage(ChatMessageType.TXT)
-        val textMessageBody = TextMessageBody(message)
-        sendMessage.to = roomId
-        sendMessage.chatType = ChatType.ChatRoom
-        sendMessage.body = textMessageBody
-        return sendMessage
-    }
 
     /**
      * Called when the input changes and the internal state needs to be updated.
@@ -114,6 +102,10 @@ class ComposerChatBarController(
 
         validationErrors.onEach { validationErrors ->
             state.value = state.value.copy(validationErrors = validationErrors)
+        }.launchIn(scope)
+
+        ownCapabilities.onEach { ownCapabilities ->
+            state.value = state.value.copy(ownCapabilities = ownCapabilities)
         }.launchIn(scope)
 
     }

@@ -20,7 +20,6 @@ import java.io.ObjectInputStream
 class UIChatroomCacheManager {
     private var mEditor: SharedPreferences.Editor? = null
     private var mSharedPreferences: SharedPreferences? = null
-    private var currentMsgList:ArrayList<ChatMessage> = ArrayList<ChatMessage>()
     private var userCache:MutableMap<String, UserInfoProtocol> = mutableMapOf()
 
     companion object {
@@ -45,29 +44,6 @@ class UIChatroomCacheManager {
             return userCache[userId]
         }
         return null
-    }
-
-    fun addMessage(newMsg:ChatMessage){
-        currentMsgList.add(newMsg)
-    }
-
-    fun updateMessage(msgList:ArrayList<ChatMessage>){
-        currentMsgList = msgList
-    }
-
-    fun removeMessage(msg:ChatMessage){
-        if (currentMsgList.contains(msg)){
-            currentMsgList.remove(msg)
-        }
-    }
-
-
-    val getCurrentMsgList:ArrayList<ChatMessage>
-        get() = currentMsgList
-
-
-    fun clearCache(){
-        currentMsgList.clear()
     }
 
     fun setUseProperties(key:String,use:Boolean){

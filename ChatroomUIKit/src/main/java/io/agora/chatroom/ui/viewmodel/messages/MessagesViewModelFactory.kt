@@ -1,23 +1,21 @@
 package io.agora.chatroom.ui.viewmodel.messages
 
-import android.content.Context
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import io.agora.chatroom.ui.UIChatroomService
 import io.agora.chatroom.ui.commons.ComposeChatListController
+import io.agora.chatroom.ui.commons.ComposeMessagesState
 import io.agora.chatroom.ui.commons.ComposerChatBarController
+import io.agora.chatroom.ui.model.UICapabilities
 import io.agora.chatroom.ui.model.UIChatBarMenuItem
 import io.agora.chatroom.ui.theme.primaryColor8
 import io.agora.chatroom.ui.theme.secondaryColor8
 import io.agora.chatroom.uikit.R
-import java.util.concurrent.TimeUnit
 
 class MessagesViewModelFactory(
-    private val context: Context?,
     private val service: UIChatroomService,
     private val isDarkTheme: Boolean = false,
-    private val messageLimit: Int = MessageListViewModel.DefaultMessageLimit,
     private val showDateSeparators: Boolean = true,
     private val showLabel: Boolean = true,
     private val showGift: Boolean = true,
@@ -28,7 +26,6 @@ class MessagesViewModelFactory(
         UIChatBarMenuItem(R.drawable.icon_bottom_bar_more, 1),
         UIChatBarMenuItem(R.drawable.icon_bottom_bar_gift, 0)
     ),
-    private val dateSeparatorThresholdMillis: Long = TimeUnit.HOURS.toMillis(MessageListViewModel.DateSeparatorDefaultHourThreshold),
 ) : ViewModelProvider.Factory{
 
     /**
@@ -41,23 +38,23 @@ class MessagesViewModelFactory(
                 menuItemResource = menuItemResource,
                 composerChatBarController = ComposerChatBarController(
                     roomId = service.getRoomInfo().roomId,
-                    chatService = service.getChatService()
+                    chatService = service.getChatService(),
+                    capabilities = setOf(UICapabilities.SEND_MESSAGE)
                 )
             )
         },
         MessageListViewModel::class.java to {
             MessageListViewModel(
                 isDarkTheme = isDarkTheme,
-                messageLimit = messageLimit,
                 showDateSeparators = showDateSeparators,
                 showLabel = showLabel,
                 showGift = showGift,
                 showAvatar = showAvatar,
                 dateSeparatorColor = dateSeparatorColor,
                 nickNameColor = nickNameColor,
-                dateSeparatorThresholdMillis = dateSeparatorThresholdMillis,
                 composeChatListController = ComposeChatListController(
                     roomId = service.getRoomInfo().roomId,
+                    messageState = ComposeMessagesState(),
                     chatService = service.getChatService()
                 )
 

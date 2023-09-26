@@ -27,15 +27,17 @@ import io.agora.chatroom.ui.viewmodel.messages.MessageListViewModel
  * @param messageItemContent Composable that represents regular messages.
  */
 @Composable
-public fun MessageContainer(
+fun MessageContainer(
+    itemIndex: Int,
     viewModel: MessageListViewModel,
     messageListItem: ComposeMessageListItemState,
-    onLongItemClick: (ChatMessage) -> Unit = {},
+    onLongItemClick: (Int,ComposeMessageListItemState) -> Unit = {index,message ->},
     giftMessageContent: @Composable (GiftMessageState) -> Unit = {
         DefaultGiftMessageContent(giftMessageState = it)
     },
     messageItemContent: @Composable (ComposeMessageItemState) -> Unit = {
         DefaultMessageItem(
+            itemIndex = itemIndex,
             viewModel = viewModel,
             messageItem = it,
             onLongItemClick = onLongItemClick,
@@ -43,6 +45,7 @@ public fun MessageContainer(
     },
     joinedItemContent: @Composable (JoinedMessageState) -> Unit = {
         DefaultJoinedMessageItem(
+            itemIndex = itemIndex,
             viewModel = viewModel,
             messageItem = it,
             onLongItemClick = onLongItemClick,
@@ -86,11 +89,13 @@ internal fun DefaultGiftMessageContent(giftMessageState: GiftMessageState) {
  */
 @Composable
 internal fun DefaultMessageItem(
+    itemIndex: Int,
     viewModel: MessageListViewModel,
     messageItem: ComposeMessageItemState,
-    onLongItemClick: (ChatMessage) -> Unit,
+    onLongItemClick: (Int,ComposeMessageListItemState) -> Unit,
 ) {
     ComposeMessageItem(
+        itemIndex = itemIndex,
         itemType = ComposeItemType.NORMAL,
         isShowDateSeparator = viewModel.isShowDateSeparators,
         isShowLabel  = viewModel.isShowLabel,
@@ -112,11 +117,13 @@ internal fun DefaultMessageItem(
  */
 @Composable
 internal fun DefaultJoinedMessageItem(
+    itemIndex: Int,
     viewModel: MessageListViewModel,
     messageItem: JoinedMessageState,
-    onLongItemClick: (ChatMessage) -> Unit,
+    onLongItemClick: (Int,ComposeMessageListItemState) -> Unit,
 ) {
     ComposeMessageItem(
+        itemIndex = itemIndex,
         itemType = ComposeItemType.ITEM_JOIN,
         isShowDateSeparator = viewModel.isShowDateSeparators,
         isShowLabel = viewModel.isShowLabel,
