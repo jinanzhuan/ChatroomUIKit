@@ -42,7 +42,7 @@ class UIChatBottomBarBinder(
                         Log.e("apex","onSendMessage")
                         chatService.sendTextMessage(
                             message = input,
-                            roomId = "123",
+                            roomId = "123",//service.getRoomInfo().roomId
                             onSuccess = {},
                             onError = {code, error ->
 

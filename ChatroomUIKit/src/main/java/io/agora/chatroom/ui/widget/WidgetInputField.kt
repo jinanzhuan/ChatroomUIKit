@@ -71,7 +71,6 @@ public fun WidgetInputField(
     keyboardOptions: KeyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
     decorationBox: @Composable (innerTextField: @Composable () -> Unit) -> Unit,
 ) {
-    Log.e("apex","WidgetInputField: $value")
 
     var textFieldValueState by remember { mutableStateOf(TextFieldValue(text = value)) }
 
@@ -114,7 +113,6 @@ public fun WidgetInputField(
             .semantics { contentDescription = description },
         value = textFieldValue,
         onValueChange = {
-            Log.e("apex","onValueChange ${it.text} - ${it.selection}")
             textFieldValueState = it
             if (value != it.text) {
                 onValueChange(it.text)
@@ -154,8 +152,6 @@ private fun TextFieldValue.isCursorAtTheEnd(): Boolean {
     val textLength = text.length
     val selectionStart = selection.start
     val selectionEnd = selection.end
-
-    Log.e("apex","isCursorAtTheEnd:  ${textLength == selectionStart && textLength == selectionEnd}  $textLength  - $selectionStart - $selectionEnd")
 
     return textLength == selectionStart && textLength == selectionEnd
 }

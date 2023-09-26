@@ -81,7 +81,7 @@ interface MessageListener {
      */
     fun onMessageReceived(message: ChatMessage){}
 
-    fun refreshMessage(message: ChatMessage){}
+    fun onRefreshMessage(message: ChatMessage){}
 }
 
 interface GiftReceiveListener {

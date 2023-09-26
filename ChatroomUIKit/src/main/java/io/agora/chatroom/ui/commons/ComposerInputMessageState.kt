@@ -10,7 +10,7 @@ import io.agora.chatroom.ui.model.UICapabilities
  * @param currentUser The currently logged in user.
  */
 
-public data class ComposerMessageState(
+public data class ComposerInputMessageState(
     val inputValue: String = "",
     val ownCapabilities: Set<String> = setOf(UICapabilities.SEND_MESSAGE),
     val validationErrors: List<UIValidationError> = emptyList(),

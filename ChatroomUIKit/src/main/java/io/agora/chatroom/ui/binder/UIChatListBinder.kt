@@ -1,5 +1,6 @@
 package io.agora.chatroom.ui.binder
 
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
@@ -8,7 +9,6 @@ import io.agora.chatroom.service.ChatMessage
 import io.agora.chatroom.service.ChatroomChangeListener
 import io.agora.chatroom.ui.UIChatroomService
 import io.agora.chatroom.ui.compose.chatmessagelist.ComposeChatMessageList
-import io.agora.chatroom.ui.compose.utils.rememberMessageListState
 import io.agora.chatroom.ui.theme.ChatroomUIKitTheme
 import io.agora.chatroom.ui.viewmodel.messages.MessageListViewModel
 import io.agora.chatroom.ui.viewmodel.messages.MessagesViewModelFactory
@@ -26,13 +26,14 @@ class UIChatListBinder(
             ChatroomUIKitTheme{
 
                 listViewModel = viewModel(MessageListViewModel::class.java, factory = factory)
-                val currentState = listViewModel.currentMessagesState
 
                 ComposeChatMessageList(
                     viewModel = listViewModel,
                     modifier = Modifier
                         .fillMaxSize(),
-                    lazyListState = rememberMessageListState(parentMessageId = currentState.parentMessageId),
+                    onLongItemClick = {
+                        Log.e("apex","onLongItemClick $it")
+                    }
                 )
             }
         }
@@ -49,7 +50,13 @@ class UIChatListBinder(
 
 
     override fun onMessageReceived(message: ChatMessage) {
-        listViewModel.refreshMessage(message)
+        Log.e("apex","onMessageReceived")
+        listViewModel.addTextMessage(message)
+    }
+
+    override fun onRefreshMessage(message: ChatMessage) {
+        Log.e("apex","refreshMessage")
+        listViewModel.addTextMessage(message)
     }
 
 }

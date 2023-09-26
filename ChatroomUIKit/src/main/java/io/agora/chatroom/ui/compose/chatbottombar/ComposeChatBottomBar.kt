@@ -43,7 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import io.agora.chatroom.service.ChatMessage
-import io.agora.chatroom.ui.commons.ComposerMessageState
+import io.agora.chatroom.ui.commons.ComposerInputMessageState
 import io.agora.chatroom.ui.commons.UIValidationError
 import io.agora.chatroom.ui.compose.utils.AboveAnchorPopupPositionProvider
 import io.agora.chatroom.ui.compose.utils.mirrorRtl
@@ -81,10 +81,10 @@ public fun ComposeChatBottomBar(
     onInputClick: () -> Unit = {},
     onMenuClick: (Int) -> Unit = {},
     menuItemResource: List<UIChatBarMenuItem> = viewModel.getMenuItem,
-    onSendMessage: (ChatMessage) -> Unit = { },
+    onSendMessage: (String) -> Unit = { },
     onValueChange: (String) -> Unit = { viewModel.setMessageInput(it) },
-    label: @Composable (ComposerMessageState) -> Unit = { DefaultComposerLabel(isDarkTheme = viewModel.getTheme,it.ownCapabilities) },
-    input: @Composable RowScope.(ComposerMessageState, Boolean) -> Unit = { it, isShowKeyBoard ->
+    label: @Composable (ComposerInputMessageState) -> Unit = { DefaultComposerLabel(isDarkTheme = viewModel.getTheme,it.ownCapabilities) },
+    input: @Composable RowScope.(ComposerInputMessageState, Boolean) -> Unit = { it, isShowKeyBoard ->
         @Suppress("DEPRECATION_ERROR")
         DefaultComposerInputContent(
             isDarkTheme = viewModel.getTheme,
@@ -94,28 +94,26 @@ public fun ComposeChatBottomBar(
             isShowKeyboard = isShowKeyBoard,
         )
     },
-    trailingContent: @Composable (ComposerMessageState) -> Unit = {
+    trailingContent: @Composable (ComposerInputMessageState) -> Unit = {
         DefaultMessageComposerTrailingContent(
             isDarkTheme = viewModel.getTheme,
             value = it.inputValue,
             validationErrors = it.validationErrors,
             ownCapabilities = it.ownCapabilities,
             onSendMessage = { input ->
-                val message = viewModel.buildNewMessage(input)
-                Log.e("apex","onSendMessage 1")
-                onSendMessage(message)
+                onSendMessage(input)
                 viewModel.clearData()
             }
         )
     },
-    voiceContent: @Composable (ComposerMessageState) -> Unit = {
+    voiceContent: @Composable (ComposerInputMessageState) -> Unit = {
         DefaultMessageComposerVoiceContent(
             isDarkTheme = viewModel.getTheme,
             ownCapabilities = it.ownCapabilities,
             onVoiceClick = {}
         )
     },
-    emojiContent: @Composable (ComposerMessageState, onEmojiClick: (isShowFace:Boolean) -> Unit) -> Unit = { it, status->
+    emojiContent: @Composable (ComposerInputMessageState, onEmojiClick: (isShowFace:Boolean) -> Unit) -> Unit = { it, status->
         DefaultMessageComposerEmojiContent(
             isDarkTheme = viewModel.getTheme,
             ownCapabilities = it.ownCapabilities,
@@ -129,7 +127,7 @@ public fun ComposeChatBottomBar(
             isDarkTheme = viewModel.getTheme,
         )
     },
-    defaultChatBarMenu: @Composable (ComposerMessageState) -> Unit = {
+    defaultChatBarMenu: @Composable (ComposerInputMessageState) -> Unit = {
         DefaultChatBarMenuComposerContent(
             isDarkTheme = viewModel.getTheme,
             onMenuClick = onMenuClick,
@@ -147,9 +145,7 @@ public fun ComposeChatBottomBar(
         isDarkTheme = viewModel.getTheme,
         modifier = modifier,
         onSendMessage = { text ->
-            Log.e("apex","onSendMessage2")
-            val messageWithData = viewModel.buildNewMessage(text)
-            onSendMessage(messageWithData)
+            onSendMessage(text)
         },
         showInput = showInput,
         input = input,
@@ -181,7 +177,7 @@ public fun ComposeChatBottomBar(
 @Composable
 public fun ComposeChatBottomBar(
     isDarkTheme: Boolean,
-    composerMessageState: ComposerMessageState,
+    composerMessageState: ComposerInputMessageState,
     onSendMessage: (String) -> Unit,
     modifier: Modifier = Modifier,
     showInput: Boolean,
@@ -189,8 +185,8 @@ public fun ComposeChatBottomBar(
     onMenuClick: (Int) -> Unit = {},
     menuItemResource: List<UIChatBarMenuItem>,
     onValueChange: (String) -> Unit = {},
-    label: @Composable (ComposerMessageState) -> Unit = { DefaultComposerLabel(isDarkTheme,composerMessageState.ownCapabilities) },
-    input: @Composable RowScope.(ComposerMessageState, Boolean) -> Unit = { it, isShowKeyBoard ->
+    label: @Composable (ComposerInputMessageState) -> Unit = { DefaultComposerLabel(isDarkTheme,composerMessageState.ownCapabilities) },
+    input: @Composable RowScope.(ComposerInputMessageState, Boolean) -> Unit = { it, isShowKeyBoard ->
         @Suppress("DEPRECATION_ERROR")
         DefaultComposerInputContent(
             isDarkTheme = isDarkTheme,
@@ -200,7 +196,7 @@ public fun ComposeChatBottomBar(
             isShowKeyboard = isShowKeyBoard,
         )
     },
-    trailingContent: @Composable (ComposerMessageState) -> Unit = {
+    trailingContent: @Composable (ComposerInputMessageState) -> Unit = {
         DefaultMessageComposerTrailingContent(
             isDarkTheme = isDarkTheme,
             value = it.inputValue,
@@ -209,14 +205,14 @@ public fun ComposeChatBottomBar(
             ownCapabilities = composerMessageState.ownCapabilities,
         )
     },
-    voiceContent: @Composable (ComposerMessageState) -> Unit = {
+    voiceContent: @Composable (ComposerInputMessageState) -> Unit = {
         DefaultMessageComposerVoiceContent(
             isDarkTheme = isDarkTheme,
             ownCapabilities = it.ownCapabilities,
             onVoiceClick = {}
         )
     },
-    emojiContent: @Composable (ComposerMessageState, onEmojiClick: (isShowFace:Boolean) -> Unit) -> Unit = { it, status->
+    emojiContent: @Composable (ComposerInputMessageState, onEmojiClick: (isShowFace:Boolean) -> Unit) -> Unit = { it, status->
         DefaultMessageComposerEmojiContent(
             isDarkTheme = isDarkTheme,
             ownCapabilities = it.ownCapabilities,
@@ -230,7 +226,7 @@ public fun ComposeChatBottomBar(
             isDarkTheme = isDarkTheme,
         )
     },
-    defaultChatBarMenu: @Composable (ComposerMessageState) -> Unit = {
+    defaultChatBarMenu: @Composable (ComposerInputMessageState) -> Unit = {
         DefaultChatBarMenuComposerContent(
             isDarkTheme = isDarkTheme,
             onMenuClick = onMenuClick,
@@ -373,9 +369,9 @@ internal fun DefaultComposerLabel(
 public fun RowScope.DefaultComposerInputContent(
     isDarkTheme: Boolean = false,
     isShowKeyboard: Boolean,
-    composerMessageState: ComposerMessageState,
+    composerMessageState: ComposerInputMessageState,
     onValueChange: (String) -> Unit,
-    label: @Composable (ComposerMessageState) -> Unit,
+    label: @Composable (ComposerInputMessageState) -> Unit,
 ) {
     ComposeMessageInput(
         isDarkTheme = isDarkTheme,
@@ -485,9 +481,9 @@ internal fun DefaultMessageComposerEmojiContent(
                 contentDescription = stringResource(id = R.string.stream_compose_send_message),
                 tint = if (isDarkTheme) neutralColor98 else neutralColor1
             )
-            LaunchedEffect(resource) {
-                Log.e("apex","LaunchedEffect:  ${resource}")
-            }
+//            LaunchedEffect(resource) {
+//                Log.e("apex","LaunchedEffect:  ${resource}")
+//            }
         },
         onClick = {
             isShowFace = !isShowFace

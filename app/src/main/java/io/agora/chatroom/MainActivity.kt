@@ -151,10 +151,6 @@ fun ShowDefaultComposeDrawer(){
         )
     }
 
-    LaunchedEffect(isShowDefault) {
-        Log.e("apex","LaunchedEffect: $isShowDefault")
-    }
-
 }
 
 @OptIn(ExperimentalMaterialApi::class)

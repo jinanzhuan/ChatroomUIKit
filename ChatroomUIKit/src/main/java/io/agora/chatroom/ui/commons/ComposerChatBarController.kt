@@ -1,10 +1,6 @@
 package io.agora.chatroom.ui.commons
 
-import io.agora.chat.TextMessageBody
 import io.agora.chatroom.model.UserInfoProtocol
-import io.agora.chatroom.service.ChatMessage
-import io.agora.chatroom.service.ChatMessageType
-import io.agora.chatroom.service.ChatType
 import io.agora.chatroom.service.ChatroomService
 import io.agora.chatroom.ui.compose.utils.DispatcherProvider
 import kotlinx.coroutines.CoroutineScope
@@ -17,12 +13,12 @@ import kotlinx.coroutines.flow.onEach
 class ComposerChatBarController(
     private val roomId: String,
     private val chatService: ChatroomService
-):ComposeMessageController(){
+){
 
     /**
      * Full message composer state holding all the required information.
      */
-    public val state: MutableStateFlow<ComposerMessageState> = MutableStateFlow(ComposerMessageState())
+    public val state: MutableStateFlow<ComposerInputMessageState> = MutableStateFlow(ComposerInputMessageState())
 
     /**
      * UI state of the current composer input.
@@ -60,18 +56,6 @@ class ComposerChatBarController(
      */
     private val messageText: String
         get() = input.value
-
-
-    public fun buildNewMessage(
-        message: String
-    ): ChatMessage {
-        val sendMessage = ChatMessage.createSendMessage(ChatMessageType.TXT)
-        val textMessageBody = TextMessageBody(message)
-        sendMessage.to = roomId
-        sendMessage.chatType = ChatType.ChatRoom
-        sendMessage.body = textMessageBody
-        return sendMessage
-    }
 
     /**
      * Called when the input changes and the internal state needs to be updated.
