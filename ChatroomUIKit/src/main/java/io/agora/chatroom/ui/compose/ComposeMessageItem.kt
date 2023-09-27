@@ -45,7 +45,7 @@ import java.util.Locale
 @Composable
 fun ComposeMessageItem(
     itemIndex: Int,
-    isDarkTheme: Boolean = false,
+    isDarkTheme: Boolean? = false,
     isShowDateSeparator: Boolean = true,
     isShowLabel: Boolean = true,
     isShowGift: Boolean = false,
@@ -71,7 +71,7 @@ fun ComposeMessageItem(
             .wrapContentWidth()
             .wrapContentHeight()
             .background(
-                if (isDarkTheme) barrageLightColor2 else barrageDarkColor1,
+                if (isDarkTheme == true) barrageLightColor2 else barrageDarkColor1,
                 shape = SmallCorner
             ),
     ){
@@ -166,7 +166,7 @@ fun ComposeMessageItem(
             text = annotatedText,
             inlineContent = inlineMap,
             style = AlphabetBodyMedium,
-            color = if (isDarkTheme) neutralColor98 else neutralColor98
+            color = if (isDarkTheme == true) neutralColor98 else neutralColor98
         )
 
     }

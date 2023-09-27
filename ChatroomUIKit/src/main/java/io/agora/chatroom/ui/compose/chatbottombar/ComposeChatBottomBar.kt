@@ -171,7 +171,7 @@ fun ComposeChatBottomBar(
  */
 @Composable
 fun ComposeChatBottomBar(
-    isDarkTheme: Boolean,
+    isDarkTheme: Boolean?,
     composerMessageState: ComposerInputMessageState,
     onSendMessage: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -249,7 +249,7 @@ fun ComposeChatBottomBar(
                 Row(
                     Modifier
                         .fillMaxWidth()
-                        .background(if (isDarkTheme) neutralColor1 else neutralColor98),
+                        .background(if (isDarkTheme == true) neutralColor1 else neutralColor98),
                     verticalAlignment = Bottom
                 ) {
 
@@ -293,7 +293,7 @@ fun ComposeChatBottomBar(
                             .padding(top = 8.dp, bottom = 8.dp, start = 8.dp)
                             .background(
                                 shape = RoundedCornerShape(size = 20.dp),
-                                color = if (isDarkTheme) barrageDarkColor2 else barrageLightColor2
+                                color = if (isDarkTheme == true) barrageDarkColor2 else barrageLightColor2
                             )
                             .clickable {
                                 showKeyBoard.value = true
@@ -320,13 +320,13 @@ fun ComposeChatBottomBar(
  */
 @Composable
 internal fun DefaultComposerLabel(
-    isDarkTheme: Boolean,
+    isDarkTheme: Boolean?,
     ownCapabilities: Set<String>)
 {
     Text(
         text = stringResource(id = R.string.stream_compose_message_label),
         style = AlphabetBodyLarge,
-        color = if (isDarkTheme) neutralColor98 else neutralColor1
+        color = if (isDarkTheme == true) neutralColor98 else neutralColor1
     )
 }
 
@@ -356,7 +356,7 @@ internal fun DefaultComposerLabel(
 )
 @Composable
 fun RowScope.DefaultComposerInputContent(
-    isDarkTheme: Boolean = false,
+    isDarkTheme: Boolean? = false,
     isShowKeyboard: Boolean,
     composerMessageState: ComposerInputMessageState,
     onValueChange: (String) -> Unit,
@@ -385,7 +385,7 @@ fun RowScope.DefaultComposerInputContent(
  */
 @Composable
 internal fun DefaultMessageComposerTrailingContent(
-    isDarkTheme: Boolean = false,
+    isDarkTheme: Boolean? = false,
     value: String,
     validationErrors: List<UIValidationError>,
     ownCapabilities: Set<String>,
@@ -418,7 +418,7 @@ internal fun DefaultMessageComposerTrailingContent(
 
 @Composable
 internal fun DefaultMessageComposerVoiceContent(
-    isDarkTheme: Boolean = false,
+    isDarkTheme: Boolean? = false,
     ownCapabilities: Set<String>,
     onVoiceClick: () -> Unit,
 ) {
@@ -436,7 +436,7 @@ internal fun DefaultMessageComposerVoiceContent(
                         .size(30.dp, 30.dp),
                     painter = painterResource(id = R.drawable.icon_wave_in_circle),
                     contentDescription = stringResource(id = R.string.stream_compose_send_message),
-                    tint = if (isDarkTheme) neutralColor98 else neutralColor1
+                    tint = if (isDarkTheme == true) neutralColor98 else neutralColor1
                 )
             },
             onClick = {
@@ -448,7 +448,7 @@ internal fun DefaultMessageComposerVoiceContent(
 
 @Composable
 internal fun DefaultMessageComposerEmojiContent(
-    isDarkTheme: Boolean = false,
+    isDarkTheme: Boolean? = false,
     onEmojiClick: (isShowFace:Boolean) -> Unit,
 ) {
     val resourceId = remember { mutableStateOf(R.drawable.icon_face) }
@@ -467,7 +467,7 @@ internal fun DefaultMessageComposerEmojiContent(
                     .size(30.dp, 30.dp),
                 painter = painterResource(id = resource),
                 contentDescription = stringResource(id = R.string.stream_compose_send_message),
-                tint = if (isDarkTheme) neutralColor98 else neutralColor1
+                tint = if (isDarkTheme == true) neutralColor98 else neutralColor1
             )
 //            LaunchedEffect(resource) {
 //                Log.e("apex","LaunchedEffect:  ${resource}")
@@ -488,7 +488,7 @@ internal fun DefaultMessageComposerEmojiContent(
 
 @Composable
 internal fun DefaultChatBarMenuComposerContent(
-    isDarkTheme: Boolean = false,
+    isDarkTheme: Boolean? = false,
     ownCapabilities: Set<String>,
     onMenuClick: (drawableTag:Int) -> Unit,
     menuItemResource: List<UIChatBarMenuItem>,
@@ -502,7 +502,7 @@ internal fun DefaultChatBarMenuComposerContent(
                     modifier = Modifier
                         .size(38.dp, 38.dp)
                         .background(
-                            color = if (isDarkTheme) barrageDarkColor2 else barrageLightColor2,
+                            color = if (isDarkTheme == true) barrageDarkColor2 else barrageLightColor2,
                             shape = RoundedCornerShape(20.dp)
                         )
                 ){
@@ -521,7 +521,7 @@ internal fun DefaultChatBarMenuComposerContent(
                                 .size(30.dp, 30.dp),
                             painter = painterResource(id = it.drawableResource),
                             contentDescription = "",
-                            tint = if (isDarkTheme) neutralColor98 else neutralColor98
+                            tint = if (isDarkTheme == true) neutralColor98 else neutralColor98
                         )
                     }
                 }
@@ -536,7 +536,7 @@ internal fun DefaultChatBarMenuComposerContent(
 
 @Composable
 internal fun DefaultChatBarComposerContent(
-    isDarkTheme: Boolean = false,
+    isDarkTheme: Boolean? = false,
 ){
     IconButton(
         content = {
@@ -547,7 +547,7 @@ internal fun DefaultChatBarComposerContent(
                     .size(20.dp, 20.dp),
                 painter = painterResource(id = R.drawable.icon_bubble_fill),
                 contentDescription = "",
-                tint = if (isDarkTheme) neutralColor98 else neutralColor98,
+                tint = if (isDarkTheme == true) neutralColor98 else neutralColor98,
             )
         },
         enabled = false,
@@ -561,7 +561,7 @@ internal fun DefaultChatBarComposerContent(
             fontWeight = FontWeight.Normal,
             lineHeight = 22.sp,
             fontSize = 16.sp,
-            color = if (isDarkTheme) neutralColor98 else neutralColor98,
+            color = if (isDarkTheme == true) neutralColor98 else neutralColor98,
             letterSpacing = 0.03.sp,
         ),
         modifier = Modifier.padding(start = 4.dp)

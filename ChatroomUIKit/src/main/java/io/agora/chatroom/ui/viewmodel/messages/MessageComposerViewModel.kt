@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 class MessageComposerViewModel(
-    private val isDarkTheme:Boolean,
+    private val isDarkTheme:Boolean?,
     private val composerChatBarController: ComposerChatBarController,
     private val menuItemResource: List<UIChatBarMenuItem>,
 ) : ViewModel(){
@@ -27,7 +27,7 @@ class MessageComposerViewModel(
         composerChatBarController.updateInputValue()
     }
 
-    val getTheme: Boolean
+    val getTheme: Boolean?
         get() = isDarkTheme
 
     val getMenuItem:List<UIChatBarMenuItem>

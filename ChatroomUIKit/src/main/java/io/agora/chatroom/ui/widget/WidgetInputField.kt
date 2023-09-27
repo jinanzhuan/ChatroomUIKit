@@ -58,14 +58,14 @@ import kotlinx.coroutines.delay
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 public fun WidgetInputField(
-    isDarkTheme:Boolean = false,
+    isDarkTheme:Boolean? = false,
     value: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     isShowKeyboard: Boolean = false,
     maxLines: Int = Int.MAX_VALUE,
-    border: BorderStroke = BorderStroke(1.dp, if (isDarkTheme) neutralColor2 else neutralColor95),
+    border: BorderStroke = BorderStroke(1.dp, if (isDarkTheme == true) neutralColor2 else neutralColor95),
     innerPadding: PaddingValues = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
     keyboardOptions: KeyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
     decorationBox: @Composable (innerTextField: @Composable () -> Unit) -> Unit,
@@ -107,7 +107,7 @@ public fun WidgetInputField(
             .focusRequester(focus)
             .border(border = border, shape = LargeCorner)
             .clip(LargeCorner)
-            .background(if (isDarkTheme) neutralColor2 else neutralColor95)
+            .background(if (isDarkTheme == true) neutralColor2 else neutralColor95)
             .padding(innerPadding)
             .semantics { contentDescription = description },
         value = textFieldValue,

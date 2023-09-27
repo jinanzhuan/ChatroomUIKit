@@ -1,0 +1,48 @@
+package io.agora.chatroom.ui.viewmodel.menu
+
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.toMutableStateList
+import androidx.lifecycle.ViewModel
+import io.agora.chatroom.ui.compose.DrawerType
+import io.agora.chatroom.ui.model.UIComposeDrawerItem
+
+class MenuViewModel constructor(
+    private val isDarkTheme: Boolean? = false,
+    private val isShowTitle:Boolean = true,
+    private val isShowCancel:Boolean = true,
+    private val drawerType: DrawerType = DrawerType.DEFAULT,
+    private val title:String = "",
+    private val menuList: List<UIComposeDrawerItem> = emptyList(),
+): ViewModel() {
+
+    private val _menuList: MutableList<UIComposeDrawerItem> = menuList.toMutableStateList()
+    val list: List<UIComposeDrawerItem> = _menuList
+
+    private val _show : MutableState<Boolean> = mutableStateOf(false)
+    var isBottomDrawerVisible = _show
+
+
+    val getTheme: Boolean?
+        get() = isDarkTheme
+
+    val getTitle: String
+        get() = title
+
+    val getIsShowTitle: Boolean
+        get() = isShowTitle
+
+    val getIsShowCancel: Boolean
+        get() = isShowCancel
+
+    val getDrawerType: DrawerType
+        get() = drawerType
+
+    fun openDrawer(){
+        _show.value = true
+    }
+
+    fun closeDrawer(){
+        _show.value = false
+    }
+}
