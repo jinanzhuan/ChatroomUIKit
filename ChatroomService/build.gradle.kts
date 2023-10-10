@@ -32,5 +32,5 @@ android {
 }
 
 dependencies {
-    api("io.agora.rtc:chat-sdk:1.1.0")
+    api("io.agora.rtc:chat-sdk:1.2.0")
 }

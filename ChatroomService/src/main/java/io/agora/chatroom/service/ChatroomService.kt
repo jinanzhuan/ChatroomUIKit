@@ -29,7 +29,12 @@ enum class UserOperationType {
     /**
      * Unblock a user.
      */
-    UNBLOCK
+    UNBLOCK,
+
+    /**
+     * Kick a user.
+     */
+    KICK
 }
 interface ChatroomService: MessageHandleService {
 
@@ -66,15 +71,66 @@ interface ChatroomService: MessageHandleService {
                       onSuccess: OnSuccess,
                       onError: OnError)
 
+    /**
+     * Fetch the members of the chatroom from server.
+     * Note: Not include the owner and the admins.
+     * @param roomId The id of the chatroom.
+     * @param cursor The cursor position from which to start getting data. At the first call, if you set the cursor as null.
+     * @param pageSize The number of members that you expect to get on each page. The value range is [1,50].
+     * @param onSuccess The callback to indicate the members of the chatroom.
+     * @param onError The callback to indicate the error.
+     */
+    fun fetchMembers(roomId: String,
+                     cursor: String?,
+                     pageSize: Int,
+                     onSuccess: OnValueSuccess<ChatCursorResult<String>>,
+                     onError: OnError)
+
+
+    /**
+     * Gets the list of muted chat room members from the server.
+     * @param roomId The id of the chatroom.
+     * @param pageNum The page number.
+     * @param pageSize The number of members that you expect to get on each page. The value range is [1,50].
+     * @param onSuccess The callback to indicate the members of the chatroom.
+     * @param onError The callback to indicate the error.
+     */
+    fun fetchMuteList(roomId: String,
+                      pageNum: Int,
+                      pageSize: Int,
+                      onSuccess: OnValueSuccess<Map<String, Long>>,
+                      onError: OnError)
+
+    /**
+     * Get the announcement of the chatroom.
+     * @param roomId The id of the chatroom.
+     * @param onSuccess The callback to indicate the announcement of the chatroom.
+     * @param onError The callback to indicate the error.
+     */
     fun getAnnouncement(roomId: String,
                        onSuccess: OnValueSuccess<String?>,
                        onError: OnError)
 
+    /**
+     * Update the announcement of the chatroom.
+     * @param roomId The id of the chatroom.
+     * @param announcement The announcement of the chatroom.
+     * @param onSuccess The callback to indicate the announcement of the chatroom.
+     * @param onError The callback to indicate the error.
+     */
     fun updateAnnouncement(roomId: String,
                            announcement: String,
                            onSuccess: OnSuccess,
                            onError: OnError)
 
+    /**
+     * Operate a user in the chatroom.
+     * @param roomId The id of the chatroom.
+     * @param userId The id of the user.
+     * @param operation The operation to the user.
+     * @param onSuccess The callback to indicate the announcement of the chatroom.
+     * @param onError The callback to indicate the error.
+     */
     fun operateUser(roomId: String,
                     userId: String,
                     operation: UserOperationType,

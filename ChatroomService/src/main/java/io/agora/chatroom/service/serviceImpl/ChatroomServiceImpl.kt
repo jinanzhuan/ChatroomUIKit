@@ -3,6 +3,7 @@ package io.agora.chatroom.service.serviceImpl
 import io.agora.chatroom.service.CallbackImpl
 import io.agora.chatroom.service.ChatCallback
 import io.agora.chatroom.service.ChatClient
+import io.agora.chatroom.service.ChatCursorResult
 import io.agora.chatroom.service.ChatError
 import io.agora.chatroom.service.ChatMessage
 import io.agora.chatroom.service.ChatTextMessageBody
@@ -53,6 +54,34 @@ class ChatroomServiceImpl: ChatroomService {
             return
         }
         chatroomManager.leaveChatRoom(roomId)
+    }
+
+    override fun fetchMembers(
+        roomId: String,
+        cursor: String?,
+        pageSize: Int,
+        onSuccess: OnValueSuccess<ChatCursorResult<String>>,
+        onError: OnError
+    ) {
+        if (roomId.isEmpty()) {
+            onError(ChatError.INVALID_PARAM, "")
+            return
+        }
+        chatroomManager.asyncFetchChatRoomMembers(roomId, cursor, pageSize, ValueCallbackImpl(onSuccess, onError))
+    }
+
+    override fun fetchMuteList(
+        roomId: String,
+        pageNum: Int,
+        pageSize: Int,
+        onSuccess: OnValueSuccess<Map<String, Long>>,
+        onError: OnError
+    ) {
+        if (roomId.isEmpty()) {
+            onError(ChatError.INVALID_PARAM, "")
+            return
+        }
+        chatroomManager.asyncFetchChatRoomMuteList(roomId, pageNum, pageSize, ValueCallbackImpl(onSuccess, onError))
     }
 
     override fun getAnnouncement(
@@ -109,6 +138,9 @@ class ChatroomServiceImpl: ChatroomService {
             }
             UserOperationType.UNBLOCK -> {
                 chatroomManager.asyncUnBlockChatRoomMembers(roomId, mutableListOf(userId), ValueCallbackImpl(onSuccess, onError))
+            }
+            UserOperationType.KICK -> {
+                chatroomManager.asyncRemoveChatRoomMembers(roomId, mutableListOf(userId), ValueCallbackImpl(onSuccess, onError))
             }
         }
     }
@@ -193,5 +225,19 @@ class ChatroomServiceImpl: ChatroomService {
         onError: OnError
     ) {
         chatManager.translateMessage(message, (message?.body as ChatTextMessageBody).targetLanguages, ValueCallbackImpl<ChatMessage>(onSuccess, onError))
+    }
+
+    override fun reportMessage(
+        messageId: String,
+        tag: String,
+        reason: String,
+        onSuccess: OnSuccess,
+        onError: OnError
+    ) {
+        if (messageId.isEmpty()) {
+            onError(ChatError.INVALID_PARAM, "")
+            return
+        }
+        chatManager.asyncReportMessage(messageId, tag, reason, CallbackImpl(onSuccess, onError))
     }
 }

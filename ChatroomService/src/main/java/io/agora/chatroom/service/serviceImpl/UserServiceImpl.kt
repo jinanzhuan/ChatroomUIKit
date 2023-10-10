@@ -83,20 +83,7 @@ class UserServiceImpl: UserService {
         ChatClient.getInstance().loginWithAgoraToken(userId, token, CallbackImpl(onSuccess, onError))
     }
 
-    override fun login(
-        user: UserInfoProtocol,
-        token: String,
-        userProperties: Boolean,
-        onSuccess: OnSuccess,
-        onError: OnError
-    ) {
-        UIChatroomCacheManager.cacheManager.saveUserInfo(userId = user.userId, userInfo = user)
-        UIChatroomCacheManager.cacheManager.setUseProperties(UIConstant.CHATROOM_UIKIT_USER_JOIN,userProperties)
-        if (user.userId.isEmpty()) return onError(ChatError.USER_AUTHENTICATION_FAILED,"The user ID or password is incorrect")
-        ChatClient.getInstance().loginWithAgoraToken(user.userId, token, CallbackImpl(onSuccess, onError))
-    }
-
-    override fun logout(userId: String, onSuccess: OnSuccess, onError: OnError) {
+    override fun logout(onSuccess: OnSuccess, onError: OnError) {
         ChatClient.getInstance().logout(true, CallbackImpl(onSuccess, onError))
     }
 }
