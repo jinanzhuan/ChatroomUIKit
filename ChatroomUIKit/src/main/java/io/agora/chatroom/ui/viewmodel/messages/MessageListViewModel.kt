@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import io.agora.chatroom.service.ChatMessage
 import io.agora.chatroom.ui.commons.ComposeChatListController
 import io.agora.chatroom.ui.commons.ComposeMessagesState
-import io.agora.chatroom.ui.compose.ComposeMessageListItemState
+import io.agora.chatroom.ui.compose.chatmessagelist.ComposeMessageListItemState
 import io.agora.chatroom.ui.theme.primaryColor8
 import io.agora.chatroom.ui.theme.secondaryColor8
 

@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.BottomDrawer
+import androidx.compose.material.BottomDrawerValue
 import androidx.compose.material.Button
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
@@ -22,13 +24,19 @@ import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.rememberBottomDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.view.WindowCompat
+import io.agora.chatroom.ui.UIChatroomActivity
 import io.agora.chatroom.ui.compose.ComposeBottomDrawer
-import io.agora.chatroom.ui.data.testMenuList
+import io.agora.chatroom.ui.compose.DrawerType
+import io.agora.chatroom.ui.compose.drawer.ComposeMenuBottomDrawer
+import io.agora.chatroom.ui.data.initialLongClickMenu
+import io.agora.chatroom.ui.data.testMenuList1
 import io.agora.chatroom.ui.model.UIComposeDrawerItem
 import io.agora.chatroom.ui.theme.AlphabetBodyLarge
 import io.agora.chatroom.ui.theme.ChatroomUIKitTheme
@@ -37,13 +45,14 @@ import io.agora.chatroom.ui.theme.neutralColor9
 import io.agora.chatroom.ui.viewmodel.menu.MenuViewModel
 
 class MainActivity : ComponentActivity() {
-    private var viewModel1:MenuViewModel = MenuViewModel(menuList = testMenuList)
-    var viewModel2:MenuViewModel = MenuViewModel()
+    private var viewModel1:MenuViewModel = MenuViewModel(menuList = initialLongClickMenu)
+    private var viewModel2:MenuViewModel = MenuViewModel(menuList = testMenuList1 )
     var viewModel3:MenuViewModel = MenuViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+
             ChatroomUIKitTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
@@ -51,30 +60,27 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
 
-                    ShowDefaultComposeDrawer(viewModel1)
+                    ShowComposeMenuDrawer(viewModel = viewModel1)
+                    ShowDefaultComposeDrawer(viewModel = viewModel2)
 
-
-//                    ShowCustomComposeDrawer(viewModel2)
-//
-//
-//                    ShowComposeDrawer(viewModel3)
-
-                    Greeting(onItemClick = {
+                    Greeting(viewModel1,viewModel2,onItemClick = {
                         Log.e("apex","onItemClick $it")
                         when (it) {
                             1 -> {
+                                viewModel1.setCurrentDrawer(DrawerType.MENU_LIST)
                                 viewModel1.openDrawer()
                             }
                             2 -> {
-//                                viewModel2.openDrawer()
+                                viewModel2.setCurrentDrawer(DrawerType.DEFAULT)
+                                viewModel2.openDrawer()
                             }
                             3 -> {
-//                                viewModel3.openDrawer()
-//                                this.startActivity(
-//                                    UIChatroomActivity.createIntent(
-//                                        context = this,
-//                                        roomId = "123",
-//                                    ))
+                                viewModel3.openDrawer()
+                                this.startActivity(
+                                    UIChatroomActivity.createIntent(
+                                        context = this,
+                                        roomId = "123",
+                                    ))
                             }
                         }
                     })
@@ -100,16 +106,9 @@ fun ShowDefaultComposeDrawer(viewModel:MenuViewModel){
         }
     )
 }
-
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ShowComposeDrawer(viewModel:MenuViewModel){
-    val list = mutableListOf<UIComposeDrawerItem>()
-    list.add(UIComposeDrawerItem("Item 1"))
-    list.add(UIComposeDrawerItem("Item 2"))
-    list.add(UIComposeDrawerItem("Item 3"))
-
-    ComposeBottomDrawer(
+fun ShowComposeMenuDrawer(viewModel:MenuViewModel){
+    ComposeMenuBottomDrawer(
         viewModel = viewModel,
         onListItemClick = { index,item ->
             Log.e("apex"," default item: $index ${item.title}")
@@ -179,12 +178,17 @@ fun ShowCustomComposeDrawer(viewModel: MenuViewModel){
     )
 
 }
-
 @Composable
-fun Greeting(onItemClick:(index:Int) -> Unit = {}) {
+fun Greeting(viewModel1: MenuViewModel,viewModel2: MenuViewModel,onItemClick:(index:Int) -> Unit = {}) {
     Column(Modifier.fillMaxWidth()) {
         Button(onClick = {
             onItemClick(1)
+
+//            ShowComposeMenuDrawer(viewModel = viewModel1)
+
+
+            viewModel1.setCurrentDrawer(DrawerType.MENU_LIST)
+            viewModel1.openDrawer()
 
         }) {
             Text("DefaultDrawer")
@@ -192,6 +196,8 @@ fun Greeting(onItemClick:(index:Int) -> Unit = {}) {
         Spacer(modifier = Modifier.height(8.dp))
         Button(onClick = {
             onItemClick(2)
+            viewModel2.setCurrentDrawer(DrawerType.DEFAULT)
+            viewModel2.openDrawer()
 
         }) {
             Text("CustomerDrawer")

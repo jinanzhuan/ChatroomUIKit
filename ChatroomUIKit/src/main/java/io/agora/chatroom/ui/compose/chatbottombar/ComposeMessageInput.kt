@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import io.agora.chatroom.ui.commons.ComposerInputMessageState
+import io.agora.chatroom.ui.viewmodel.messages.MessageComposerViewModel
 import io.agora.chatroom.ui.widget.WidgetInputField
 
 /**
@@ -29,12 +30,12 @@ import io.agora.chatroom.ui.widget.WidgetInputField
  * @param innerTrailingContent Composable that represents the persistent inner trailing content.
  */
 @Composable
-public fun ComposeMessageInput(
+fun ComposeMessageInput(
     isDarkTheme:Boolean? = false,
     composerMessageState: ComposerInputMessageState,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
-    isShowKeyboard: Boolean,
+    viewModel: MessageComposerViewModel,
     maxLines: Int = DefaultMessageInputMaxLines,
     keyboardOptions: KeyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
     label: @Composable (ComposerInputMessageState) -> Unit = {
@@ -52,7 +53,7 @@ public fun ComposeMessageInput(
         maxLines = maxLines,
         onValueChange = onValueChange,
         enabled = true,
-        isShowKeyboard = isShowKeyboard,
+        viewModel = viewModel,
         innerPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
         keyboardOptions = keyboardOptions,
         decorationBox = { innerTextField ->

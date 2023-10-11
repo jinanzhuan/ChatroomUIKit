@@ -5,7 +5,6 @@
         <activity
             android:name="io.agora.chatroom.ui.UIChatroomActivity"
             android:exported="false"
-            android:windowSoftInputMode="stateHidden|adjustResize"
             />
 
     </application>

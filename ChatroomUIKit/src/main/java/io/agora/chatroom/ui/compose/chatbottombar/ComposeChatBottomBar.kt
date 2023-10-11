@@ -1,5 +1,7 @@
 package io.agora.chatroom.ui.compose.chatbottombar
 
+import android.annotation.SuppressLint
+import android.graphics.Rect
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -10,11 +12,18 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.SnackbarHostState
@@ -25,6 +34,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Bottom
 import androidx.compose.ui.Modifier
@@ -38,10 +48,14 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.constraintlayout.widget.ConstraintLayout
 import io.agora.chatroom.ui.commons.ComposerInputMessageState
 import io.agora.chatroom.ui.commons.UIValidationError
+import io.agora.chatroom.ui.compose.utils.DisplayUtils
 import io.agora.chatroom.ui.compose.utils.mirrorRtl
 import io.agora.chatroom.ui.model.UICapabilities
 import io.agora.chatroom.ui.model.UIChatBarMenuItem
@@ -80,14 +94,14 @@ fun ComposeChatBottomBar(
     onSendMessage: (String) -> Unit = { },
     onValueChange: (String) -> Unit = { viewModel.setMessageInput(it) },
     label: @Composable (ComposerInputMessageState) -> Unit = { DefaultComposerLabel(isDarkTheme = viewModel.getTheme,it.ownCapabilities) },
-    input: @Composable RowScope.(ComposerInputMessageState, Boolean) -> Unit = { it, isShowKeyBoard ->
+    input: @Composable RowScope.(ComposerInputMessageState) -> Unit = { it ->
         @Suppress("DEPRECATION_ERROR")
         DefaultComposerInputContent(
             isDarkTheme = viewModel.getTheme,
             composerMessageState = it,
             onValueChange = onValueChange,
             label = label,
-            isShowKeyboard = isShowKeyBoard,
+            viewModel = viewModel,
         )
     },
     trailingContent: @Composable (ComposerInputMessageState) -> Unit = {
@@ -109,9 +123,10 @@ fun ComposeChatBottomBar(
             onVoiceClick = {}
         )
     },
-    emojiContent: @Composable (ComposerInputMessageState, onEmojiClick: (isShowFace:Boolean) -> Unit) -> Unit = { it, status->
+    emojiContent: @Composable (ComposerInputMessageState,onEmojiClick: (isShowFace:Boolean) -> Unit) -> Unit = { it,status->
         DefaultMessageComposerEmojiContent(
             isDarkTheme = viewModel.getTheme,
+            viewModel = viewModel,
             onEmojiClick = {
                 status(it)
             }
@@ -132,11 +147,9 @@ fun ComposeChatBottomBar(
     }
 ) {
     val messageComposerState by viewModel.composerMessageState.collectAsState()
-    if (!showInput){
-        viewModel.updateInputValue()
-    }
 
     ComposeChatBottomBar(
+        viewModel = viewModel,
         isDarkTheme = viewModel.getTheme,
         modifier = modifier,
         onSendMessage = { text ->
@@ -156,22 +169,11 @@ fun ComposeChatBottomBar(
     )
 }
 
-/**
- * Clean version of the [ComposeChatBottomBar] that doesn't rely on ViewModels, so the user can provide a
- * manual way to handle and represent data and various operations.
- *
- * @param composerMessageState The state of the message input.
- * @param onSendMessage Handler when the user wants to send a message.
- * @param modifier Modifier for styling.
- * @param onValueChange Handler when the input field value changes.
- * their own integrations, which they need to hook up to their own data providers and UI.
- * @param label Customizable composable that represents the input field label (hint).
- * @param input Customizable composable that represents the input field for the composer, [ComposeMessageInput] by default.
- * by default.
- */
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun ComposeChatBottomBar(
     isDarkTheme: Boolean?,
+    viewModel: MessageComposerViewModel,
     composerMessageState: ComposerInputMessageState,
     onSendMessage: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -181,14 +183,14 @@ fun ComposeChatBottomBar(
     menuItemResource: List<UIChatBarMenuItem>,
     onValueChange: (String) -> Unit = {},
     label: @Composable (ComposerInputMessageState) -> Unit = { DefaultComposerLabel(isDarkTheme,composerMessageState.ownCapabilities) },
-    input: @Composable RowScope.(ComposerInputMessageState, Boolean) -> Unit = { it, isShowKeyBoard ->
+    input: @Composable RowScope.(ComposerInputMessageState) -> Unit = { it ->
         @Suppress("DEPRECATION_ERROR")
         DefaultComposerInputContent(
             isDarkTheme = isDarkTheme,
             composerMessageState = composerMessageState,
             onValueChange = onValueChange,
             label = label,
-            isShowKeyboard = isShowKeyBoard,
+            viewModel = viewModel,
         )
     },
     trailingContent: @Composable (ComposerInputMessageState) -> Unit = {
@@ -207,9 +209,10 @@ fun ComposeChatBottomBar(
             onVoiceClick = {}
         )
     },
-    emojiContent: @Composable (ComposerInputMessageState, onEmojiClick: (isShowFace:Boolean) -> Unit) -> Unit = { it, status->
+    emojiContent: @Composable (ComposerInputMessageState, onEmojiClick: (isShowFace:Boolean) -> Unit) -> Unit = { it,status->
         DefaultMessageComposerEmojiContent(
             isDarkTheme = isDarkTheme,
+            viewModel = viewModel,
             onEmojiClick = {
                 status(it)
             }
@@ -232,23 +235,50 @@ fun ComposeChatBottomBar(
     val (_,_,validationErrors) = composerMessageState
     val snackbarHostState = remember { SnackbarHostState() }
 
-    val showKeyBoard = remember { mutableStateOf(false) }
-    val isShowKeyBoard by showKeyBoard
-
     MessageInputValidationError(
         validationErrors = validationErrors,
         snackbarHostState = snackbarHostState
     )
 
-    Box(modifier = modifier) {
+    val kbHeight =  remember { mutableStateOf(0) }
+    val keyboardHeight by kbHeight
+
+    val navigationBarsHeight = WindowInsets.navigationBars.getBottom(Density(LocalContext.current))
+
+    val coroutineScope = rememberCoroutineScope()
+
+    AndroidView(factory = { context ->
+        ConstraintLayout(context).apply {
+            viewTreeObserver.addOnGlobalLayoutListener {
+                val rect = Rect()
+                getWindowVisibleDisplayFrame(rect)
+                val screenHeight = rootView.height
+                val keypadHeight = screenHeight - rect.bottom
+                Log.e("apex","screenHeight $screenHeight  - rect.bottom : ${rect.bottom} keypadHeight: $keypadHeight")
+                if (keypadHeight > screenHeight * 0.15) { // A threshold to filter the visibility of the keypad
+//                    kbHeight.value = DisplayUtils.pxToDp(keypadHeight).toInt()
+                    kbHeight.value = keypadHeight
+                }
+//                else {
+//                    kbHeight.value = 0
+//                }
+            }
+        }
+    })
+    Log.e("apex"," $keyboardHeight")
+    Log.e("apex","navigationBars:  ${WindowInsets.navigationBars.getBottom(Density(LocalContext.current))}")
+
+    val opHeight = DisplayUtils.pxToDp(keyboardHeight - navigationBarsHeight).toInt()
+
+    Box(modifier = modifier.navigationBarsPadding()) {
         if (showInput){
             Column(
-                Modifier
-                    .height(52.dp)
+                Modifier.wrapContentHeight()
             ) {
                 Row(
                     Modifier
                         .fillMaxWidth()
+                        .height(52.dp)
                         .background(if (isDarkTheme == true) neutralColor1 else neutralColor98),
                     verticalAlignment = Bottom
                 ) {
@@ -260,16 +290,43 @@ fun ComposeChatBottomBar(
                             .weight(1f)
                             .padding(top = 8.dp, bottom = 8.dp, start = 8.dp)
                     ){
-                        input(composerMessageState,isShowKeyBoard)
+                        input(this,composerMessageState)
                     }
 
                     emojiContent(composerMessageState,object : (Boolean) -> Unit{
-                        override fun invoke(isShowFace: Boolean) {
-                            Log.e("apex","emojiContent: $isShowFace")
+                        override fun invoke(isShowEmoji: Boolean) {
+                            Log.e("apex","isShowEmoji: $isShowEmoji")
+                            if (isShowEmoji){
+                                viewModel.hideKeyBoard()
+                                viewModel.showEmoji()
+                            }else{
+                                viewModel.showKeyBoard()
+                                viewModel.hideEmoji()
+                            }
                         }
                     })
 
                     trailingContent(composerMessageState)
+                }
+
+                if (viewModel.isShowEmoji.value){
+                    DefaultComposerEmoji(maxH = opHeight, emojis = listOf())
+                }
+
+                Log.e("apex","aaa $opHeight")
+//                coroutineScope.launch {
+//                    delay(1000) // 延迟1秒
+//                    // 执行需要延迟的操作
+//                }
+
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(if (viewModel.isShowKeyboard.value) 269.dp else 0.dp)
+                        .background(if (isDarkTheme == true) neutralColor1 else neutralColor98),
+                    verticalAlignment = Bottom
+                ) {
+
                 }
 
             }
@@ -277,11 +334,12 @@ fun ComposeChatBottomBar(
 
             Column(
                 Modifier
-                    .height(52.dp)
+                    .wrapContentHeight()
             ){
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .height(52.dp)
                         .background(Color.Transparent),
                     verticalAlignment = Bottom,
                 ){
@@ -296,7 +354,8 @@ fun ComposeChatBottomBar(
                                 color = if (isDarkTheme == true) barrageDarkColor2 else barrageLightColor2
                             )
                             .clickable {
-                                showKeyBoard.value = true
+                                viewModel.showKeyBoard()
+                                viewModel.hideEmoji()
                                 onInputClick()
                             }
 
@@ -330,6 +389,24 @@ internal fun DefaultComposerLabel(
     )
 }
 
+@Composable
+fun DefaultComposerEmoji(emojis:List<String>,maxH:Int){
+    Log.e("apex","DefaultComposerEmoji: $maxH")
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .height(maxH.dp)
+        .background(Color.Red)
+    ){
+        LazyRow {
+            items(emojis) { emoji ->
+                Button(onClick = { println(emoji) }) {
+                    Text(emoji)
+                }
+            }
+        }
+    }
+}
+
 /**
  * Represents the default input content of the Composer.
  *
@@ -357,7 +434,7 @@ internal fun DefaultComposerLabel(
 @Composable
 fun RowScope.DefaultComposerInputContent(
     isDarkTheme: Boolean? = false,
-    isShowKeyboard: Boolean,
+    viewModel: MessageComposerViewModel,
     composerMessageState: ComposerInputMessageState,
     onValueChange: (String) -> Unit,
     label: @Composable (ComposerInputMessageState) -> Unit,
@@ -369,7 +446,7 @@ fun RowScope.DefaultComposerInputContent(
             .padding(top = 8.dp, bottom = 8.dp, start = 12.dp)
             .weight(1f),
         label = label,
-        isShowKeyboard = isShowKeyboard,
+        viewModel = viewModel,
         composerMessageState = composerMessageState,
         onValueChange = onValueChange,
     )
@@ -449,12 +526,13 @@ internal fun DefaultMessageComposerVoiceContent(
 @Composable
 internal fun DefaultMessageComposerEmojiContent(
     isDarkTheme: Boolean? = false,
+    viewModel: MessageComposerViewModel,
     onEmojiClick: (isShowFace:Boolean) -> Unit,
 ) {
     val resourceId = remember { mutableStateOf(R.drawable.icon_face) }
     val resource by resourceId
 
-    var isShowFace = true
+    var isShowEmoji = viewModel.isShowEmoji.value
     val description = stringResource(id = R.string.stream_compose_cd_emoji_button)
 
     IconButton(
@@ -474,13 +552,13 @@ internal fun DefaultMessageComposerEmojiContent(
 //            }
         },
         onClick = {
-            isShowFace = !isShowFace
-            resourceId.value = if (isShowFace){
-                R.drawable.icon_face
-            }else{
+            isShowEmoji = !isShowEmoji
+            resourceId.value = if (isShowEmoji){
                 R.drawable.icon_keyboard
+            }else{
+                R.drawable.icon_face
             }
-            onEmojiClick(isShowFace)
+            onEmojiClick(isShowEmoji)
         }
 
     )

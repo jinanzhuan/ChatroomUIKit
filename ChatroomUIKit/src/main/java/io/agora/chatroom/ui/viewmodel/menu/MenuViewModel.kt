@@ -6,13 +6,15 @@ import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import io.agora.chatroom.ui.compose.DrawerType
 import io.agora.chatroom.ui.model.UIComposeDrawerItem
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class MenuViewModel constructor(
     private val isDarkTheme: Boolean? = false,
     private val isShowTitle:Boolean = true,
     private val isShowCancel:Boolean = true,
-    private val drawerType: DrawerType = DrawerType.DEFAULT,
     private val title:String = "",
+    private val drawerType: DrawerType = DrawerType.DEFAULT,
     private val menuList: List<UIComposeDrawerItem> = emptyList(),
 ): ViewModel() {
 
@@ -22,6 +24,11 @@ class MenuViewModel constructor(
     private val _show : MutableState<Boolean> = mutableStateOf(false)
     var isBottomDrawerVisible = _show
 
+    private val _drawerShouldBeOpened = MutableStateFlow(false)
+    val drawerShouldBeOpened = _drawerShouldBeOpened.asStateFlow()
+
+    private val _drawerType : MutableState<DrawerType> = mutableStateOf(DrawerType.DEFAULT)
+    var currentDrawerType = _drawerType
 
     val getTheme: Boolean?
         get() = isDarkTheme
@@ -35,14 +42,24 @@ class MenuViewModel constructor(
     val getIsShowCancel: Boolean
         get() = isShowCancel
 
-    val getDrawerType: DrawerType
-        get() = drawerType
-
     fun openDrawer(){
         _show.value = true
     }
 
     fun closeDrawer(){
         _show.value = false
+    }
+
+    fun setCurrentDrawer(drawerType: DrawerType){
+        _drawerType.value = drawerType
+    }
+
+
+    fun openBottomDrawer() {
+        _drawerShouldBeOpened.value = true
+    }
+
+    fun resetOpenDrawerAction() {
+        _drawerShouldBeOpened.value = false
     }
 }

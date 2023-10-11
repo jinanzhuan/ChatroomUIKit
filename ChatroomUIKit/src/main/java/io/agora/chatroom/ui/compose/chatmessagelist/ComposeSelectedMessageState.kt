@@ -1,4 +1,4 @@
-package io.agora.chatroom.ui.compose
+package io.agora.chatroom.ui.compose.chatmessagelist
 
 import io.agora.chatroom.service.ChatMessage
 

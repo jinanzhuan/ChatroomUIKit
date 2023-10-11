@@ -17,15 +17,13 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import io.agora.chatroom.ui.commons.ComposeMessagesState
-import io.agora.chatroom.ui.compose.ComposeMessageItemState
-import io.agora.chatroom.ui.compose.ComposeMessageListItemState
 
 @Composable
 fun ComposeMessages(
     modifier: Modifier = Modifier,
     messagesState: ComposeMessagesState,
     contentPadding: PaddingValues = PaddingValues(vertical = 16.dp),
-    itemContent: @Composable (Int,ComposeMessageListItemState) -> Unit,
+    itemContent: @Composable (Int, ComposeMessageListItemState) -> Unit,
 ) {
     val messages = messagesState.messages
 

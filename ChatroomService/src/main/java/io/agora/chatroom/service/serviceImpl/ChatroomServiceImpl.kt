@@ -126,12 +126,6 @@ class ChatroomServiceImpl: ChatroomService {
         val textSendMessage = ChatMessage.createTextSendMessage(message, roomId)
         textSendMessage?.chatType = ChatType.ChatRoom
         sendMessage(textSendMessage, onSuccess, onError) {}
-
-        if (listeners.size > 0){
-            listeners.forEach {
-                it.onRefreshMessage(textSendMessage)
-            }
-        }
     }
 
     override fun sendTargetTextMessage(
@@ -174,6 +168,11 @@ class ChatroomServiceImpl: ChatroomService {
         message.setMessageStatusCallback(object : ChatCallback {
             override fun onSuccess() {
                 onSuccess(message)
+                if (listeners.size > 0){
+                    listeners.forEach {
+                        it.onRefreshMessage(message)
+                    }
+                }
             }
 
             override fun onError(code: Int, error: String?) {

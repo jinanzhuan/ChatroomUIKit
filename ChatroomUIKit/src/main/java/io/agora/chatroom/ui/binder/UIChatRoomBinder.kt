@@ -7,7 +7,6 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.agora.chatroom.ui.UIChatroomService
 import io.agora.chatroom.ui.compose.ComposeBottomDrawer
-import io.agora.chatroom.ui.compose.DrawerType
 import io.agora.chatroom.ui.data.initialLongClickMenu
 import io.agora.chatroom.ui.model.UIComposeDrawerItem
 import io.agora.chatroom.ui.theme.ChatroomUIKitTheme
@@ -24,7 +23,6 @@ class UIChatRoomBinder(
         val menuFactory = buildMenuViewModelFactory(
             menuList = initialLongClickMenu,
             isShowTitle = false,
-            drawerType = DrawerType.MENU_LIST
         )
 
         chatroom.setContent {
@@ -47,14 +45,12 @@ class UIChatRoomBinder(
     }
 
     private fun buildMenuViewModelFactory(
-        drawerType: DrawerType = DrawerType.DEFAULT,
         title:String = "",
         menuList: List<UIComposeDrawerItem> = emptyList(),
         isShowTitle:Boolean = true,
         isShowCancel:Boolean = true,
     ):MenuViewModelFactory{
         return MenuViewModelFactory(
-            drawerType = drawerType,
             title = title,
             menuList = menuList,
             isShowTitle = isShowTitle,

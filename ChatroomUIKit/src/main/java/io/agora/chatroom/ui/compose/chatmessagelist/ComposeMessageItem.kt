@@ -1,4 +1,4 @@
-package io.agora.chatroom.ui.compose
+package io.agora.chatroom.ui.compose.chatmessagelist
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -53,8 +53,8 @@ fun ComposeMessageItem(
     dateSeparatorColor: Color = secondaryColor8,
     userNameColor: Color = primaryColor8,
     messageItem: ComposeMessageListItemState,
-    itemType:ComposeItemType = ComposeItemType.NORMAL,
-    onLongItemClick: (Int,ComposeMessageListItemState) -> Unit,
+    itemType: ComposeItemType = ComposeItemType.NORMAL,
+    onLongItemClick: (Int, ComposeMessageListItemState) -> Unit,
 ){
     val message = if (itemType == ComposeItemType.NORMAL) {
         (messageItem as ComposeMessageItemState).message
@@ -78,7 +78,7 @@ fun ComposeMessageItem(
 
 //        val dateSeparator = convertMillisTo24HourFormat(message.msgTime)
 
-        val dateSeparator =convertMillisTo24HourFormat(System.currentTimeMillis())
+        val dateSeparator = convertMillisTo24HourFormat(System.currentTimeMillis())
 
         val content =  if(message.body is TextMessageBody){
             (message.body as TextMessageBody).message

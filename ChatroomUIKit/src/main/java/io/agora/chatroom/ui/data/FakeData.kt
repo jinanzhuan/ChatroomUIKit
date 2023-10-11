@@ -14,3 +14,11 @@ val testMenuList = listOf(
     UIComposeDrawerItem("Item 2"),
     UIComposeDrawerItem("Item 3")
 )
+
+val testMenuList1 = listOf(
+    UIComposeDrawerItem("Item 1"),
+    UIComposeDrawerItem("Item 2"),
+    UIComposeDrawerItem("Item 3"),
+    UIComposeDrawerItem("Item 4")
+
+)

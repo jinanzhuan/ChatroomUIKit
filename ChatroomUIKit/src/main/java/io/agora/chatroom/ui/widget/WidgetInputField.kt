@@ -34,6 +34,7 @@ import io.agora.chatroom.ui.theme.LargeCorner
 import io.agora.chatroom.ui.theme.neutralColor2
 import io.agora.chatroom.ui.theme.neutralColor95
 import io.agora.chatroom.ui.theme.primaryColor5
+import io.agora.chatroom.ui.viewmodel.messages.MessageComposerViewModel
 import io.agora.chatroom.uikit.R
 import kotlinx.coroutines.delay
 
@@ -57,13 +58,13 @@ import kotlinx.coroutines.delay
  */
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-public fun WidgetInputField(
+fun WidgetInputField(
     isDarkTheme:Boolean? = false,
     value: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    isShowKeyboard: Boolean = false,
+    viewModel: MessageComposerViewModel,
     maxLines: Int = Int.MAX_VALUE,
     border: BorderStroke = BorderStroke(1.dp, if (isDarkTheme == true) neutralColor2 else neutralColor95),
     innerPadding: PaddingValues = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
@@ -72,11 +73,6 @@ public fun WidgetInputField(
 ) {
 
     var textFieldValueState by remember { mutableStateOf(TextFieldValue(text = value)) }
-
-    val showKeyBoard = remember {
-        mutableStateOf(isShowKeyboard)
-    }
-    val isShowKeyBoard by showKeyBoard
 
     val focusManager = LocalFocusManager.current
 
@@ -129,13 +125,13 @@ public fun WidgetInputField(
         }),
     )
 
-    LaunchedEffect(isShowKeyBoard) {
-        if (isShowKeyBoard){
-            delay(200)
+    LaunchedEffect(viewModel.isShowKeyboard.value) {
+        if (viewModel.isShowKeyboard.value){
+            delay(100)
             focus.requestFocus()
             keyboard?.show()
         }else{
-            delay(200)
+            delay(100)
             focusManager.clearFocus()
             keyboard?.hide()
         }

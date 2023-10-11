@@ -7,13 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import io.agora.chatroom.service.ChatMessage
-import io.agora.chatroom.ui.compose.ComposeItemType
-import io.agora.chatroom.ui.compose.ComposeMessageItem
-import io.agora.chatroom.ui.compose.ComposeMessageItemState
-import io.agora.chatroom.ui.compose.ComposeMessageListItemState
-import io.agora.chatroom.ui.compose.GiftMessageState
-import io.agora.chatroom.ui.compose.JoinedMessageState
 import io.agora.chatroom.ui.theme.AlphabetLabelLarge
 import io.agora.chatroom.ui.theme.primaryColor6
 import io.agora.chatroom.ui.viewmodel.messages.MessageListViewModel
@@ -31,7 +24,7 @@ fun MessageContainer(
     itemIndex: Int,
     viewModel: MessageListViewModel,
     messageListItem: ComposeMessageListItemState,
-    onLongItemClick: (Int,ComposeMessageListItemState) -> Unit = {index,message ->},
+    onLongItemClick: (Int, ComposeMessageListItemState) -> Unit = { index, message ->},
     giftMessageContent: @Composable (GiftMessageState) -> Unit = {
         DefaultGiftMessageContent(giftMessageState = it)
     },
@@ -92,7 +85,7 @@ internal fun DefaultMessageItem(
     itemIndex: Int,
     viewModel: MessageListViewModel,
     messageItem: ComposeMessageItemState,
-    onLongItemClick: (Int,ComposeMessageListItemState) -> Unit,
+    onLongItemClick: (Int, ComposeMessageListItemState) -> Unit,
 ) {
     ComposeMessageItem(
         itemIndex = itemIndex,
@@ -120,7 +113,7 @@ internal fun DefaultJoinedMessageItem(
     itemIndex: Int,
     viewModel: MessageListViewModel,
     messageItem: JoinedMessageState,
-    onLongItemClick: (Int,ComposeMessageListItemState) -> Unit,
+    onLongItemClick: (Int, ComposeMessageListItemState) -> Unit,
 ) {
     ComposeMessageItem(
         itemIndex = itemIndex,
