@@ -4,10 +4,12 @@ package io.agora.chatroom.service
 typealias ChatClient = io.agora.chat.ChatClient
 typealias ChatRoomManager = io.agora.chat.ChatRoomManager
 typealias ChatUserInfoManager = io.agora.chat.UserInfoManager
+typealias ChatOptions = io.agora.chat.ChatOptions
 
 // callback
 typealias ChatCallback = io.agora.CallBack
 typealias ChatValueCallback<T> = io.agora.ValueCallBack<T>
+typealias ChatCursorResult<T> = io.agora.chat.CursorResult<T>
 
 typealias ChatException = io.agora.exceptions.ChatException
 typealias ChatError =  io.agora.Error

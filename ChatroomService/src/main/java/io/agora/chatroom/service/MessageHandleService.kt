@@ -68,6 +68,20 @@ interface MessageHandleService {
     fun translateTextMessage(message: ChatMessage?,
                              onSuccess: OnValueSuccess<ChatMessage>,
                              onError: OnError)
+
+    /**
+     * Reports an inappropriate message.
+     * @param messageId The id of the message to report.
+     * @param tag The tag of the inappropriate message. You need to type a custom tag, like `porn` or `ad`.
+     * @param reason The reason of the message to report.
+     * @param onSuccess The callback to indicate the message is reported successfully.
+     * @param onError The callback to indicate the message is failed to report.
+     */
+    fun reportMessage(messageId: String,
+                      tag: String,
+                      reason: String,
+                      onSuccess: OnSuccess,
+                      onError: OnError)
 }
 
 interface GiftMessageHandleService {

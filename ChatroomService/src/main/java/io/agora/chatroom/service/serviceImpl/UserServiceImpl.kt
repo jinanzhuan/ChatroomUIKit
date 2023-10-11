@@ -1,10 +1,8 @@
 package io.agora.chatroom.service.serviceImpl
 
-import io.agora.chatroom.model.UIConstant
 import io.agora.chatroom.model.UserInfoProtocol
 import io.agora.chatroom.service.CallbackImpl
 import io.agora.chatroom.service.ChatClient
-import io.agora.chatroom.service.ChatError
 import io.agora.chatroom.service.ChatUserInfo
 import io.agora.chatroom.service.ChatValueCallback
 import io.agora.chatroom.service.OnError
@@ -13,7 +11,6 @@ import io.agora.chatroom.service.OnValueSuccess
 import io.agora.chatroom.service.UserEntity
 import io.agora.chatroom.service.UserService
 import io.agora.chatroom.service.UserStateChangeListener
-import io.agora.chatroom.service.cache.UIChatroomCacheManager
 
 fun ChatUserInfo.transfer() = UserEntity(userId, nickname, avatarUrl, gender,ext )
 fun UserEntity.transfer(): UserInfoProtocol {
@@ -83,20 +80,7 @@ class UserServiceImpl: UserService {
         ChatClient.getInstance().loginWithAgoraToken(userId, token, CallbackImpl(onSuccess, onError))
     }
 
-    override fun login(
-        user: UserInfoProtocol,
-        token: String,
-        userProperties: Boolean,
-        onSuccess: OnSuccess,
-        onError: OnError
-    ) {
-        UIChatroomCacheManager.cacheManager.saveUserInfo(userId = user.userId, userInfo = user)
-        UIChatroomCacheManager.cacheManager.setUseProperties(userProperties)
-        if (user.userId.isEmpty()) return onError(ChatError.USER_AUTHENTICATION_FAILED,"The user ID or password is incorrect")
-        ChatClient.getInstance().loginWithAgoraToken(user.userId, token, CallbackImpl(onSuccess, onError))
-    }
-
-    override fun logout(userId: String, onSuccess: OnSuccess, onError: OnError) {
+    override fun logout(onSuccess: OnSuccess, onError: OnError) {
         ChatClient.getInstance().logout(true, CallbackImpl(onSuccess, onError))
     }
 }
