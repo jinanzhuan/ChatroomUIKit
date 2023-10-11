@@ -20,10 +20,10 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.SnackbarHostState
@@ -59,6 +59,7 @@ import io.agora.chatroom.compose.utils.DisplayUtils
 import io.agora.chatroom.compose.utils.mirrorRtl
 import io.agora.chatroom.model.UICapabilities
 import io.agora.chatroom.model.UIChatBarMenuItem
+import io.agora.chatroom.model.emoji.UIExpressionEntity
 import io.agora.chatroom.theme.AlphabetBodyLarge
 import io.agora.chatroom.theme.barrageDarkColor2
 import io.agora.chatroom.theme.barrageLightColor2
@@ -310,7 +311,7 @@ fun ComposeChatBottomBar(
                 }
 
                 if (viewModel.isShowEmoji.value){
-                    DefaultComposerEmoji(maxH = opHeight, emojis = listOf())
+                    DefaultComposerEmoji(maxH = opHeight, emojis = listOf(), viewModel = viewModel)
                 }
 
                 Log.e("apex","aaa $opHeight")
@@ -390,18 +391,26 @@ internal fun DefaultComposerLabel(
 }
 
 @Composable
-fun DefaultComposerEmoji(emojis:List<String>,maxH:Int){
+fun DefaultComposerEmoji(
+    emojis:List<UIExpressionEntity>,
+    maxH:Int,
+    viewModel: MessageComposerViewModel,
+){
     Log.e("apex","DefaultComposerEmoji: $maxH")
     Column(modifier = Modifier
         .fillMaxWidth()
         .height(maxH.dp)
         .background(Color.Red)
     ){
-        LazyRow {
+        LazyVerticalGrid(columns = GridCells.Fixed(7)) {
             items(emojis) { emoji ->
-                Button(onClick = { println(emoji) }) {
-                    Text(emoji)
-                }
+                Image(
+                    painter = painterResource(emoji.icon),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clickable {  }
+                )
             }
         }
     }

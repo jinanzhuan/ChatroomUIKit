@@ -97,7 +97,6 @@ fun ComposeMessageItem(
             if (isShowDateSeparator){
                 withStyle(style = SpanStyle(color = dateSeparatorColor)) {
                     append(dateSeparator)
-//                    append("23:00")
                 }
             }
 
