@@ -3,16 +3,13 @@ package io.agora.chatroom
 import io.agora.chatroom.model.UICommonConfig
 import io.agora.chatroom.service.cache.UIChatroomCacheManager
 
-class UIChatroomContext {
-    private var instance: UIChatroomContext? = null
+class UIChatroomContext
+private constructor() {
     private var mCommonConfig: UICommonConfig = UICommonConfig()
 
-    @Synchronized
-    fun shared(): UIChatroomContext? {
-        if (instance == null) {
-            instance = UIChatroomContext()
-        }
-        return instance
+    companion object {
+        const val TAG = "ChatroomUIKitClient"
+        val shared: UIChatroomContext by lazy { UIChatroomContext() }
     }
 
     fun setCommonConfig(config: UICommonConfig) {

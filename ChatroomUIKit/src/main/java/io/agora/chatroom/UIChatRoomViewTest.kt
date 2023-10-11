@@ -23,17 +23,15 @@ import io.agora.chat.ChatClient
 import io.agora.chatroom.service.ChatMessage
 import io.agora.chatroom.service.ChatroomChangeListener
 import io.agora.chatroom.ui.UIChatroomService
-import io.agora.chatroom.ui.compose.chatbottombar.ComposeChatBottomBar
-import io.agora.chatroom.ui.compose.chatmessagelist.ComposeChatMessageList
-import io.agora.chatroom.ui.theme.ChatroomUIKitTheme
-import io.agora.chatroom.ui.theme.primaryColor8
-import io.agora.chatroom.ui.theme.secondaryColor8
-import io.agora.chatroom.ui.viewmodel.messages.MessageComposerViewModel
-import io.agora.chatroom.ui.viewmodel.messages.MessageListViewModel
-import io.agora.chatroom.ui.viewmodel.messages.MessagesViewModelFactory
+import io.agora.chatroom.compose.chatbottombar.ComposeChatBottomBar
+import io.agora.chatroom.compose.chatmessagelist.ComposeChatMessageList
+import io.agora.chatroom.theme.ChatroomUIKitTheme
+import io.agora.chatroom.theme.primaryColor8
+import io.agora.chatroom.theme.secondaryColor8
+import io.agora.chatroom.viewmodel.messages.MessageComposerViewModel
+import io.agora.chatroom.viewmodel.messages.MessageListViewModel
+import io.agora.chatroom.viewmodel.messages.MessagesViewModelFactory
 import io.agora.chatroom.uikit.databinding.ActivityUiChatroomTestBinding
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener {
     private val mRoomViewBinding = ActivityUiChatroomTestBinding.inflate(LayoutInflater.from(context))
@@ -58,34 +56,21 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener {
 
         service.getChatService().bindListener(this)
 
-        ChatClient.getInstance().login("apex1","1",object : CallBack {
-            override fun onSuccess() {
-                Log.e("apex","login onSuccess")
-                service.getChatService().joinChatroom(roomId,"apex1"
-                    , onSuccess = {
-                        Log.e("apex","joinChatroom  193314355740675 onSuccess")
-                    }
-                    , onError = {errorCode,result->
-                        Log.e("apex","joinChatroom  193314355740675 onError $errorCode $result")
-                    }
-                )
-
-            }
-
-            override fun onError(code: Int, error: String?) {
-                if (code == 200){
-                    service.getChatService().joinChatroom(roomId,"apex1"
-                        , onSuccess = {
-                            Log.e("apex","joinChatroom  $roomId onSuccess")
-                        }
-                        , onError = {errorCode,response->
-                            Log.e("apex","joinChatroom  $roomId onError $errorCode $response")
-                        }
-                    )
+        if (!ChatroomUIKitClient.shared.isLoginBefore()){
+            ChatClient.getInstance().login("apex1","1",object : CallBack {
+                override fun onSuccess() {
+                    Log.e("apex","login onSuccess")
+                    joinChatroom(roomId)
                 }
-            }
 
-        })
+                override fun onError(code: Int, error: String?) {
+                    Log.e("apex","login onError $code  $error")
+                }
+
+            })
+        }else{
+            joinChatroom(roomId)
+        }
 
         mRoomViewBinding.composeChatroom.setContent {
 
@@ -185,5 +170,16 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener {
         listViewModel.addTextMessage(message)
     }
 
+
+    fun joinChatroom(roomId:String){
+        service.getChatService().joinChatroom(roomId,"apex1"
+            , onSuccess = {
+                Log.e("apex","joinChatroom  193314355740675 onSuccess")
+            }
+            , onError = {errorCode,result->
+                Log.e("apex","joinChatroom  193314355740675 onError $errorCode $result")
+            }
+        )
+    }
 
 }

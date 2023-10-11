@@ -15,6 +15,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ChatroomUIKit"
+        android:name=".ChatroomApplication"
         tools:targetApi="31">
         <activity
             android:name="io.agora.chatroom.MainActivity"
