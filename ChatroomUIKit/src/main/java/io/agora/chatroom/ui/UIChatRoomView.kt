@@ -5,18 +5,16 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
 import androidx.compose.ui.graphics.Color
-import io.agora.chatroom.ui.binder.UIBinder
-import io.agora.chatroom.ui.binder.UIChatBottomBarBinder
-import io.agora.chatroom.ui.binder.UIChatListBinder
-import io.agora.chatroom.ui.binder.UIChatRoomBinder
-import io.agora.chatroom.ui.theme.primaryColor8
-import io.agora.chatroom.ui.theme.secondaryColor8
-import io.agora.chatroom.ui.viewmodel.messages.MessagesViewModelFactory
+import io.agora.chatroom.binder.UIChatListBinder
+import io.agora.chatroom.binder.UIChatRoomBinder
+import io.agora.chatroom.theme.primaryColor8
+import io.agora.chatroom.theme.secondaryColor8
+import io.agora.chatroom.viewmodel.messages.MessagesViewModelFactory
 import io.agora.chatroom.uikit.databinding.ActivityUiChatroomBinding
 
 class UIChatRoomView : FrameLayout{
     private val mRoomViewBinding = ActivityUiChatroomBinding.inflate(LayoutInflater.from(context))
-    private val mBinders = mutableListOf<UIBinder>()
+    private val mBinders = mutableListOf<io.agora.chatroom.binder.UIBinder>()
 
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
@@ -39,7 +37,7 @@ class UIChatRoomView : FrameLayout{
             service = service
         )
 
-        val chatBottomBar = UIChatBottomBarBinder(
+        val chatBottomBar = io.agora.chatroom.binder.UIChatBottomBarBinder(
             baseLayout = mRoomViewBinding.baseLayout,
             chatBottomBar = mRoomViewBinding.composeChatBottomBar,
             service = service,

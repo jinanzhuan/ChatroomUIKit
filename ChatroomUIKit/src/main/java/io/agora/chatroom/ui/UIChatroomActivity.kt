@@ -5,11 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.core.view.WindowCompat
-import io.agora.chat.ChatOptions
 import io.agora.chatroom.UIChatRoomViewTest
 import io.agora.chatroom.model.UIChatroomInfo
 import io.agora.chatroom.model.UserInfoProtocol
-import io.agora.chatroom.service.ChatClient
 import io.agora.chatroom.uikit.R
 
 class UIChatroomActivity : ComponentActivity(){
@@ -19,15 +17,9 @@ class UIChatroomActivity : ComponentActivity(){
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContentView(R.layout.activity_chatroom)
-
         val roomId = intent.getStringExtra(KEY_ROOM_ID) ?: return
 
-        val chatOptions = ChatOptions()
-        chatOptions.appKey = "easemob#easeim"
-        chatOptions.autoLogin = false
-        ChatClient.getInstance().init(applicationContext, chatOptions)
-
-        roomView.bindService(UIChatroomService(UIChatroomInfo("193314355740675", UserInfoProtocol())))
+        roomView.bindService(UIChatroomService(UIChatroomInfo(roomId, UserInfoProtocol())))
     }
 
 

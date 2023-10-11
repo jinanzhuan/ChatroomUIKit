@@ -16,7 +16,8 @@ import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.io.ObjectInputStream
 
-class UIChatroomCacheManager {
+class UIChatroomCacheManager
+private constructor() {
     private var mEditor: SharedPreferences.Editor? = null
     private var mSharedPreferences: SharedPreferences? = null
     private var userCache:MutableMap<String, UserInfoProtocol> = mutableMapOf()
@@ -24,7 +25,7 @@ class UIChatroomCacheManager {
     companion object {
         const val TAG = "UIChatroomCacheManager"
         val cacheManager = UIChatroomCacheManager().apply {
-            mSharedPreferences = UIChatroomContext().getCommonConfig().context?.getSharedPreferences(
+            mSharedPreferences = UIChatroomContext.shared.getCommonConfig().context?.getSharedPreferences(
                 "SP_AT_PROFILE",
                 Context.MODE_PRIVATE
             )

@@ -15,8 +15,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.BottomDrawer
-import androidx.compose.material.BottomDrawerValue
 import androidx.compose.material.Button
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
@@ -24,25 +22,23 @@ import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.rememberBottomDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.view.WindowCompat
 import io.agora.chatroom.ui.UIChatroomActivity
-import io.agora.chatroom.ui.compose.ComposeBottomDrawer
-import io.agora.chatroom.ui.compose.DrawerType
-import io.agora.chatroom.ui.compose.drawer.ComposeMenuBottomDrawer
-import io.agora.chatroom.ui.data.initialLongClickMenu
-import io.agora.chatroom.ui.data.testMenuList1
-import io.agora.chatroom.ui.model.UIComposeDrawerItem
-import io.agora.chatroom.ui.theme.AlphabetBodyLarge
-import io.agora.chatroom.ui.theme.ChatroomUIKitTheme
-import io.agora.chatroom.ui.theme.neutralColor2
-import io.agora.chatroom.ui.theme.neutralColor9
-import io.agora.chatroom.ui.viewmodel.menu.MenuViewModel
+import io.agora.chatroom.compose.drawer.ComposeBottomDrawer
+import io.agora.chatroom.compose.drawer.DrawerType
+import io.agora.chatroom.compose.drawer.ComposeMenuBottomDrawer
+import io.agora.chatroom.data.initialLongClickMenu
+import io.agora.chatroom.data.testMenuList1
+import io.agora.chatroom.model.UIComposeDrawerItem
+import io.agora.chatroom.theme.AlphabetBodyLarge
+import io.agora.chatroom.theme.ChatroomUIKitTheme
+import io.agora.chatroom.theme.neutralColor2
+import io.agora.chatroom.theme.neutralColor9
+import io.agora.chatroom.viewmodel.menu.MenuViewModel
 
 class MainActivity : ComponentActivity() {
     private var viewModel1:MenuViewModel = MenuViewModel(menuList = initialLongClickMenu)
@@ -79,7 +75,7 @@ class MainActivity : ComponentActivity() {
                                 this.startActivity(
                                     UIChatroomActivity.createIntent(
                                         context = this,
-                                        roomId = "123",
+                                        roomId = "193314355740675",
                                     ))
                             }
                         }

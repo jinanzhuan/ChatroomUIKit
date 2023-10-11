@@ -68,5 +68,5 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
     implementation("io.coil-kt:coil-compose:2.2.1")
     implementation("io.coil-kt:coil:2.2.1")
-    implementation(project(mapOf("path" to ":ChatroomService")))
+    api(project(mapOf("path" to ":ChatroomService")))
 }
