@@ -38,16 +38,15 @@ import io.agora.chatroom.ui.theme.primaryColor5
 import io.agora.chatroom.ui.theme.primaryColor6
 import io.agora.chatroom.uikit.R
 
-var isDarkTheme: Boolean = false
 var isUserDefaultContent:Boolean = false
 
 @ExperimentalFoundationApi
 @Composable
 fun TabLayoutWithViewPager(
+    isDarkTheme:Boolean? = false,
     tabTitles: List<String>,
     vpContent: @Composable (pageIndex:Int) -> Unit = { isUserDefaultContent = true},
 ) {
-    isDarkTheme = isSystemInDarkTheme()
 
     val itemIndex = remember { mutableStateOf(0) }
     val selectedItemIndex by itemIndex
@@ -64,12 +63,12 @@ fun TabLayoutWithViewPager(
         content = {
             it.calculateTopPadding()
             it.calculateBottomPadding()
-            Column (modifier = Modifier.background(if (isDarkTheme) neutralColor1 else neutralColor98)){
+            Column (modifier = Modifier.background(if (isDarkTheme == true) neutralColor1 else neutralColor98)){
                 TabRow(
                     modifier = Modifier.height(50.dp),
                     selectedTabIndex = selectedItemIndex,
-                    backgroundColor = if (isDarkTheme) neutralColor1 else neutralColor98,
-                    contentColor = if (isDarkTheme) neutralColor1 else neutralColor98,
+                    backgroundColor = if (isDarkTheme == true) neutralColor1 else neutralColor98,
+                    contentColor = if (isDarkTheme == true) neutralColor1 else neutralColor98,
                 ) {
                     tabTitles.forEachIndexed { index, title ->
                         Tab(
@@ -81,7 +80,7 @@ fun TabLayoutWithViewPager(
                                     Text(
                                         text = title,
                                         style = AlphabetBodyLarge,
-                                        color = if (isDarkTheme){
+                                        color = if (isDarkTheme == true){
                                             if (selectedItemIndex == index) neutralColor98 else neutralColor98
                                         }else{
                                             if (selectedItemIndex == index) neutralColor1 else neutralColor7
@@ -93,16 +92,16 @@ fun TabLayoutWithViewPager(
                                         modifier = Modifier
                                             .width(28.dp).height(10.dp),
                                         tint = if (selectedItemIndex == index ){
-                                            if (isDarkTheme) primaryColor6 else primaryColor5
+                                            if (isDarkTheme == true) primaryColor6 else primaryColor5
                                         } else{
-                                            if (isDarkTheme) neutralColor1 else neutralColor98
+                                            if (isDarkTheme == true) neutralColor1 else neutralColor98
                                         }
                                     )
                                 }
                             },
                             selected = selectedItemIndex == index,
                             modifier = Modifier.background(
-                                color = if (isDarkTheme) neutralColor1 else neutralColor98
+                                color = if (isDarkTheme == true) neutralColor1 else neutralColor98
                             ),
                             onClick = {
                                 tabItemIndex.value = index

@@ -2,10 +2,10 @@ package io.agora.chatroom.ui.commons
 
 import io.agora.chatroom.service.ChatMessage
 import io.agora.chatroom.service.ChatroomService
-import io.agora.chatroom.ui.compose.ComposeMessageItemState
-import io.agora.chatroom.ui.compose.ComposeMessageListItemState
-import io.agora.chatroom.ui.compose.GiftMessageState
-import io.agora.chatroom.ui.compose.JoinedMessageState
+import io.agora.chatroom.ui.compose.chatmessagelist.ComposeMessageItemState
+import io.agora.chatroom.ui.compose.chatmessagelist.ComposeMessageListItemState
+import io.agora.chatroom.ui.compose.chatmessagelist.GiftMessageState
+import io.agora.chatroom.ui.compose.chatmessagelist.JoinedMessageState
 
 class ComposeChatListController(
     private val roomId: String,

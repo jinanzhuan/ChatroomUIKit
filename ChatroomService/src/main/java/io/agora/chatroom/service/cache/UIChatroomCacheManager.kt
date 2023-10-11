@@ -4,9 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.text.TextUtils
-import io.agora.chatroom.model.UIChatroomContext
+import io.agora.chatroom.UIChatroomContext
 import io.agora.chatroom.model.UserInfoProtocol
-import io.agora.chatroom.service.ChatMessage
 import org.jetbrains.annotations.Nullable
 import java.io.ByteArrayOutputStream
 import java.io.ObjectOutputStream
@@ -46,12 +45,20 @@ class UIChatroomCacheManager {
         return null
     }
 
-    fun setUseProperties(key:String,use:Boolean){
-        putBoolean(key,use)
+    fun setUseProperties(use:Boolean){
+        putBoolean(UIConstant.CHATROOM_USE_PROPERTIES,use)
     }
 
     fun getUseProperties():Boolean{
         return getBoolean(UIConstant.CHATROOM_USE_PROPERTIES,false)
+    }
+
+    fun setCurrentTheme(isDark:Boolean){
+        putBoolean(UIConstant.CHATROOM_THEME,isDark)
+    }
+
+    fun getCurrentTheme():Boolean{
+        return getBoolean(UIConstant.CHATROOM_THEME,false)
     }
 
 

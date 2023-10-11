@@ -1,5 +1,7 @@
 package io.agora.chatroom.ui.viewmodel.messages
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import io.agora.chatroom.ui.commons.ComposerChatBarController
 import io.agora.chatroom.ui.commons.ComposerInputMessageState
@@ -8,10 +10,35 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 class MessageComposerViewModel(
-    private val isDarkTheme:Boolean,
+    private val isDarkTheme:Boolean?,
     private val composerChatBarController: ComposerChatBarController,
     private val menuItemResource: List<UIChatBarMenuItem>,
 ) : ViewModel(){
+
+    private val _showEmoji : MutableState<Boolean> = mutableStateOf(false)
+    var isShowEmoji = _showEmoji
+
+    private val _showKeyboard : MutableState<Boolean> = mutableStateOf(false)
+    var isShowKeyboard = _showKeyboard
+
+    fun showEmoji(){
+        _showEmoji.value = true
+    }
+
+    fun hideEmoji(){
+        _showEmoji.value = false
+    }
+
+    fun showKeyBoard(){
+        _showKeyboard.value = true
+    }
+
+    fun hideKeyBoard(){
+        _showKeyboard.value = false
+    }
+
+
+
 
     /**
      * The full UI state that has all the required data.
@@ -27,7 +54,7 @@ class MessageComposerViewModel(
         composerChatBarController.updateInputValue()
     }
 
-    val getTheme: Boolean
+    val getTheme: Boolean?
         get() = isDarkTheme
 
     val getMenuItem:List<UIChatBarMenuItem>

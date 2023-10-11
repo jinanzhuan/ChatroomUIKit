@@ -5,12 +5,12 @@ import androidx.lifecycle.ViewModel
 import io.agora.chatroom.service.ChatMessage
 import io.agora.chatroom.ui.commons.ComposeChatListController
 import io.agora.chatroom.ui.commons.ComposeMessagesState
-import io.agora.chatroom.ui.compose.ComposeMessageListItemState
+import io.agora.chatroom.ui.compose.chatmessagelist.ComposeMessageListItemState
 import io.agora.chatroom.ui.theme.primaryColor8
 import io.agora.chatroom.ui.theme.secondaryColor8
 
 class MessageListViewModel(
-    private val isDarkTheme: Boolean = false,
+    private val isDarkTheme: Boolean? = false,
     private val showDateSeparators: Boolean = true,
     private val showLabel: Boolean = true,
     private val showGift: Boolean = true,
@@ -36,7 +36,7 @@ class MessageListViewModel(
         get() = composeChatListController.currentComposeMessagesState
 
 
-    val getTheme: Boolean
+    val getTheme: Boolean?
         get() = isDarkTheme
 
     val isShowDateSeparators:Boolean

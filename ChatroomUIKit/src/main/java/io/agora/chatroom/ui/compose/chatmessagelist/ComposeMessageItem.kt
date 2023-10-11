@@ -1,4 +1,4 @@
-package io.agora.chatroom.ui.compose
+package io.agora.chatroom.ui.compose.chatmessagelist
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -45,7 +45,7 @@ import java.util.Locale
 @Composable
 fun ComposeMessageItem(
     itemIndex: Int,
-    isDarkTheme: Boolean = false,
+    isDarkTheme: Boolean? = false,
     isShowDateSeparator: Boolean = true,
     isShowLabel: Boolean = true,
     isShowGift: Boolean = false,
@@ -53,8 +53,8 @@ fun ComposeMessageItem(
     dateSeparatorColor: Color = secondaryColor8,
     userNameColor: Color = primaryColor8,
     messageItem: ComposeMessageListItemState,
-    itemType:ComposeItemType = ComposeItemType.NORMAL,
-    onLongItemClick: (Int,ComposeMessageListItemState) -> Unit,
+    itemType: ComposeItemType = ComposeItemType.NORMAL,
+    onLongItemClick: (Int, ComposeMessageListItemState) -> Unit,
 ){
     val message = if (itemType == ComposeItemType.NORMAL) {
         (messageItem as ComposeMessageItemState).message
@@ -71,14 +71,14 @@ fun ComposeMessageItem(
             .wrapContentWidth()
             .wrapContentHeight()
             .background(
-                if (isDarkTheme) barrageLightColor2 else barrageDarkColor1,
+                if (isDarkTheme == true) barrageLightColor2 else barrageDarkColor1,
                 shape = SmallCorner
             ),
     ){
 
 //        val dateSeparator = convertMillisTo24HourFormat(message.msgTime)
 
-        val dateSeparator =convertMillisTo24HourFormat(System.currentTimeMillis())
+        val dateSeparator = convertMillisTo24HourFormat(System.currentTimeMillis())
 
         val content =  if(message.body is TextMessageBody){
             (message.body as TextMessageBody).message
@@ -166,7 +166,7 @@ fun ComposeMessageItem(
             text = annotatedText,
             inlineContent = inlineMap,
             style = AlphabetBodyMedium,
-            color = if (isDarkTheme) neutralColor98 else neutralColor98
+            color = if (isDarkTheme == true) neutralColor98 else neutralColor98
         )
 
     }

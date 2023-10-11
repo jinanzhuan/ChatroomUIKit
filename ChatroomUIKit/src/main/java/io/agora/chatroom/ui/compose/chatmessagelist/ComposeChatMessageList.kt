@@ -18,8 +18,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import io.agora.chatroom.service.ChatMessage
-import io.agora.chatroom.ui.compose.ComposeMessageListItemState
 import io.agora.chatroom.ui.compose.LoadingIndicator
 import io.agora.chatroom.ui.theme.AlphabetHeadlineMedium
 import io.agora.chatroom.ui.theme.primaryColor5
@@ -31,10 +29,10 @@ fun ComposeChatMessageList(
     viewModel: MessageListViewModel,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(vertical = 16.dp),
-    onLongItemClick: (Int,ComposeMessageListItemState) -> Unit = {index,message->},
+    onLongItemClick: (Int, ComposeMessageListItemState) -> Unit = { index, message->},
     loadingContent: @Composable () -> Unit = { DefaultMessageListLoadingIndicator(modifier) },
     emptyContent: @Composable () -> Unit = { DefaultMessageListEmptyContent(modifier) },
-    itemContent: @Composable (Int,ComposeMessageListItemState) -> Unit = { index,messageListItem ->
+    itemContent: @Composable (Int, ComposeMessageListItemState) -> Unit = { index, messageListItem ->
         DefaultMessageContainer(
             itemIndex = index,
             viewModel = viewModel,
@@ -60,10 +58,10 @@ fun MessageList(
     viewModel: MessageListViewModel,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(vertical = 16.dp),
-    onLongItemClick: (Int,ComposeMessageListItemState) -> Unit = {index,message->},
+    onLongItemClick: (Int, ComposeMessageListItemState) -> Unit = { index, message->},
     loadingContent: @Composable () -> Unit = { DefaultMessageListLoadingIndicator(modifier) },
     emptyContent: @Composable () -> Unit = { DefaultMessageListEmptyContent(modifier) },
-    itemContent: @Composable (Int,ComposeMessageListItemState) -> Unit = {index,it->
+    itemContent: @Composable (Int, ComposeMessageListItemState) -> Unit = { index, it->
         DefaultMessageContainer(
             itemIndex = index,
             viewModel = viewModel,
@@ -144,7 +142,7 @@ internal fun DefaultMessageContainer(
     itemIndex:Int,
     viewModel: MessageListViewModel,
     messageListItem: ComposeMessageListItemState,
-    onLongItemClick: (Int,ComposeMessageListItemState) -> Unit,
+    onLongItemClick: (Int, ComposeMessageListItemState) -> Unit,
 ) {
     MessageContainer(
         itemIndex = itemIndex,

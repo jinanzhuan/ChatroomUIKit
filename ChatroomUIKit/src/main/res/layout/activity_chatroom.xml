@@ -7,7 +7,7 @@
     android:background="@mipmap/icon_chatroom_bg"
     >
 
-    <io.agora.chatroom.ui.UIChatRoomView
+    <io.agora.chatroom.UIChatRoomViewTest
         android:id="@+id/room_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

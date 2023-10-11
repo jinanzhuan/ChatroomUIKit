@@ -1,10 +1,8 @@
 package io.agora.chatroom.service.serviceImpl
 
-import io.agora.chatroom.model.UIConstant
 import io.agora.chatroom.model.UserInfoProtocol
 import io.agora.chatroom.service.CallbackImpl
 import io.agora.chatroom.service.ChatClient
-import io.agora.chatroom.service.ChatError
 import io.agora.chatroom.service.ChatUserInfo
 import io.agora.chatroom.service.ChatValueCallback
 import io.agora.chatroom.service.OnError
@@ -13,7 +11,6 @@ import io.agora.chatroom.service.OnValueSuccess
 import io.agora.chatroom.service.UserEntity
 import io.agora.chatroom.service.UserService
 import io.agora.chatroom.service.UserStateChangeListener
-import io.agora.chatroom.service.cache.UIChatroomCacheManager
 
 fun ChatUserInfo.transfer() = UserEntity(userId, nickname, avatarUrl, gender,ext )
 fun UserEntity.transfer(): UserInfoProtocol {
