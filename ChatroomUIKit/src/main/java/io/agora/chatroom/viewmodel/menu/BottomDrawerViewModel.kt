@@ -13,11 +13,11 @@ import kotlinx.coroutines.flow.asStateFlow
  */
 open class BottomDrawerViewModel<T> (
     private val isDarkTheme: Boolean? = false,
-    private val isShowTitle:Boolean = true,
-    private val isShowCancel:Boolean = true,
+    private val isShowTitle:Boolean = false,
+    private val isShowCancel:Boolean = false,
     private val title:String = "",
     private val cancel:Int = R.string.compose_bottom_drawer_cancel,
-    private val contentList: List<T> = emptyList(),
+    var contentList: List<T> = emptyList(),
 ): ViewModel() {
 
     /**
