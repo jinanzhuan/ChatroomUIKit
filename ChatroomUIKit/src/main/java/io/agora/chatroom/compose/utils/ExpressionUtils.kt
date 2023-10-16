@@ -1,12 +1,30 @@
 package io.agora.chatroom.compose.utils
 
+import android.util.Log
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.InlineTextContent
+import androidx.compose.foundation.text.appendInlineContent
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.Placeholder
+import androidx.compose.ui.text.PlaceholderVerticalAlign
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import io.agora.chatroom.data.RegexList
 import io.agora.chatroom.data.emojiList
+import io.agora.chatroom.data.emojiMap
+import io.agora.chatroom.model.emoji.RegexEntity
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 
-class ExpressionUtils {
-    companion object{
+object ExpressionUtils {
         const val ee_1 :String = "U+1F600"
         const val ee_2 :String = "U+1F604"
         const val ee_3 :String = "U+1F609"
@@ -59,32 +77,76 @@ class ExpressionUtils {
         const val ee_50 :String = "U+1F490"
         const val ee_51 :String = "U+1F382"
         const val ee_52 :String = "U+1F381"
-    }
 
     fun containsKey(key:String):Boolean{
         var isContains = false
         emojiList.forEach {
-            if (it.emojiText.contains(key, false)) {//false 不忽略大小写
+            val startIndex = key.indexOf(it.emojiText)
+            Log.e("apex","containsKey $startIndex  ${it.emojiText}")
+            if (startIndex != -1){
                 isContains = true
             }
         }
         return isContains
     }
 
-    fun getSmiledText(text:CharSequence): AnnotatedString {
-        if (!containsKey(text.toString())){
+    fun getSmiledText(content:String,inlineMap:MutableMap<String,InlineTextContent>): AnnotatedString {
+        if (!containsKey(content)){
             return buildAnnotatedString {
-                append(text)
+                append(content)
             }
         }
-
-        var result = text
-
         val annotatedText = buildAnnotatedString {
+            var exchange = content
+            var combination = ""
+            var insertIndex = -1
+            var oldTagLength = 0
 
-            emojiList.forEach {
-                if (result.contains(it.emojiText)) {
+            val insertMap = mutableMapOf<Int,RegexEntity>()
+            val roleList = getRole(content)
 
+            for (i in 0 until roleList.size){
+                var before = ""
+                var after = ""
+
+                if (roleList[i].startIndex > 0){
+                    before = exchange.substring(0,roleList[i].startIndex - oldTagLength)
+                }
+                after = exchange.substring(roleList[i].endIndex - oldTagLength)
+
+                if (before.isEmpty()){
+                    withStyle(style = SpanStyle()) {
+                        appendInlineContent(roleList[i].emojiTag)
+                    }
+                    addLienMap(roleList[i],inlineMap)
+                    combination = before + after
+                    exchange = combination
+                    oldTagLength += roleList[i].emojiTag.length
+                } else{
+                    combination = before + after
+                    exchange = combination
+                    insertIndex = roleList[i].startIndex - oldTagLength - 1
+                    if (insertMap.containsKey(insertIndex)){
+                        roleList[i].count +=1
+                    }
+                    insertMap[insertIndex] = roleList[i]
+                    oldTagLength += roleList[i].emojiTag.length
+                }
+            }
+
+            combination.let { cb->
+                cb.withIndex().forEach { (i, char) ->
+                    append(char)
+                    insertMap.forEach {
+                        if (i == it.key){
+                            for (i in 0 until it.value.count) {
+                                withStyle(style = SpanStyle()) {
+                                    appendInlineContent(it.value.emojiTag)
+                                }
+                                addLienMap(it.value,inlineMap)
+                            }
+                        }
+                    }
                 }
             }
 
@@ -92,13 +154,56 @@ class ExpressionUtils {
         return annotatedText
     }
 
-    fun String.replaceWithImages(): CharSequence {
-        var result = this
-        emojiList.forEach {
-            if (result.contains(it.emojiText)) {
-                result = result.replace(it.emojiText, "<img src=\"${it.icon}\"/>")
+    fun addLienMap(regex:RegexEntity,inLienMap:MutableMap<String,InlineTextContent>){
+        inLienMap[regex.emojiTag] = InlineTextContent(
+            placeholder = Placeholder(18.sp,18.sp, PlaceholderVerticalAlign.Center),
+            children = {
+                Image(
+                    modifier = Modifier
+                        .size(18.dp, 18.dp)
+                        .padding(start = 4.dp),
+                    painter = painterResource(id = regex.emojiIcon),
+                    contentDescription = "emoji"
+                )
+            }
+        )
+    }
+
+    fun getRole(content:String):MutableList<RegexEntity>{
+        val list = mutableListOf<RegexEntity>()
+        // 将list元素拼接成正则表达式
+        val regexBuilder = StringBuilder()
+        regexBuilder.append("(")
+        for (keyword in RegexList) {
+            regexBuilder.append(keyword).append("|")
+        }
+        regexBuilder.deleteCharAt(regexBuilder.length - 1) // 移除最后一个多余的 |
+        regexBuilder.append(")")
+        val regex = regexBuilder.toString()
+
+        Log.e("apex","正则表达: $regex")
+
+        // 创建 Pattern 对象，用于匹配正则表达式
+        val pattern: Pattern = Pattern.compile(regex)
+        val matcher: Matcher = pattern.matcher(content)
+
+        // 筛选匹配到的字符
+        while (matcher.find()) {
+            val matchedString = matcher.group()
+            val icon = emojiMap[matchedString]
+            val startIndex = matcher.start()
+            val endIndex = matcher.end()
+            icon?.let {
+                val regexEntity = RegexEntity(
+                    startIndex = startIndex,
+                    endIndex = endIndex,
+                    emojiTag = matchedString,
+                    emojiIcon = it
+                )
+                list.add(regexEntity)
             }
         }
-        return result
+        return list
     }
+
 }

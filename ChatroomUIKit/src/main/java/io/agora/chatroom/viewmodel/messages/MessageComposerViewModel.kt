@@ -11,9 +11,13 @@ import kotlinx.coroutines.flow.StateFlow
 
 class MessageComposerViewModel(
     private val isDarkTheme:Boolean?,
+    private val emojiColumns:Int,
     private val composerChatBarController: ComposerChatBarController,
     private val menuItemResource: List<UIChatBarMenuItem>,
 ) : ViewModel(){
+
+    private val _columns : MutableState<Int> = mutableStateOf(emojiColumns)
+    var eColumns = _columns
 
     private val _showEmoji : MutableState<Boolean> = mutableStateOf(false)
     var isShowEmoji = _showEmoji
@@ -67,6 +71,7 @@ class MessageComposerViewModel(
      */
     fun setMessageInput(value: String): Unit = composerChatBarController.setMessageInput(value)
 
+    fun setEmojiInput(value: String): Unit = composerChatBarController.setEmojiInput(value)
 
     /**
      * Clears the input and the current state of the composer.

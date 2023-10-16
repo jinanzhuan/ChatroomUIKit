@@ -16,12 +16,12 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import io.agora.chatroom.commons.ComposeMessagesState
+import io.agora.chatroom.commons.ComposeMessageListState
 
 @Composable
 fun ComposeMessages(
     modifier: Modifier = Modifier,
-    messagesState: ComposeMessagesState,
+    messagesState: ComposeMessageListState,
     contentPadding: PaddingValues = PaddingValues(vertical = 16.dp),
     itemContent: @Composable (Int, ComposeMessageListItemState) -> Unit,
 ) {

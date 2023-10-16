@@ -9,11 +9,11 @@ import io.agora.chatroom.compose.chatmessagelist.JoinedMessageState
 
 class ComposeChatListController(
     private val roomId: String,
-    private val messageState:ComposeMessagesState,
+    private val messageState:ComposeMessageListState,
     private val chatService: ChatroomService
 ){
 
-    val currentComposeMessagesState: ComposeMessagesState
+    val currentComposeMessageListState: ComposeMessageListState
         get() = messageState
 
     fun addTextMessage(message:ChatMessage){
