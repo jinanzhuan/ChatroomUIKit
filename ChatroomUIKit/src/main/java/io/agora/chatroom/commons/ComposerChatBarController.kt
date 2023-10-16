@@ -66,12 +66,15 @@ class ComposerChatBarController(
      *
      * @param value Current state value.
      */
-    public fun setMessageInput(value: String) {
+    fun setMessageInput(value: String) {
         this.input.value = value
     }
 
+    fun setEmojiInput(value: String){
+        this.input.value += value
+    }
 
-    public fun clearData() {
+    fun clearData() {
         input.value = ""
         validationErrors.value = emptyList()
     }

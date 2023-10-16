@@ -70,7 +70,7 @@ fun MessageList(
         )
     },
  ){
-    val messagesState = viewModel.currentComposeMessagesState
+    val messagesState = viewModel.currentComposeMessageListState
 
     val loading = remember { mutableStateOf(messagesState.isLoading) }
     val isLoading by loading

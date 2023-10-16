@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import io.agora.chatroom.UIChatroomContext
 import io.agora.chatroom.ui.UIChatroomService
 import io.agora.chatroom.commons.ComposeChatListController
-import io.agora.chatroom.commons.ComposeMessagesState
+import io.agora.chatroom.commons.ComposeMessageListState
 import io.agora.chatroom.commons.ComposerChatBarController
 import io.agora.chatroom.model.UICapabilities
 import io.agora.chatroom.model.UIChatBarMenuItem
@@ -23,6 +23,7 @@ class MessagesViewModelFactory(
     private val showAvatar: Boolean = true,
     private val dateSeparatorColor: Color = secondaryColor8,
     private val nickNameColor: Color = primaryColor8,
+    private val emojiColumns:Int = 7,
     private val menuItemResource: List<UIChatBarMenuItem> = listOf(
         UIChatBarMenuItem(R.drawable.icon_bottom_bar_more, 1),
         UIChatBarMenuItem(R.drawable.icon_bottom_bar_gift, 0)
@@ -37,6 +38,7 @@ class MessagesViewModelFactory(
             MessageComposerViewModel(
                 isDarkTheme = isDarkTheme,
                 menuItemResource = menuItemResource,
+                emojiColumns = emojiColumns,
                 composerChatBarController = ComposerChatBarController(
                     roomId = service.getRoomInfo().roomId,
                     chatService = service.getChatService(),
@@ -55,7 +57,7 @@ class MessagesViewModelFactory(
                 nickNameColor = nickNameColor,
                 composeChatListController = ComposeChatListController(
                     roomId = service.getRoomInfo().roomId,
-                    messageState = ComposeMessagesState(),
+                    messageState = ComposeMessageListState(),
                     chatService = service.getChatService()
                 )
 
