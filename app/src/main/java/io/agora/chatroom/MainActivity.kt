@@ -29,7 +29,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.agora.chatroom.ui.UIChatroomActivity
 import io.agora.chatroom.compose.drawer.ComposeBottomDrawer
-import io.agora.chatroom.compose.drawer.DrawerType
 import io.agora.chatroom.compose.drawer.ComposeMenuBottomDrawer
 import io.agora.chatroom.data.initialLongClickMenu
 import io.agora.chatroom.data.testMenuList1
@@ -63,11 +62,9 @@ class MainActivity : ComponentActivity() {
                         Log.e("apex","onItemClick $it")
                         when (it) {
                             1 -> {
-                                viewModel1.setCurrentDrawer(DrawerType.MENU_LIST)
                                 viewModel1.openDrawer()
                             }
                             2 -> {
-                                viewModel2.setCurrentDrawer(DrawerType.DEFAULT)
                                 viewModel2.openDrawer()
                             }
                             3 -> {
@@ -92,7 +89,7 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ShowDefaultComposeDrawer(viewModel:MenuViewModel){
-    ComposeBottomDrawer(
+    ComposeMenuBottomDrawer(
         viewModel = viewModel,
         onListItemClick = { index,item ->
             Log.e("apex"," default item: $index ${item.title}")
@@ -102,6 +99,7 @@ fun ShowDefaultComposeDrawer(viewModel:MenuViewModel){
         }
     )
 }
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ShowComposeMenuDrawer(viewModel:MenuViewModel){
     ComposeMenuBottomDrawer(
@@ -181,9 +179,6 @@ fun Greeting(viewModel1: MenuViewModel,viewModel2: MenuViewModel,onItemClick:(in
             onItemClick(1)
 
 //            ShowComposeMenuDrawer(viewModel = viewModel1)
-
-
-            viewModel1.setCurrentDrawer(DrawerType.MENU_LIST)
             viewModel1.openDrawer()
 
         }) {
@@ -192,7 +187,6 @@ fun Greeting(viewModel1: MenuViewModel,viewModel2: MenuViewModel,onItemClick:(in
         Spacer(modifier = Modifier.height(8.dp))
         Button(onClick = {
             onItemClick(2)
-            viewModel2.setCurrentDrawer(DrawerType.DEFAULT)
             viewModel2.openDrawer()
 
         }) {

@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.ComposeView
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.agora.chatroom.ui.UIChatroomService
-import io.agora.chatroom.compose.drawer.ComposeBottomDrawer
+import io.agora.chatroom.compose.drawer.ComposeMenuBottomDrawer
 import io.agora.chatroom.data.initialLongClickMenu
 import io.agora.chatroom.model.UIComposeDrawerItem
 import io.agora.chatroom.theme.ChatroomUIKitTheme
@@ -63,7 +63,7 @@ class UIChatRoomBinder(
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
     fun ShowMenuComposeDrawer(){
-        ComposeBottomDrawer(
+        ComposeMenuBottomDrawer(
             viewModel = menuViewModel,
             onListItemClick = { index,item ->
                 Log.e("apex"," default item: $index ${item.title}")

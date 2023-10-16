@@ -24,4 +24,9 @@
 
     <string name="stream_compose_cd_message_item" translatable="false">Message item</string>
 
+
+    <!-- Compose default text -->
+    <string name="compose_bottom_drawer_cancel">Cancel</string>
+    <string name="compose_empty_text"></string>
+
 </resources>

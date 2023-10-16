@@ -1,6 +1,5 @@
 package io.agora.chatroom.compose.drawer
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -12,10 +11,14 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.agora.chatroom.model.UIComposeDrawerItem
 import io.agora.chatroom.theme.AlphabetBodyLarge
@@ -33,44 +36,43 @@ import io.agora.chatroom.theme.primaryColor5
 import io.agora.chatroom.theme.primaryColor6
 import io.agora.chatroom.viewmodel.menu.MenuViewModel
 import io.agora.chatroom.uikit.R
+import io.agora.chatroom.viewmodel.menu.BottomDrawerViewModel
 import kotlinx.coroutines.launch
 
 
-enum class DrawerType {
-    MENU_LIST,//长按菜单
-    MUTED_LIST,//禁言列表
-    PARTICIPANTS_LIST,//成员列表
-    MUTED_MENU,//禁言菜单
-    CUSTOM,//自定义类型
-    DEFAULT,//默认类型
-}
-
 @ExperimentalMaterialApi
 @Composable
-fun ComposeBottomDrawer(
-    viewModel: MenuViewModel,
+fun <T> ComposeBottomDrawer(
+    viewModel: BottomDrawerViewModel<T>,
     modifier: Modifier = Modifier,
-    onListItemClick: (Int, UIComposeDrawerItem) -> Unit = { index:Int, item: UIComposeDrawerItem ->},
-    drawerContent: @Composable () -> Unit = { DefaultDrawerContent(viewModel,onListItemClick) },
+    drawerContent: @Composable () -> Unit = {},
     screenContent: @Composable () -> Unit = {},
-    onCancelListener:() -> Unit = {}
+    onCancelListener:() -> Unit = {},
+    drawerShape: Shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+    drawerStateValue: BottomDrawerValue = BottomDrawerValue.Closed,
+    gesturesEnabled: Boolean = true,
+    drawerElevation: Dp = DrawerDefaults.Elevation,
+    drawerBackgroundColor: Color = if (viewModel.getTheme == true) neutralColor1 else neutralColor98,
+    drawerContentColor: Color = contentColorFor(drawerBackgroundColor),
+    scrimColor: Color = DrawerDefaults.scrimColor,
+    contentDescription: String? = null,
 ) {
-    val scope = rememberCoroutineScope()
-    val isDarkTheme = viewModel.getTheme
-    val title = viewModel.getTitle
-    val isShowTitle = viewModel.getIsShowTitle
-    val isShowCancel = viewModel.getIsShowCancel
-
-    val isBottomDrawerVisible = viewModel.isBottomDrawerVisible.value
-    val bottomDrawerState =  rememberBottomDrawerState(initialValue = BottomDrawerValue.Closed)
-
-    if (viewModel.currentDrawerType.value == DrawerType.DEFAULT){
+    if (viewModel.isEnable()) {
+        val isBottomDrawerVisible = viewModel.isBottomDrawerVisible.value
+        val drawerState = rememberBottomDrawerState(drawerStateValue)
+        val scope = rememberCoroutineScope()
+        val isDarkTheme = viewModel.getTheme
+        val isShowTitle = viewModel.getIsShowTitle
+        val isShowCancel = viewModel.getIsShowCancel
         BottomDrawer(
             modifier = modifier,
-            drawerShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
-            drawerBackgroundColor = if (isDarkTheme == true) neutralColor1 else neutralColor98,
-            drawerState = bottomDrawerState,
-            gesturesEnabled = true,
+            drawerShape = drawerShape,
+            drawerBackgroundColor = drawerBackgroundColor,
+            drawerContentColor = drawerContentColor,
+            scrimColor = scrimColor,
+            drawerState = drawerState,
+            gesturesEnabled = gesturesEnabled,
+            drawerElevation = drawerElevation,
             drawerContent = {
                 Column(
                     modifier = modifier
@@ -83,7 +85,7 @@ fun ComposeBottomDrawer(
                             id = if (isDarkTheme == true)
                                 R.drawable.icon_rectangle_dark else R.drawable.icon_rectangle_light
                         ),
-                        contentDescription = "icon"
+                        contentDescription = contentDescription
                     )
 
                     if (isShowTitle){
@@ -92,7 +94,7 @@ fun ComposeBottomDrawer(
                                 .fillMaxWidth()
                                 .padding(top = 13.dp, bottom = 13.dp),
                             textAlign = TextAlign.Center,
-                            text = title,
+                            text = viewModel.getTitle,
                             color = if (isDarkTheme == true) neutralColor6 else neutralColor5,
                             style = AlphabetBodyMedium
                         )
@@ -115,7 +117,7 @@ fun ComposeBottomDrawer(
                                     viewModel.closeDrawer()
                                 },
                             textAlign = TextAlign.Center,
-                            text = "Cancel",
+                            text = stringResource(id = viewModel.getCancelText),
                             color = if (isDarkTheme == true) primaryColor6 else primaryColor5,
                             style = AlphabetBodyLarge
                         )
@@ -123,33 +125,68 @@ fun ComposeBottomDrawer(
                 }
             },
             content = {
-                Box(Modifier.padding(bottom = with(LocalDensity.current) { bottomDrawerState.offset.value.dp })) {
+                Box(Modifier.padding(bottom = with(LocalDensity.current) { drawerState.offset.value.dp })) {
                     screenContent()
                 }
             }
         )
 
-        LaunchedEffect(bottomDrawerState.isOpen) {
-            if (!bottomDrawerState.isOpen) {
-                // 抽屉隐藏时执行的代码
+        LaunchedEffect(drawerState.isOpen) {
+            if (!drawerState.isOpen) {
                 viewModel.closeDrawer()
+                if (viewModel.isVisible()) {
+                    viewModel.setVisible(false)
+                    viewModel.setEnable(false)
+                }
+            } else {
+                viewModel.setVisible(true)
             }
         }
 
         LaunchedEffect(isBottomDrawerVisible){
-            Log.e("apex","isBottomDrawerVisible:  $isBottomDrawerVisible")
             if (isBottomDrawerVisible){
                 scope.launch {
-                    bottomDrawerState.open()
+                    drawerState.open()
                 }
             }else{
                 scope.launch {
-                    bottomDrawerState.close()
+                    drawerState.close()
                 }
             }
         }
     }
+}
 
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun ComposeMenuBottomDrawer(
+    viewModel: MenuViewModel,
+    modifier: Modifier = Modifier,
+    onListItemClick: (Int, UIComposeDrawerItem) -> Unit,
+    drawerContent: @Composable () -> Unit = { DefaultDrawerContent(viewModel, onListItemClick)},
+    screenContent: @Composable () -> Unit = {},
+    onCancelListener:() -> Unit = {},
+    drawerShape: Shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+    drawerStateValue: BottomDrawerValue = BottomDrawerValue.Closed,
+    gesturesEnabled: Boolean = true,
+    drawerElevation: Dp = DrawerDefaults.Elevation,
+    drawerBackgroundColor: Color = if (viewModel.getTheme == true) neutralColor1 else neutralColor98,
+    drawerContentColor: Color = contentColorFor(drawerBackgroundColor),
+    scrimColor: Color = DrawerDefaults.scrimColor,
+) {
+    ComposeBottomDrawer(viewModel = viewModel,
+        modifier = modifier,
+        drawerShape = drawerShape,
+        drawerBackgroundColor = drawerBackgroundColor,
+        drawerContentColor = drawerContentColor,
+        scrimColor = scrimColor,
+        drawerStateValue = drawerStateValue,
+        gesturesEnabled = gesturesEnabled,
+        drawerElevation = drawerElevation,
+        drawerContent = drawerContent,
+        screenContent = screenContent,
+        onCancelListener = onCancelListener
+    )
 }
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -208,15 +245,10 @@ fun JetPackComposeBottomDrawer() {
     ComposeBottomDrawer(
         viewModel = MenuViewModel(),
         drawerContent = {
-            // 设置Drawer content
             Text("Drawer Content")
         },
         screenContent = {
-            // 设置Screen content
             Text("Screen Content")
-        },
-        onListItemClick = { index,item ->
-            Log.e("apex"," item: $index ${item.title}")
         },
         onCancelListener = {
 
