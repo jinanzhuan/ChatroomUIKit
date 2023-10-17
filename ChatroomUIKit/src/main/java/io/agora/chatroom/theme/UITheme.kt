@@ -40,7 +40,6 @@ fun ChatroomUIKitTheme(
     typography: UITypography = UITypography.defaultTypography(),
     content: @Composable () -> Unit
 ) {
-    Log.e("ChatroomUIKitTheme", "ChatroomUIKitTheme: isDarkTheme = $isDarkTheme")
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {

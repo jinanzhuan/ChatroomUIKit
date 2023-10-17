@@ -233,7 +233,7 @@ data class UIColors(
             onBackground = neutralColor10,
             error = errorColor50,
             onError = errorColor100,
-            outline = neutralColor90,
+            outline = neutralColor70,
             outlineVariant = neutralColor90,
         )
 
@@ -247,7 +247,7 @@ data class UIColors(
             onBackground = neutralColor98,
             error = errorColor60,
             onError = errorColor100,
-            outline = neutralColor20,
+            outline = neutralColor70,
             outlineVariant = neutralColor20,
         )
     }
