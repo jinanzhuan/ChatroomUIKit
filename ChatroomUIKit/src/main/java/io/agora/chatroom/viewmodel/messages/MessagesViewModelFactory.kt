@@ -1,5 +1,6 @@
 package io.agora.chatroom.viewmodel.messages
 
+import android.content.Context
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -8,13 +9,17 @@ import io.agora.chatroom.ui.UIChatroomService
 import io.agora.chatroom.commons.ComposeChatListController
 import io.agora.chatroom.commons.ComposeMessageListState
 import io.agora.chatroom.commons.ComposerChatBarController
+import io.agora.chatroom.data.parsingGift
 import io.agora.chatroom.model.UICapabilities
 import io.agora.chatroom.model.UIChatBarMenuItem
+import io.agora.chatroom.model.gift.AUIGiftTabInfo
 import io.agora.chatroom.theme.primaryColor80
 import io.agora.chatroom.theme.secondaryColor80
 import io.agora.chatroom.uikit.R
+import io.agora.chatroom.viewmodel.gift.ComposeGiftViewModel
 
 class MessagesViewModelFactory(
+    private val context: Context,
     private val service: UIChatroomService,
     private val isDarkTheme: Boolean? = UIChatroomContext.shared.getCurrentTheme(),
     private val showDateSeparators: Boolean = true,
@@ -28,6 +33,7 @@ class MessagesViewModelFactory(
         UIChatBarMenuItem(R.drawable.icon_bottom_bar_more, 1),
         UIChatBarMenuItem(R.drawable.icon_bottom_bar_gift, 0)
     ),
+    private val giftTabInfo: List<AUIGiftTabInfo> = parsingGift(context)
 ) : ViewModelProvider.Factory{
 
     /**
@@ -61,6 +67,11 @@ class MessagesViewModelFactory(
                     chatService = service.getChatService()
                 )
 
+            )
+        },
+        ComposeGiftViewModel::class.java to {
+            ComposeGiftViewModel(
+                giftTabInfo = giftTabInfo
             )
         },
     )
