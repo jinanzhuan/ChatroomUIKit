@@ -10,9 +10,11 @@ import io.agora.chatroom.commons.ComposeMessageListState
 import io.agora.chatroom.commons.ComposerChatBarController
 import io.agora.chatroom.model.UICapabilities
 import io.agora.chatroom.model.UIChatBarMenuItem
+import io.agora.chatroom.model.gift.AUIGiftTabInfo
 import io.agora.chatroom.theme.primaryColor8
 import io.agora.chatroom.theme.secondaryColor8
 import io.agora.chatroom.uikit.R
+import io.agora.chatroom.viewmodel.gift.ComposeGiftViewModel
 
 class MessagesViewModelFactory(
     private val service: UIChatroomService,
@@ -28,6 +30,7 @@ class MessagesViewModelFactory(
         UIChatBarMenuItem(R.drawable.icon_bottom_bar_more, 1),
         UIChatBarMenuItem(R.drawable.icon_bottom_bar_gift, 0)
     ),
+    private val giftTabInfo: AUIGiftTabInfo? = null
 ) : ViewModelProvider.Factory{
 
     /**
@@ -61,6 +64,11 @@ class MessagesViewModelFactory(
                     chatService = service.getChatService()
                 )
 
+            )
+        },
+        ComposeGiftViewModel::class.java to {
+            ComposeGiftViewModel(
+                giftTabList = giftTabInfo
             )
         },
     )
