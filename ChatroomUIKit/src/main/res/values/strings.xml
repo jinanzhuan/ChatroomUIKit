@@ -2,7 +2,8 @@
 <resources>
     <string name="ui_text">测试tab</string>
 
-
+    <string name="cancel">Cancel</string>
+    <string name="Confirm">Confirm</string>
 
 
     <string name="stream_compose_cd_message_input" translatable="false">Message input</string>
