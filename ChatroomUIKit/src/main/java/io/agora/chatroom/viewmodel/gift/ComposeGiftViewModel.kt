@@ -1,10 +1,19 @@
 package io.agora.chatroom.viewmodel.gift
 
-import androidx.lifecycle.ViewModel
 import io.agora.chatroom.model.gift.AUIGiftTabInfo
+import io.agora.chatroom.viewmodel.menu.BottomSheetViewModel
 
 class ComposeGiftViewModel(
-    val giftTabList: AUIGiftTabInfo?
-) : ViewModel() {
+    isDarkTheme: Boolean? = false,
+    isShowTitle:Boolean = false,
+    isShowCancel:Boolean = false,
+    title:String = "",
+    giftTabInfo:List<AUIGiftTabInfo>,
+    isExpanded: Boolean = false,
+) : BottomSheetViewModel<AUIGiftTabInfo>(
+    isDarkTheme, isShowTitle, isShowCancel, title,
+    isExpanded = isExpanded,
+    contentList = giftTabInfo
+){
 
 }

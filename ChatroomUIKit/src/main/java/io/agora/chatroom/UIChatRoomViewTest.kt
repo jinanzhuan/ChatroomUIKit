@@ -75,6 +75,7 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener {
         mRoomViewBinding.composeChatroom.setContent {
 
             val factory = buildViewModelFactory(
+                context = context,
                 service = service
             )
 
@@ -140,6 +141,7 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener {
     }
 
     private fun buildViewModelFactory(
+        context: Context,
         service: UIChatroomService,
         showDateSeparators: Boolean = true,
         showLabel: Boolean = true,
@@ -149,6 +151,7 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener {
         nickNameColor: Color = primaryColor80,
     ): MessagesViewModelFactory {
         return MessagesViewModelFactory(
+            context = context,
             service = service,
             showDateSeparators = showDateSeparators,
             showLabel = showLabel,

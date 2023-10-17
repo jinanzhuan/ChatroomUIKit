@@ -31,6 +31,7 @@ import io.agora.chatroom.ui.UIChatroomActivity
 import io.agora.chatroom.compose.drawer.ComposeBottomSheet
 import io.agora.chatroom.compose.drawer.ComposeMenuBottomSheet
 import io.agora.chatroom.data.initialLongClickMenu
+import io.agora.chatroom.data.parsingGift
 import io.agora.chatroom.data.testMenuList1
 import io.agora.chatroom.model.UIComposeSheetItem
 import io.agora.chatroom.theme.BodyLarge
@@ -54,7 +55,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-
+                    Log.e("apex","gift: ${parsingGift(this)}")
                     ShowComposeMenuDrawer(viewModel = viewModel1)
                     ShowDefaultComposeDrawer(viewModel = viewModel2)
 
