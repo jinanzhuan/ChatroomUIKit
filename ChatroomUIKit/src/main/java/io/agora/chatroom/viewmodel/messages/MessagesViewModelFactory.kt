@@ -11,8 +11,8 @@ import io.agora.chatroom.commons.ComposerChatBarController
 import io.agora.chatroom.model.UICapabilities
 import io.agora.chatroom.model.UIChatBarMenuItem
 import io.agora.chatroom.model.gift.AUIGiftTabInfo
-import io.agora.chatroom.theme.primaryColor8
-import io.agora.chatroom.theme.secondaryColor8
+import io.agora.chatroom.theme.primaryColor80
+import io.agora.chatroom.theme.secondaryColor80
 import io.agora.chatroom.uikit.R
 import io.agora.chatroom.viewmodel.gift.ComposeGiftViewModel
 
@@ -23,8 +23,8 @@ class MessagesViewModelFactory(
     private val showLabel: Boolean = true,
     private val showGift: Boolean = true,
     private val showAvatar: Boolean = true,
-    private val dateSeparatorColor: Color = secondaryColor8,
-    private val nickNameColor: Color = primaryColor8,
+    private val dateSeparatorColor: Color = secondaryColor80,
+    private val nickNameColor: Color = primaryColor80,
     private val emojiColumns:Int = 7,
     private val menuItemResource: List<UIChatBarMenuItem> = listOf(
         UIChatBarMenuItem(R.drawable.icon_bottom_bar_more, 1),

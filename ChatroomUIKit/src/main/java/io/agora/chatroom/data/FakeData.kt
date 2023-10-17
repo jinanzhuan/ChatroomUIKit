@@ -1,24 +1,24 @@
 package io.agora.chatroom.data
 
-import io.agora.chatroom.model.UIComposeDrawerItem
+import io.agora.chatroom.model.UIComposeSheetItem
 
 val initialLongClickMenu = listOf(
-    UIComposeDrawerItem("Translate"),
-    UIComposeDrawerItem("Delete"),
-    UIComposeDrawerItem("Mute"),
-    UIComposeDrawerItem("Report")
+    UIComposeSheetItem("Translate"),
+    UIComposeSheetItem("Delete"),
+    UIComposeSheetItem("Mute"),
+    UIComposeSheetItem("Report", true)
 )
 
 val testMenuList = listOf(
-    UIComposeDrawerItem("Item 1"),
-    UIComposeDrawerItem("Item 2"),
-    UIComposeDrawerItem("Item 3")
+    UIComposeSheetItem("Item 1"),
+    UIComposeSheetItem("Item 2"),
+    UIComposeSheetItem("Item 3")
 )
 
 val testMenuList1 = listOf(
-    UIComposeDrawerItem("Item 1"),
-    UIComposeDrawerItem("Item 2"),
-    UIComposeDrawerItem("Item 3"),
-    UIComposeDrawerItem("Item 4")
+    UIComposeSheetItem("Item 1"),
+    UIComposeSheetItem("Item 2"),
+    UIComposeSheetItem("Item 3"),
+    UIComposeSheetItem("Item 4")
 
 )

@@ -1,35 +1,36 @@
 package io.agora.chatroom.theme
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 
 // primaryColor
 var primaryHue: Float = 203f
 val primaryColor0 = primaryColor(LightnessThemeStyle.ZERO)
-val primaryColor1 = primaryColor(LightnessThemeStyle.ONE)
-val primaryColor2 = primaryColor(LightnessThemeStyle.TWO)
-val primaryColor3 = primaryColor(LightnessThemeStyle.THREE)
-val primaryColor4 = primaryColor(LightnessThemeStyle.FOUR)
-val primaryColor5 = primaryColor(LightnessThemeStyle.FIVE)
-val primaryColor6 = primaryColor(LightnessThemeStyle.SIX)
-val primaryColor7 = primaryColor(LightnessThemeStyle.SEVEN)
-val primaryColor8 = primaryColor(LightnessThemeStyle.EIGHT)
-val primaryColor9 = primaryColor(LightnessThemeStyle.NINE)
+val primaryColor10 = primaryColor(LightnessThemeStyle.TEN)
+val primaryColor20 = primaryColor(LightnessThemeStyle.TWENTY)
+val primaryColor30 = primaryColor(LightnessThemeStyle.THIRTY)
+val primaryColor40 = primaryColor(LightnessThemeStyle.FORTY)
+val primaryColor50 = primaryColor(LightnessThemeStyle.FIFTY)
+val primaryColor60 = primaryColor(LightnessThemeStyle.SIXTY)
+val primaryColor70 = primaryColor(LightnessThemeStyle.SEVENTY)
+val primaryColor80 = primaryColor(LightnessThemeStyle.EIGHTY)
+val primaryColor90 = primaryColor(LightnessThemeStyle.NINETY)
 val primaryColor95 = primaryColor(LightnessThemeStyle.NINETY_FIVE)
 val primaryColor98 = primaryColor(LightnessThemeStyle.NINETY_EIGHT)
-val primaryColor99 = primaryColor(LightnessThemeStyle.NINETY_NINE)
 val primaryColor100 = primaryColor(LightnessThemeStyle.ONE_HUNDRED)
 
 var primaryEndHue:Float = 233f
-val primaryEndHue2 = primaryEndColor(LightnessThemeStyle.TWO)
-val primaryEndHue3 = primaryEndColor(LightnessThemeStyle.THREE)
-val primaryEndHue4 = primaryEndColor(LightnessThemeStyle.FOUR)
-val primaryEndHue5 = primaryEndColor(LightnessThemeStyle.FIVE)
-val primaryEndHue6 = primaryEndColor(LightnessThemeStyle.SIX)
-val primaryEndHue7 = primaryEndColor(LightnessThemeStyle.SEVEN)
+val primaryEndHue20 = primaryEndColor(LightnessThemeStyle.TWENTY)
+val primaryEndHue30 = primaryEndColor(LightnessThemeStyle.THIRTY)
+val primaryEndHue40 = primaryEndColor(LightnessThemeStyle.FORTY)
+val primaryEndHue50 = primaryEndColor(LightnessThemeStyle.FIFTY)
+val primaryEndHue60 = primaryEndColor(LightnessThemeStyle.SIXTY)
+val primaryEndHue70 = primaryEndColor(LightnessThemeStyle.SEVENTY)
 val primaryEndHue75 = primaryEndColor(LightnessThemeStyle.SEVENTY_FIVE)
-val primaryEndHue8 = primaryEndColor(LightnessThemeStyle.EIGHT)
+val primaryEndHue80 = primaryEndColor(LightnessThemeStyle.EIGHTY)
 val primaryEndHue85 = primaryEndColor(LightnessThemeStyle.EIGHTY_FIVE)
-val primaryEndHue9 = primaryEndColor(LightnessThemeStyle.NINE)
+val primaryEndHue90 = primaryEndColor(LightnessThemeStyle.NINETY)
 val primaryEndHue95 = primaryEndColor(LightnessThemeStyle.NINETY_FIVE)
 val primaryEndHue98 = primaryEndColor(LightnessThemeStyle.NINETY_EIGHT)
 val primaryEndHue100 = primaryEndColor(LightnessThemeStyle.ONE_HUNDRED)
@@ -37,112 +38,108 @@ val primaryEndHue100 = primaryEndColor(LightnessThemeStyle.ONE_HUNDRED)
 // secondaryColor
 var secondaryHue: Float = 155f
 val secondaryColor0 = secondaryColor(LightnessThemeStyle.ZERO)
-val secondaryColor1 = secondaryColor(LightnessThemeStyle.ONE)
-val secondaryColor2 = secondaryColor(LightnessThemeStyle.TWO)
-val secondaryColor3 = secondaryColor(LightnessThemeStyle.THREE)
-val secondaryColor4 = secondaryColor(LightnessThemeStyle.FOUR)
-val secondaryColor5 = secondaryColor(LightnessThemeStyle.FIVE)
-val secondaryColor6 = secondaryColor(LightnessThemeStyle.SIX)
-val secondaryColor7 = secondaryColor(LightnessThemeStyle.SEVEN)
-val secondaryColor8 = secondaryColor(LightnessThemeStyle.EIGHT)
-val secondaryColor9 = secondaryColor(LightnessThemeStyle.NINE)
+val secondaryColor10 = secondaryColor(LightnessThemeStyle.TEN)
+val secondaryColor20 = secondaryColor(LightnessThemeStyle.TWENTY)
+val secondaryColor30 = secondaryColor(LightnessThemeStyle.THIRTY)
+val secondaryColor40 = secondaryColor(LightnessThemeStyle.FORTY)
+val secondaryColor50 = secondaryColor(LightnessThemeStyle.FIFTY)
+val secondaryColor60 = secondaryColor(LightnessThemeStyle.SIXTY)
+val secondaryColor70 = secondaryColor(LightnessThemeStyle.SEVENTY)
+val secondaryColor80 = secondaryColor(LightnessThemeStyle.EIGHTY)
+val secondaryColor90 = secondaryColor(LightnessThemeStyle.NINETY)
 val secondaryColor95 = secondaryColor(LightnessThemeStyle.NINETY_FIVE)
 val secondaryColor98 = secondaryColor(LightnessThemeStyle.NINETY_EIGHT)
-val secondaryColor99 = secondaryColor(LightnessThemeStyle.NINETY_NINE)
 val secondaryColor100 = secondaryColor(LightnessThemeStyle.ONE_HUNDRED)
 
 // errorColor
 var errorHue: Float = 350f
-val errorColor0 = errorColor(LightnessThemeStyle.ZERO)
-val errorColor1 = errorColor(LightnessThemeStyle.ONE)
-val errorColor2 = errorColor(LightnessThemeStyle.TWO)
-val errorColor3 = errorColor(LightnessThemeStyle.THREE)
-val errorColor4 = errorColor(LightnessThemeStyle.FOUR)
-val errorColor5 = errorColor(LightnessThemeStyle.FIVE)
-val errorColor6 = errorColor(LightnessThemeStyle.SIX)
-val errorColor7 = errorColor(LightnessThemeStyle.SEVEN)
-val errorColor8 = errorColor(LightnessThemeStyle.EIGHT)
-val errorColor9 = errorColor(LightnessThemeStyle.NINE)
+val errorColor00 = errorColor(LightnessThemeStyle.ZERO)
+val errorColor10 = errorColor(LightnessThemeStyle.TEN)
+val errorColor20 = errorColor(LightnessThemeStyle.TWENTY)
+val errorColor30 = errorColor(LightnessThemeStyle.THIRTY)
+val errorColor40 = errorColor(LightnessThemeStyle.FORTY)
+val errorColor50 = errorColor(LightnessThemeStyle.FIFTY)
+val errorColor60 = errorColor(LightnessThemeStyle.SIXTY)
+val errorColor70 = errorColor(LightnessThemeStyle.SEVENTY)
+val errorColor80 = errorColor(LightnessThemeStyle.EIGHTY)
+val errorColor90 = errorColor(LightnessThemeStyle.NINETY)
 val errorColor95 = errorColor(LightnessThemeStyle.NINETY_FIVE)
 val errorColor98 = errorColor(LightnessThemeStyle.NINETY_EIGHT)
-val errorColor99 = errorColor(LightnessThemeStyle.NINETY_NINE)
 val errorColor100 = errorColor(LightnessThemeStyle.ONE_HUNDRED)
 
 // neutralColor
 var neutralHue:Float = 203f
 val neutralColor0 = neutralColor(LightnessThemeStyle.ZERO)
-val neutralColor1 = neutralColor(LightnessThemeStyle.ONE)
-val neutralColor2 = neutralColor(LightnessThemeStyle.TWO)
-val neutralColor3 = neutralColor(LightnessThemeStyle.THREE)
-val neutralColor4 = neutralColor(LightnessThemeStyle.FOUR)
-val neutralColor5 = neutralColor(LightnessThemeStyle.FIVE)
-val neutralColor6 = neutralColor(LightnessThemeStyle.SIX)
-val neutralColor7 = neutralColor(LightnessThemeStyle.SEVEN)
-val neutralColor8 = neutralColor(LightnessThemeStyle.EIGHT)
-val neutralColor9 = neutralColor(LightnessThemeStyle.NINE)
+val neutralColor10 = neutralColor(LightnessThemeStyle.TEN)
+val neutralColor20 = neutralColor(LightnessThemeStyle.TWENTY)
+val neutralColor30 = neutralColor(LightnessThemeStyle.THIRTY)
+val neutralColor40 = neutralColor(LightnessThemeStyle.FORTY)
+val neutralColor50 = neutralColor(LightnessThemeStyle.FIFTY)
+val neutralColor60 = neutralColor(LightnessThemeStyle.SIXTY)
+val neutralColor70 = neutralColor(LightnessThemeStyle.SEVENTY)
+val neutralColor80 = neutralColor(LightnessThemeStyle.EIGHTY)
+val neutralColor90 = neutralColor(LightnessThemeStyle.NINETY)
 val neutralColor95 = neutralColor(LightnessThemeStyle.NINETY_FIVE)
 val neutralColor98 = neutralColor(LightnessThemeStyle.NINETY_EIGHT)
-val neutralColor99 = neutralColor(LightnessThemeStyle.NINETY_NINE)
 val neutralColor100 = neutralColor(LightnessThemeStyle.ONE_HUNDRED)
 
 // neutralSpecialColor
 var neutralSpecialHue: Float = 220f
 val neutralSpecialColor0 = neutralSpecialColor(LightnessThemeStyle.ZERO)
-val neutralSpecialColor1 = neutralSpecialColor(LightnessThemeStyle.ONE)
-val neutralSpecialColor2 = neutralSpecialColor(LightnessThemeStyle.TWO)
-val neutralSpecialColor3 = neutralSpecialColor(LightnessThemeStyle.THREE)
-val neutralSpecialColor4 = neutralSpecialColor(LightnessThemeStyle.FOUR)
-val neutralSpecialColor5 = neutralSpecialColor(LightnessThemeStyle.FIVE)
-val neutralSpecialColor6 = neutralSpecialColor(LightnessThemeStyle.SIX)
-val neutralSpecialColor7 = neutralSpecialColor(LightnessThemeStyle.SEVEN)
-val neutralSpecialColor8 = neutralSpecialColor(LightnessThemeStyle.EIGHT)
-val neutralSpecialColor9 = neutralSpecialColor(LightnessThemeStyle.NINE)
+val neutralSpecialColor10 = neutralSpecialColor(LightnessThemeStyle.TEN)
+val neutralSpecialColor20 = neutralSpecialColor(LightnessThemeStyle.TWENTY)
+val neutralSpecialColor30 = neutralSpecialColor(LightnessThemeStyle.THIRTY)
+val neutralSpecialColor40 = neutralSpecialColor(LightnessThemeStyle.FORTY)
+val neutralSpecialColor50 = neutralSpecialColor(LightnessThemeStyle.FIFTY)
+val neutralSpecialColor60 = neutralSpecialColor(LightnessThemeStyle.SIXTY)
+val neutralSpecialColor70 = neutralSpecialColor(LightnessThemeStyle.SEVENTY)
+val neutralSpecialColor80 = neutralSpecialColor(LightnessThemeStyle.EIGHTY)
+val neutralSpecialColor90 = neutralSpecialColor(LightnessThemeStyle.NINETY)
 val neutralSpecialColor95 = neutralSpecialColor(LightnessThemeStyle.NINETY_FIVE)
 val neutralSpecialColor98 = neutralSpecialColor(LightnessThemeStyle.NINETY_EIGHT)
-val neutralSpecialColor99 = neutralSpecialColor(LightnessThemeStyle.NINETY_NINE)
 val neutralSpecialColor100 = neutralSpecialColor(LightnessThemeStyle.ONE_HUNDRED)
 
 // barrageLightColor
 val barrageLightColor0 = barrageColor(LightnessThemeStyle.ZERO,AlphaThemeStyle.ZERO)
-val barrageLightColor1 = barrageColor(LightnessThemeStyle.ZERO,AlphaThemeStyle.ONE)
-val barrageLightColor2 = barrageColor(LightnessThemeStyle.ZERO,AlphaThemeStyle.TWO)
-val barrageLightColor3 = barrageColor(LightnessThemeStyle.ZERO,AlphaThemeStyle.THREE)
-val barrageLightColor4 = barrageColor(LightnessThemeStyle.ZERO,AlphaThemeStyle.FOUR)
-val barrageLightColor5 = barrageColor(LightnessThemeStyle.ZERO,AlphaThemeStyle.FIVE)
-val barrageLightColor6 = barrageColor(LightnessThemeStyle.ZERO,AlphaThemeStyle.SIX)
-val barrageLightColor7 = barrageColor(LightnessThemeStyle.ZERO,AlphaThemeStyle.SEVEN)
-val barrageLightColor8 = barrageColor(LightnessThemeStyle.ZERO,AlphaThemeStyle.EIGHT)
-val barrageLightColor9 = barrageColor(LightnessThemeStyle.ZERO,AlphaThemeStyle.NINE)
+val barrageLightColor10 = barrageColor(LightnessThemeStyle.ZERO,AlphaThemeStyle.TEN)
+val barrageLightColor20 = barrageColor(LightnessThemeStyle.ZERO,AlphaThemeStyle.TWENTY)
+val barrageLightColor30 = barrageColor(LightnessThemeStyle.ZERO,AlphaThemeStyle.THIRTY)
+val barrageLightColor40 = barrageColor(LightnessThemeStyle.ZERO,AlphaThemeStyle.FORTY)
+val barrageLightColor50 = barrageColor(LightnessThemeStyle.ZERO,AlphaThemeStyle.FIFTY)
+val barrageLightColor60 = barrageColor(LightnessThemeStyle.ZERO,AlphaThemeStyle.SIXTY)
+val barrageLightColor70 = barrageColor(LightnessThemeStyle.ZERO,AlphaThemeStyle.SEVENTY)
+val barrageLightColor80 = barrageColor(LightnessThemeStyle.ZERO,AlphaThemeStyle.EIGHTY)
+val barrageLightColor90 = barrageColor(LightnessThemeStyle.ZERO,AlphaThemeStyle.NINETY)
 val barrageLightColor95 = barrageColor(LightnessThemeStyle.ZERO,AlphaThemeStyle.NINETY_FIVE)
 val barrageLightColor98 = barrageColor(LightnessThemeStyle.ZERO,AlphaThemeStyle.NINETY_EIGHT)
 val barrageLightColor100 = barrageColor(LightnessThemeStyle.ZERO,AlphaThemeStyle.ONE_HUNDRED)
 
 // barrageDarkColor
 val barrageDarkColor0 = barrageColor(LightnessThemeStyle.ONE_HUNDRED,AlphaThemeStyle.ZERO)
-val barrageDarkColor1 = barrageColor(LightnessThemeStyle.ONE_HUNDRED,AlphaThemeStyle.ONE)
-val barrageDarkColor2 = barrageColor(LightnessThemeStyle.ONE_HUNDRED,AlphaThemeStyle.TWO)
-val barrageDarkColor3 = barrageColor(LightnessThemeStyle.ONE_HUNDRED,AlphaThemeStyle.THREE)
-val barrageDarkColor4 = barrageColor(LightnessThemeStyle.ONE_HUNDRED,AlphaThemeStyle.FOUR)
-val barrageDarkColor5 = barrageColor(LightnessThemeStyle.ONE_HUNDRED,AlphaThemeStyle.FIVE)
-val barrageDarkColor6 = barrageColor(LightnessThemeStyle.ONE_HUNDRED,AlphaThemeStyle.SIX)
-val barrageDarkColor7 = barrageColor(LightnessThemeStyle.ONE_HUNDRED,AlphaThemeStyle.SEVEN)
-val barrageDarkColor8 = barrageColor(LightnessThemeStyle.ONE_HUNDRED,AlphaThemeStyle.EIGHT)
-val barrageDarkColor9 = barrageColor(LightnessThemeStyle.ONE_HUNDRED,AlphaThemeStyle.NINE)
+val barrageDarkColor10 = barrageColor(LightnessThemeStyle.ONE_HUNDRED,AlphaThemeStyle.TEN)
+val barrageDarkColor20 = barrageColor(LightnessThemeStyle.ONE_HUNDRED,AlphaThemeStyle.TWENTY)
+val barrageDarkColor30 = barrageColor(LightnessThemeStyle.ONE_HUNDRED,AlphaThemeStyle.THIRTY)
+val barrageDarkColor40 = barrageColor(LightnessThemeStyle.ONE_HUNDRED,AlphaThemeStyle.FORTY)
+val barrageDarkColor50 = barrageColor(LightnessThemeStyle.ONE_HUNDRED,AlphaThemeStyle.FIFTY)
+val barrageDarkColor60 = barrageColor(LightnessThemeStyle.ONE_HUNDRED,AlphaThemeStyle.SIXTY)
+val barrageDarkColor70 = barrageColor(LightnessThemeStyle.ONE_HUNDRED,AlphaThemeStyle.SEVENTY)
+val barrageDarkColor80 = barrageColor(LightnessThemeStyle.ONE_HUNDRED,AlphaThemeStyle.EIGHTY)
+val barrageDarkColor90 = barrageColor(LightnessThemeStyle.ONE_HUNDRED,AlphaThemeStyle.NINETY)
 val barrageDarkColor95 = barrageColor(LightnessThemeStyle.ONE_HUNDRED,AlphaThemeStyle.NINETY_FIVE)
 val barrageDarkColor98 = barrageColor(LightnessThemeStyle.ONE_HUNDRED,AlphaThemeStyle.NINETY_EIGHT)
 val barrageDarkColor100 = barrageColor(LightnessThemeStyle.ONE_HUNDRED,AlphaThemeStyle.ONE_HUNDRED)
 
 // gradientColors
-val gradientColors0 = listOf(primaryColor0,primaryEndHue2)
-val gradientColors1 = listOf(primaryColor1,primaryEndHue3)
-val gradientColors2 = listOf(primaryColor2,primaryEndHue4)
-val gradientColors3 = listOf(primaryColor3,primaryEndHue5)
-val gradientColors4 = listOf(primaryColor4,primaryEndHue6)
-val gradientColors5 = listOf(primaryColor5,primaryEndHue7)
-val gradientColors6 = listOf(primaryColor6,primaryEndHue75)
-val gradientColors7 = listOf(primaryColor7,primaryEndHue8)
-val gradientColors8 = listOf(primaryColor8,primaryEndHue85)
-val gradientColors9 = listOf(primaryColor9,primaryEndHue9)
+val gradientColors0 = listOf(primaryColor0,primaryEndHue20)
+val gradientColors10 = listOf(primaryColor10,primaryEndHue30)
+val gradientColors20 = listOf(primaryColor20,primaryEndHue40)
+val gradientColors30 = listOf(primaryColor30,primaryEndHue50)
+val gradientColors40 = listOf(primaryColor40,primaryEndHue60)
+val gradientColors50 = listOf(primaryColor50,primaryEndHue70)
+val gradientColors60 = listOf(primaryColor60,primaryEndHue75)
+val gradientColors70 = listOf(primaryColor70,primaryEndHue80)
+val gradientColors80 = listOf(primaryColor80,primaryEndHue85)
+val gradientColors90 = listOf(primaryColor90,primaryEndHue90)
 val gradientColors95 = listOf(primaryColor95,primaryEndHue95)
 val gradientColors98 = listOf(primaryColor98,primaryEndHue98)
 val gradientColors100 = listOf(primaryColor100,primaryEndHue100)
@@ -152,34 +149,33 @@ val Color_171A1C = Color(0xFF171A1C)
 
 enum class LightnessThemeStyle(val value: Float){
     ZERO(0f),
-    ONE(10f),
-    TWO(20f),
-    THREE(30f),
-    FOUR(40f),
-    FIVE(50f),
-    SIX(60f),
-    SEVEN(70f),
+    TEN(10f),
+    TWENTY(20f),
+    THIRTY(30f),
+    FORTY(40f),
+    FIFTY(50f),
+    SIXTY(60f),
+    SEVENTY(70f),
     SEVENTY_FIVE(75f),
-    EIGHT(80f),
+    EIGHTY(80f),
     EIGHTY_FIVE(85f),
-    NINE(90f),
+    NINETY(90f),
     NINETY_FIVE(95f),
     NINETY_EIGHT(98f),
-    NINETY_NINE(99f),
     ONE_HUNDRED(100f)
 }
 
 enum class AlphaThemeStyle(val value: Float){
     ZERO(0f),
-    ONE(0.1f),
-    TWO(0.2f),
-    THREE(0.3f),
-    FOUR(0.4f),
-    FIVE(0.5f),
-    SIX(0.6f),
-    SEVEN(0.7f),
-    EIGHT(0.8f),
-    NINE(0.9f),
+    TEN(0.1f),
+    TWENTY(0.2f),
+    THIRTY(0.3f),
+    FORTY(0.4f),
+    FIFTY(0.5f),
+    SIXTY(0.6f),
+    SEVENTY(0.7f),
+    EIGHTY(0.8f),
+    NINETY(0.9f),
     NINETY_FIVE(0.95f),
     NINETY_EIGHT(0.98f),
     ONE_HUNDRED(1f)
@@ -211,5 +207,49 @@ private fun neutralSpecialColor(lightnessStyle:LightnessThemeStyle):Color{
 
 private fun barrageColor(lightnessStyle:LightnessThemeStyle,alphaStyle:AlphaThemeStyle):Color{
     return Color.hsl(0f,0f,lightnessStyle.value/100,alphaStyle.value)
+}
+
+@Immutable
+data class UIColors(
+    val primary: Color,
+    val onPrimary: Color,
+    val secondary: Color,
+    val onSecondary: Color,
+    val background: Color,
+    val onBackground: Color,
+    val error: Color,
+    val onError: Color,
+    val outline: Color,
+    val outlineVariant: Color,
+) {
+    companion object {
+        @Composable
+        fun defaultColors(): UIColors = UIColors(
+            primary = primaryColor50,
+            onPrimary = primaryColor100,
+            secondary = secondaryColor40,
+            onSecondary = secondaryColor100,
+            background = neutralColor98,
+            onBackground = neutralColor10,
+            error = errorColor50,
+            onError = errorColor100,
+            outline = neutralColor90,
+            outlineVariant = neutralColor90,
+        )
+
+        @Composable
+        fun defaultDarkColors(): UIColors = UIColors(
+            primary = primaryColor60,
+            onPrimary = primaryColor100,
+            secondary = secondaryColor60,
+            onSecondary = secondaryColor100,
+            background = neutralColor10,
+            onBackground = neutralColor98,
+            error = errorColor60,
+            onError = errorColor100,
+            outline = neutralColor20,
+            outlineVariant = neutralColor20,
+        )
+    }
 }
 

@@ -3,12 +3,12 @@ package io.agora.chatroom.viewmodel.menu
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import io.agora.chatroom.UIChatroomContext
-import io.agora.chatroom.model.UIComposeDrawerItem
+import io.agora.chatroom.model.UIComposeSheetItem
 
 class MenuViewModelFactory(
     private val isDarkTheme: Boolean? = UIChatroomContext.shared.getCurrentTheme(),
     private val title:String = "",
-    private val menuList: List<UIComposeDrawerItem> = emptyList(),
+    private val menuList: List<UIComposeSheetItem> = emptyList(),
     private val isShowTitle:Boolean = true,
     private val isShowCancel:Boolean = true,
     ): ViewModelProvider.Factory {

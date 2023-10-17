@@ -28,20 +28,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.agora.chatroom.ui.UIChatroomActivity
-import io.agora.chatroom.compose.drawer.ComposeBottomDrawer
-import io.agora.chatroom.compose.drawer.ComposeMenuBottomDrawer
+import io.agora.chatroom.compose.drawer.ComposeBottomSheet
+import io.agora.chatroom.compose.drawer.ComposeMenuBottomSheet
 import io.agora.chatroom.data.initialLongClickMenu
 import io.agora.chatroom.data.testMenuList1
-import io.agora.chatroom.model.UIComposeDrawerItem
-import io.agora.chatroom.theme.AlphabetBodyLarge
+import io.agora.chatroom.model.UIComposeSheetItem
+import io.agora.chatroom.theme.BodyLarge
 import io.agora.chatroom.theme.ChatroomUIKitTheme
-import io.agora.chatroom.theme.neutralColor2
-import io.agora.chatroom.theme.neutralColor9
+import io.agora.chatroom.theme.neutralColor20
+import io.agora.chatroom.theme.neutralColor90
 import io.agora.chatroom.viewmodel.menu.MenuViewModel
 
 class MainActivity : ComponentActivity() {
-    private var viewModel1:MenuViewModel = MenuViewModel(menuList = initialLongClickMenu)
-    private var viewModel2:MenuViewModel = MenuViewModel(menuList = testMenuList1 )
+    private var viewModel1:MenuViewModel = MenuViewModel(menuList = initialLongClickMenu, isExpanded = true)
+    private var viewModel2:MenuViewModel = MenuViewModel(menuList = testMenuList1, isExpanded = true )
     var viewModel3:MenuViewModel = MenuViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,12 +89,13 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ShowDefaultComposeDrawer(viewModel:MenuViewModel){
-    ComposeMenuBottomDrawer(
+    ComposeMenuBottomSheet(
         viewModel = viewModel,
         onListItemClick = { index,item ->
             Log.e("apex"," default item: $index ${item.title}")
         },
-        onCancelListener = {
+        onDismissRequest = {
+            viewModel.closeDrawer()
             Log.e("apex"," onClick Cancel ")
         }
     )
@@ -102,12 +103,13 @@ fun ShowDefaultComposeDrawer(viewModel:MenuViewModel){
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ShowComposeMenuDrawer(viewModel:MenuViewModel){
-    ComposeMenuBottomDrawer(
+    ComposeMenuBottomSheet(
         viewModel = viewModel,
         onListItemClick = { index,item ->
             Log.e("apex"," default item: $index ${item.title}")
         },
-        onCancelListener = {
+        onDismissRequest = {
+            viewModel.closeDrawer()
             Log.e("apex"," onClick Cancel ")
         }
     )
@@ -116,13 +118,13 @@ fun ShowComposeMenuDrawer(viewModel:MenuViewModel){
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ShowCustomComposeDrawer(viewModel: MenuViewModel){
-    val list = mutableListOf<UIComposeDrawerItem>()
-    list.add(UIComposeDrawerItem("Item 1"))
-    list.add(UIComposeDrawerItem("Item 2"))
-    list.add(UIComposeDrawerItem("Item 3"))
-    list.add(UIComposeDrawerItem("Item 4"))
+    val list = mutableListOf<UIComposeSheetItem>()
+    list.add(UIComposeSheetItem("Item 1"))
+    list.add(UIComposeSheetItem("Item 2"))
+    list.add(UIComposeSheetItem("Item 3"))
+    list.add(UIComposeSheetItem("Item 4"))
 
-    ComposeBottomDrawer(
+    ComposeBottomSheet(
         viewModel = viewModel,
         modifier = Modifier.fillMaxWidth(),
         drawerContent = {
@@ -137,7 +139,7 @@ fun ShowCustomComposeDrawer(viewModel: MenuViewModel){
                         Divider(
                             modifier = Modifier
                                 .height(0.5.dp)
-                                .background(if (viewModel.getTheme == true) neutralColor2 else neutralColor9)
+                                .background(if (viewModel.getTheme == true) neutralColor20 else neutralColor90)
                                 .fillMaxWidth()
                                 .padding(top = 10.dp, bottom = 10.dp)
                         )
@@ -148,7 +150,7 @@ fun ShowCustomComposeDrawer(viewModel: MenuViewModel){
                                         .fillMaxWidth()
                                         .padding(top = 10.dp, bottom = 10.dp),
                                     textAlign = TextAlign.Center,
-                                    style = AlphabetBodyLarge,
+                                    style = BodyLarge,
                                     text = item.title
                                 )
                             },
@@ -166,7 +168,8 @@ fun ShowCustomComposeDrawer(viewModel: MenuViewModel){
 //                }
 //            )
         },
-        onCancelListener = {
+        onDismissRequest = {
+            viewModel.closeDrawer()
             Log.e("apex"," onClick Cancel ")
         }
     )

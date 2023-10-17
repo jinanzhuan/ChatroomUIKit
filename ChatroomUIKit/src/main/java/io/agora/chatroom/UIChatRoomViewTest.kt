@@ -26,8 +26,8 @@ import io.agora.chatroom.ui.UIChatroomService
 import io.agora.chatroom.compose.chatbottombar.ComposeChatBottomBar
 import io.agora.chatroom.compose.chatmessagelist.ComposeChatMessageList
 import io.agora.chatroom.theme.ChatroomUIKitTheme
-import io.agora.chatroom.theme.primaryColor8
-import io.agora.chatroom.theme.secondaryColor8
+import io.agora.chatroom.theme.primaryColor80
+import io.agora.chatroom.theme.secondaryColor80
 import io.agora.chatroom.viewmodel.messages.MessageComposerViewModel
 import io.agora.chatroom.viewmodel.messages.MessageListViewModel
 import io.agora.chatroom.viewmodel.messages.MessagesViewModelFactory
@@ -145,8 +145,8 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener {
         showLabel: Boolean = true,
         showGift: Boolean = true,
         showAvatar: Boolean = true,
-        dateSeparatorColor: Color = secondaryColor8,
-        nickNameColor: Color = primaryColor8,
+        dateSeparatorColor: Color = secondaryColor80,
+        nickNameColor: Color = primaryColor80,
     ): MessagesViewModelFactory {
         return MessagesViewModelFactory(
             service = service,

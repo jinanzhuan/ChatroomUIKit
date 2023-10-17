@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.foundation.text.appendInlineContent
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,13 +31,13 @@ import io.agora.chatroom.model.UserInfoProtocol
 import io.agora.chatroom.model.emoji.RegexEntity
 import io.agora.chatroom.service.ChatMessage
 import io.agora.chatroom.service.cache.UIChatroomCacheManager
-import io.agora.chatroom.theme.AlphabetBodyMedium
+import io.agora.chatroom.theme.BodyMedium
 import io.agora.chatroom.theme.SmallCorner
-import io.agora.chatroom.theme.barrageDarkColor1
-import io.agora.chatroom.theme.barrageLightColor2
+import io.agora.chatroom.theme.barrageDarkColor10
+import io.agora.chatroom.theme.barrageLightColor20
 import io.agora.chatroom.theme.neutralColor98
-import io.agora.chatroom.theme.primaryColor8
-import io.agora.chatroom.theme.secondaryColor8
+import io.agora.chatroom.theme.primaryColor80
+import io.agora.chatroom.theme.secondaryColor80
 import io.agora.chatroom.uikit.R
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -52,8 +52,8 @@ fun ComposeMessageItem(
     isShowLabel: Boolean = true,
     isShowGift: Boolean = false,
     isShowAvatar: Boolean = false,
-    dateSeparatorColor: Color = secondaryColor8,
-    userNameColor: Color = primaryColor8,
+    dateSeparatorColor: Color = secondaryColor80,
+    userNameColor: Color = primaryColor80,
     messageItem: ComposeMessageListItemState,
     itemType: ComposeItemType = ComposeItemType.NORMAL,
     onLongItemClick: (Int, ComposeMessageListItemState) -> Unit,
@@ -75,7 +75,7 @@ fun ComposeMessageItem(
             .wrapContentWidth()
             .wrapContentHeight()
             .background(
-                if (isDarkTheme == true) barrageLightColor2 else barrageDarkColor1,
+                if (isDarkTheme == true) barrageLightColor20 else barrageDarkColor10,
                 shape = SmallCorner
             ),
     ){
@@ -221,7 +221,7 @@ fun ComposeMessageItem(
             modifier = Modifier.padding(start = 8.dp, top = 4.dp, bottom = 4.dp, end = 8.dp),
             text = annotatedText,
             inlineContent = inlineMap,
-            style = AlphabetBodyMedium,
+            style = BodyMedium,
             color = if (isDarkTheme == true) neutralColor98 else neutralColor98
         )
 

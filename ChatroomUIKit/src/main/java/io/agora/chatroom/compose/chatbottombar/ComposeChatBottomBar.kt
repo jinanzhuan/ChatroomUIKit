@@ -24,10 +24,10 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.SnackbarHostState
-import androidx.compose.material.Text
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -61,12 +61,12 @@ import io.agora.chatroom.data.emojiList
 import io.agora.chatroom.model.UICapabilities
 import io.agora.chatroom.model.UIChatBarMenuItem
 import io.agora.chatroom.model.emoji.UIExpressionEntity
-import io.agora.chatroom.theme.AlphabetBodyLarge
-import io.agora.chatroom.theme.barrageDarkColor2
-import io.agora.chatroom.theme.barrageLightColor2
-import io.agora.chatroom.theme.neutralColor1
+import io.agora.chatroom.theme.BodyLarge
+import io.agora.chatroom.theme.barrageDarkColor20
+import io.agora.chatroom.theme.barrageLightColor20
+import io.agora.chatroom.theme.neutralColor10
 import io.agora.chatroom.theme.neutralColor98
-import io.agora.chatroom.theme.primaryColor5
+import io.agora.chatroom.theme.primaryColor50
 import io.agora.chatroom.viewmodel.messages.MessageComposerViewModel
 import io.agora.chatroom.uikit.R
 
@@ -277,7 +277,7 @@ fun ComposeChatBottomBar(
                     Modifier
                         .fillMaxWidth()
                         .height(52.dp)
-                        .background(if (isDarkTheme == true) neutralColor1 else neutralColor98),
+                        .background(if (isDarkTheme == true) neutralColor10 else neutralColor98),
                     verticalAlignment = Bottom
                 ) {
 
@@ -326,7 +326,7 @@ fun ComposeChatBottomBar(
                     Modifier
                         .fillMaxWidth()
                         .height(if (viewModel.isShowKeyboard.value) 269.dp else 0.dp)
-                        .background(if (isDarkTheme == true) neutralColor1 else neutralColor98),
+                        .background(if (isDarkTheme == true) neutralColor10 else neutralColor98),
                     verticalAlignment = Bottom
                 ) {
 
@@ -354,7 +354,7 @@ fun ComposeChatBottomBar(
                             .padding(top = 8.dp, bottom = 8.dp, start = 8.dp)
                             .background(
                                 shape = RoundedCornerShape(size = 20.dp),
-                                color = if (isDarkTheme == true) barrageDarkColor2 else barrageLightColor2
+                                color = if (isDarkTheme == true) barrageDarkColor20 else barrageLightColor20
                             )
                             .clickable {
                                 viewModel.showKeyBoard()
@@ -387,8 +387,8 @@ internal fun DefaultComposerLabel(
 {
     Text(
         text = stringResource(id = R.string.stream_compose_message_label),
-        style = AlphabetBodyLarge,
-        color = if (isDarkTheme == true) neutralColor98 else neutralColor1
+        style = BodyLarge,
+        color = if (isDarkTheme == true) neutralColor98 else neutralColor10
     )
 }
 
@@ -403,7 +403,7 @@ fun DefaultComposerEmoji(
     Column(modifier = Modifier
         .fillMaxWidth()
         .height(maxH.dp)
-        .background(if (isDarkTheme == true) neutralColor1 else neutralColor98)
+        .background(if (isDarkTheme == true) neutralColor10 else neutralColor98)
     ){
         LazyVerticalGrid(
             columns = GridCells.Fixed(viewModel.eColumns.value)) {
@@ -495,7 +495,7 @@ internal fun DefaultMessageComposerTrailingContent(
                 modifier = Modifier.mirrorRtl(layoutDirection = layoutDirection),
                 painter = painterResource(id = R.drawable.icon_send),
                 contentDescription = stringResource(id = R.string.stream_compose_send_message),
-                tint = if (isInputValid) primaryColor5 else primaryColor5
+                tint = if (isInputValid) primaryColor50 else primaryColor50
             )
         },
         onClick = {
@@ -526,7 +526,7 @@ internal fun DefaultMessageComposerVoiceContent(
                         .size(30.dp, 30.dp),
                     painter = painterResource(id = R.drawable.icon_wave_in_circle),
                     contentDescription = stringResource(id = R.string.stream_compose_send_message),
-                    tint = if (isDarkTheme == true) neutralColor98 else neutralColor1
+                    tint = if (isDarkTheme == true) neutralColor98 else neutralColor10
                 )
             },
             onClick = {
@@ -558,7 +558,7 @@ internal fun DefaultMessageComposerEmojiContent(
                     .size(30.dp, 30.dp),
                 painter = painterResource(id = resource),
                 contentDescription = stringResource(id = R.string.stream_compose_send_message),
-                tint = if (isDarkTheme == true) neutralColor98 else neutralColor1
+                tint = if (isDarkTheme == true) neutralColor98 else neutralColor10
             )
 //            LaunchedEffect(resource) {
 //                Log.e("apex","LaunchedEffect:  ${resource}")
@@ -593,7 +593,7 @@ internal fun DefaultChatBarMenuComposerContent(
                     modifier = Modifier
                         .size(38.dp, 38.dp)
                         .background(
-                            color = if (isDarkTheme == true) barrageDarkColor2 else barrageLightColor2,
+                            color = if (isDarkTheme == true) barrageDarkColor20 else barrageLightColor20,
                             shape = RoundedCornerShape(20.dp)
                         )
                 ){
