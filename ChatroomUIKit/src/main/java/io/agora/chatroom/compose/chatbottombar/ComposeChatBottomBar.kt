@@ -57,6 +57,7 @@ import io.agora.chatroom.commons.ComposerInputMessageState
 import io.agora.chatroom.commons.UIValidationError
 import io.agora.chatroom.compose.utils.DisplayUtils
 import io.agora.chatroom.compose.utils.mirrorRtl
+import io.agora.chatroom.data.emojiList
 import io.agora.chatroom.model.UICapabilities
 import io.agora.chatroom.model.UIChatBarMenuItem
 import io.agora.chatroom.model.emoji.UIExpressionEntity
@@ -257,12 +258,8 @@ fun ComposeChatBottomBar(
                 val keypadHeight = screenHeight - rect.bottom
                 Log.e("apex","screenHeight $screenHeight  - rect.bottom : ${rect.bottom} keypadHeight: $keypadHeight")
                 if (keypadHeight > screenHeight * 0.15) { // A threshold to filter the visibility of the keypad
-//                    kbHeight.value = DisplayUtils.pxToDp(keypadHeight).toInt()
                     kbHeight.value = keypadHeight
                 }
-//                else {
-//                    kbHeight.value = 0
-//                }
             }
         }
     })
@@ -311,7 +308,12 @@ fun ComposeChatBottomBar(
                 }
 
                 if (viewModel.isShowEmoji.value){
-                    DefaultComposerEmoji(maxH = opHeight, emojis = listOf(), viewModel = viewModel)
+                    DefaultComposerEmoji(
+                        isDarkTheme = isDarkTheme,
+                        maxH = opHeight,
+                        emojis = emojiList,
+                        viewModel = viewModel
+                    )
                 }
 
                 Log.e("apex","aaa $opHeight")
@@ -392,6 +394,7 @@ internal fun DefaultComposerLabel(
 
 @Composable
 fun DefaultComposerEmoji(
+    isDarkTheme: Boolean?,
     emojis:List<UIExpressionEntity>,
     maxH:Int,
     viewModel: MessageComposerViewModel,
@@ -400,16 +403,20 @@ fun DefaultComposerEmoji(
     Column(modifier = Modifier
         .fillMaxWidth()
         .height(maxH.dp)
-        .background(Color.Red)
+        .background(if (isDarkTheme == true) neutralColor10 else neutralColor98)
     ){
-        LazyVerticalGrid(columns = GridCells.Fixed(7)) {
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(viewModel.eColumns.value)) {
             items(emojis) { emoji ->
                 Image(
                     painter = painterResource(emoji.icon),
                     contentDescription = null,
                     modifier = Modifier
                         .size(32.dp)
-                        .clickable {  }
+                        .padding(2.dp)
+                        .clickable {
+                            viewModel.setEmojiInput(emoji.emojiText)
+                        }
                 )
             }
         }

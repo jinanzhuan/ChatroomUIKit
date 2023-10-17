@@ -4,7 +4,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import io.agora.chatroom.service.ChatMessage
 import io.agora.chatroom.commons.ComposeChatListController
-import io.agora.chatroom.commons.ComposeMessagesState
+import io.agora.chatroom.commons.ComposeMessageListState
 import io.agora.chatroom.compose.chatmessagelist.ComposeMessageListItemState
 import io.agora.chatroom.theme.primaryColor80
 import io.agora.chatroom.theme.secondaryColor80
@@ -32,8 +32,8 @@ class MessageListViewModel(
         composeChatListController.clearMessage()
     }
 
-    val currentComposeMessagesState: ComposeMessagesState
-        get() = composeChatListController.currentComposeMessagesState
+    val currentComposeMessageListState: ComposeMessageListState
+        get() = composeChatListController.currentComposeMessageListState
 
 
     val getTheme: Boolean?

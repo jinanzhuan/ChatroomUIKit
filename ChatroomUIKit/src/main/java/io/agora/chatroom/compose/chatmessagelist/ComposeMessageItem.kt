@@ -26,7 +26,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import io.agora.chat.TextMessageBody
+import io.agora.chatroom.compose.utils.ExpressionUtils
 import io.agora.chatroom.model.UserInfoProtocol
+import io.agora.chatroom.model.emoji.RegexEntity
 import io.agora.chatroom.service.ChatMessage
 import io.agora.chatroom.service.cache.UIChatroomCacheManager
 import io.agora.chatroom.theme.BodyMedium
@@ -66,8 +68,10 @@ fun ComposeMessageItem(
         modifier = Modifier
             .padding(start = 16.dp, top = 4.dp, bottom = 4.dp, end = 16.dp)
             .combinedClickable(
-                onLongClick = {onLongItemClick(itemIndex,messageItem)}
-            ){}
+                onLongClick = { onLongItemClick(itemIndex, messageItem) }
+            ) {
+                // onClick
+            }
             .wrapContentWidth()
             .wrapContentHeight()
             .background(
@@ -91,7 +95,7 @@ fun ComposeMessageItem(
         userInfo?.let {
             userName = it.nickname.ifEmpty { it.userId }
         }
-
+        val inlineMap = mutableMapOf<String,InlineTextContent>()
         val annotatedText = buildAnnotatedString {
 
             if (isShowDateSeparator){
@@ -123,7 +127,62 @@ fun ComposeMessageItem(
             }
 
             if (!content.isNullOrEmpty()){
-                append(content);append("  ")
+                if (ExpressionUtils.containsKey(content)){
+                    var exchange = content
+                    var combination = ""
+                    var insertIndex = -1
+                    var oldTagLength = 0
+
+                    val insertMap = mutableMapOf<Int,RegexEntity>()
+                    val roleList = ExpressionUtils.getRole(content)
+
+                    for (i in 0 until roleList.size){
+                        var before = ""
+                        var after = ""
+
+                        if (roleList[i].startIndex > 0){
+                            before = exchange.substring(0,roleList[i].startIndex - oldTagLength)
+                        }
+                        after = exchange.substring(roleList[i].endIndex - oldTagLength)
+
+                        if (before.isEmpty()){
+                            withStyle(style = SpanStyle()) {
+                                appendInlineContent(roleList[i].emojiTag)
+                            }
+                            ExpressionUtils.addLienMap(roleList[i],inlineMap)
+                            combination = before + after
+                            exchange = combination
+                            oldTagLength += roleList[i].emojiTag.length
+                        } else{
+                            combination = before + after
+                            exchange = combination
+                            insertIndex = roleList[i].startIndex - oldTagLength - 1
+                            if (insertMap.containsKey(insertIndex)){
+                                roleList[i].count +=1
+                            }
+                            insertMap[insertIndex] = roleList[i]
+                            oldTagLength += roleList[i].emojiTag.length
+                        }
+                    }
+
+                    combination.let { cb->
+                        cb.withIndex().forEach { (i, char) ->
+                            append(char)
+                            insertMap.forEach {
+                                if (i == it.key){
+                                    for (i in 0 until it.value.count) {
+                                        withStyle(style = SpanStyle()) {
+                                            appendInlineContent(it.value.emojiTag)
+                                        }
+                                        ExpressionUtils.addLienMap(it.value,inlineMap)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }else{
+                    append(content)
+                }
             }
 
             if (isShowGift){
@@ -132,8 +191,6 @@ fun ComposeMessageItem(
                 }
             }
         }
-
-        val inlineMap = mutableMapOf<String,InlineTextContent>()
 
         if (isShowLabel){
             inlineMap["Label"] = InlineTextContent(
@@ -181,7 +238,9 @@ fun DrawLabelImage(userInfo:UserInfoProtocol?) {
         model = labelUrl
     )
     Image(
-        modifier = Modifier.size(18.dp,18.dp).padding(start = 4.dp),
+        modifier = Modifier
+            .size(18.dp, 18.dp)
+            .padding(start = 4.dp),
         painter = if (labelUrl.isEmpty()) painterResource(id = R.drawable.icon_default_label) else painter,
         contentDescription = "Label"
     )
@@ -196,7 +255,9 @@ fun DrawAvatarImage(userInfo:UserInfoProtocol?){
         model = avatarUrl
     )
     Image(
-        modifier = Modifier.size(28.dp,28.dp).padding(start = 4.dp, end = 4.dp),
+        modifier = Modifier
+            .size(28.dp, 28.dp)
+            .padding(start = 4.dp, end = 4.dp),
         painter = if (avatarUrl.isEmpty())painterResource(id = R.drawable.icon_default_avatar) else painter,
         contentDescription = "Avatar"
     )

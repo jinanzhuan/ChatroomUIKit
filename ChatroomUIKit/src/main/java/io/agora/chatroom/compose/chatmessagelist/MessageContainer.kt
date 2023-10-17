@@ -26,10 +26,10 @@ fun MessageContainer(
     messageListItem: ComposeMessageListItemState,
     onLongItemClick: (Int, ComposeMessageListItemState) -> Unit = { index, message ->},
     giftMessageContent: @Composable (GiftMessageState) -> Unit = {
-        DefaultGiftMessageContent(giftMessageState = it)
+        DefaultGiftMessageContainer(giftMessageState = it)
     },
     messageItemContent: @Composable (ComposeMessageItemState) -> Unit = {
-        DefaultMessageItem(
+        DefaultMessageContainer(
             itemIndex = itemIndex,
             viewModel = viewModel,
             messageItem = it,
@@ -37,7 +37,7 @@ fun MessageContainer(
         )
     },
     joinedItemContent: @Composable (JoinedMessageState) -> Unit = {
-        DefaultJoinedMessageItem(
+        DefaultJoinedMessageContainer(
             itemIndex = itemIndex,
             viewModel = viewModel,
             messageItem = it,
@@ -62,7 +62,7 @@ fun MessageContainer(
  * @param giftMessageState The system message item to show.
  */
 @Composable
-internal fun DefaultGiftMessageContent(giftMessageState: GiftMessageState) {
+internal fun DefaultGiftMessageContainer(giftMessageState: GiftMessageState) {
     Text(
         modifier = Modifier
             .fillMaxWidth()
@@ -81,7 +81,7 @@ internal fun DefaultGiftMessageContent(giftMessageState: GiftMessageState) {
  * @param onLongItemClick Handler when the user long taps on an item.
  */
 @Composable
-internal fun DefaultMessageItem(
+internal fun DefaultMessageContainer(
     itemIndex: Int,
     viewModel: MessageListViewModel,
     messageItem: ComposeMessageItemState,
@@ -109,7 +109,7 @@ internal fun DefaultMessageItem(
  * @param onLongItemClick Handler when the user long taps on an item.
  */
 @Composable
-internal fun DefaultJoinedMessageItem(
+internal fun DefaultJoinedMessageContainer(
     itemIndex: Int,
     viewModel: MessageListViewModel,
     messageItem: JoinedMessageState,

@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
  *
  * @param messageItems Message items to represent in the list.
  */
-data class ComposeMessagesState(
+data class ComposeMessageListState(
     var isLoading: Boolean = false,
     private val messageItems: List<ComposeMessageListItemState> = emptyList(),
     private val selectedMessageState: ComposeSelectedMessageState? = null,
