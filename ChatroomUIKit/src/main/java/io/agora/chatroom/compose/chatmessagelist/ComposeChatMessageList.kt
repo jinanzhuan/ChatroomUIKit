@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -19,8 +19,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import io.agora.chatroom.compose.LoadingIndicator
-import io.agora.chatroom.theme.AlphabetHeadlineMedium
-import io.agora.chatroom.theme.primaryColor5
+import io.agora.chatroom.theme.HeadlineMedium
+import io.agora.chatroom.theme.primaryColor50
 import io.agora.chatroom.viewmodel.messages.MessageListViewModel
 import io.agora.chatroom.uikit.R
 
@@ -117,8 +117,8 @@ internal fun DefaultMessageListEmptyContent(modifier: Modifier) {
     ) {
         Text(
             text = stringResource(R.string.stream_compose_message_list_empty_messages),
-            style = AlphabetHeadlineMedium,
-            color = primaryColor5,
+            style = HeadlineMedium,
+            color = primaryColor50,
             textAlign = TextAlign.Center
         )
     }

@@ -2,13 +2,13 @@ package io.agora.chatroom.compose.chatmessagelist
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import io.agora.chatroom.theme.AlphabetLabelLarge
-import io.agora.chatroom.theme.primaryColor6
+import io.agora.chatroom.theme.LabelLarge
+import io.agora.chatroom.theme.primaryColor60
 import io.agora.chatroom.viewmodel.messages.MessageListViewModel
 
 /**
@@ -68,8 +68,8 @@ internal fun DefaultGiftMessageContent(giftMessageState: GiftMessageState) {
             .fillMaxWidth()
             .padding(vertical = 12.dp, horizontal = 16.dp),
         text = giftMessageState.message.body.toString(),
-        color = primaryColor6,
-        style = AlphabetLabelLarge,
+        color = primaryColor60,
+        style = LabelLarge,
         textAlign = TextAlign.Center
     )
 }

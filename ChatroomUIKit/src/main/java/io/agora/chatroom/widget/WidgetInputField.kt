@@ -29,11 +29,11 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import io.agora.chatroom.theme.AlphabetBodyLarge
+import io.agora.chatroom.theme.BodyLarge
 import io.agora.chatroom.theme.LargeCorner
-import io.agora.chatroom.theme.neutralColor2
+import io.agora.chatroom.theme.neutralColor20
 import io.agora.chatroom.theme.neutralColor95
-import io.agora.chatroom.theme.primaryColor5
+import io.agora.chatroom.theme.primaryColor50
 import io.agora.chatroom.viewmodel.messages.MessageComposerViewModel
 import io.agora.chatroom.uikit.R
 import kotlinx.coroutines.delay
@@ -66,7 +66,7 @@ fun WidgetInputField(
     enabled: Boolean = true,
     viewModel: MessageComposerViewModel,
     maxLines: Int = Int.MAX_VALUE,
-    border: BorderStroke = BorderStroke(1.dp, if (isDarkTheme == true) neutralColor2 else neutralColor95),
+    border: BorderStroke = BorderStroke(1.dp, if (isDarkTheme == true) neutralColor20 else neutralColor95),
     innerPadding: PaddingValues = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
     keyboardOptions: KeyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
     decorationBox: @Composable (innerTextField: @Composable () -> Unit) -> Unit,
@@ -103,7 +103,7 @@ fun WidgetInputField(
             .focusRequester(focus)
             .border(border = border, shape = LargeCorner)
             .clip(LargeCorner)
-            .background(if (isDarkTheme == true) neutralColor2 else neutralColor95)
+            .background(if (isDarkTheme == true) neutralColor20 else neutralColor95)
             .padding(innerPadding)
             .semantics { contentDescription = description },
         value = textFieldValue,
@@ -113,8 +113,8 @@ fun WidgetInputField(
                 onValueChange(it.text)
             }
         },
-        textStyle = AlphabetBodyLarge,
-        cursorBrush = SolidColor(primaryColor5),
+        textStyle = BodyLarge,
+        cursorBrush = SolidColor(primaryColor50),
         decorationBox = { innerTextField -> decorationBox(innerTextField) },
         maxLines = maxLines,
         singleLine = maxLines == 1,

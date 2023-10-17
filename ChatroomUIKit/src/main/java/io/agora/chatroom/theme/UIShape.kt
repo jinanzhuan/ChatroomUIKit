@@ -1,6 +1,12 @@
 package io.agora.chatroom.theme
 
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ShapeDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 
 
@@ -21,8 +27,6 @@ val BottomEnd_SendBubbleCorner_Medium = RoundedCornerShape(bottomEnd = 4.dp,topS
 val TopEnd_SendBubbleCorner_Large = RoundedCornerShape(topEnd = 4.dp,topStart = 16.dp, bottomEnd = 16.dp, bottomStart = 16.dp)
 val BottomEnd_SendBubbleCorner_Large = RoundedCornerShape(bottomEnd = 4.dp,topStart = 16.dp, topEnd = 16.dp, bottomStart = 16.dp)
 
-
-
 val TopStart_RecBubbleCorner_ExtraSmall = RoundedCornerShape(topStart = 4.dp)
 val BottomStart_RecBubbleCorner_ExtraSmall = RoundedCornerShape(bottomStart = 4.dp)
 
@@ -35,3 +39,39 @@ val BottomStart_RecBubbleCorner_Medium = RoundedCornerShape(bottomStart = 4.dp,b
 val TopStart_RecBubbleCorner_Large = RoundedCornerShape(topStart = 4.dp,topEnd = 16.dp,bottomEnd = 16.dp, bottomStart = 16.dp)
 val BottomStart_RecBubbleCorner_Large = RoundedCornerShape(bottomStart = 4.dp,bottomEnd = 16.dp,topStart = 16.dp, topEnd = 16.dp)
 
+@Immutable
+data class UIShapes(
+    val avatar: Shape,
+    val sendMessageBubble: Shape,
+    val receiveMessageBubble: Shape,
+    val inputField: Shape,
+    val attachment: Shape,
+    val imageThumbnail: Shape,
+    val bottomSheet: Shape,
+    val header: Shape,
+    val extraSmall: Shape = ExtraSmallCorner,
+    val small: Shape = SmallCorner,
+    val medium: Shape = MediumCorner,
+    val large: Shape = LargeCorner,
+    val extraLarge: Shape = ShapeDefaults.ExtraLarge,
+) {
+    companion object {
+        @Composable
+        fun defaultShapes(): UIShapes = UIShapes(
+            avatar = CircleShape,
+            sendMessageBubble = RoundedCornerShape(16.dp),
+            receiveMessageBubble = RoundedCornerShape(16.dp),
+            inputField = RoundedCornerShape(24.dp),
+            attachment = RoundedCornerShape(16.dp),
+            imageThumbnail = RoundedCornerShape(8.dp),
+            bottomSheet = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+            header = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+            extraSmall = ExtraSmallCorner,
+            small  = SmallCorner,
+            medium  = MediumCorner,
+            large  = LargeCorner,
+            extraLarge  = ShapeDefaults.ExtraLarge,
+        )
+    }
+
+}

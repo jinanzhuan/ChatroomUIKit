@@ -6,8 +6,8 @@ import io.agora.chatroom.service.ChatMessage
 import io.agora.chatroom.commons.ComposeChatListController
 import io.agora.chatroom.commons.ComposeMessagesState
 import io.agora.chatroom.compose.chatmessagelist.ComposeMessageListItemState
-import io.agora.chatroom.theme.primaryColor8
-import io.agora.chatroom.theme.secondaryColor8
+import io.agora.chatroom.theme.primaryColor80
+import io.agora.chatroom.theme.secondaryColor80
 
 class MessageListViewModel(
     private val isDarkTheme: Boolean? = false,
@@ -15,8 +15,8 @@ class MessageListViewModel(
     private val showLabel: Boolean = true,
     private val showGift: Boolean = true,
     private val showAvatar: Boolean = true,
-    private val dateSeparatorColor: Color = secondaryColor8,
-    private val nickNameColor: Color = primaryColor8,
+    private val dateSeparatorColor: Color = secondaryColor80,
+    private val nickNameColor: Color = primaryColor80,
     private val composeChatListController: ComposeChatListController
     ): ViewModel() {
 

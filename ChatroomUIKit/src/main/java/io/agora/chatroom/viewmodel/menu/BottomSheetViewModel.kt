@@ -9,14 +9,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 /**
- * The view model of the bottom drawer.
+ * The view model of the bottom sheet.
  */
-open class BottomDrawerViewModel<T> (
+open class BottomSheetViewModel<T> (
     private val isDarkTheme: Boolean? = false,
     private val isShowTitle:Boolean = false,
     private val isShowCancel:Boolean = false,
     private val title:String = "",
     private val cancel:Int = R.string.compose_bottom_drawer_cancel,
+    val isExpanded: Boolean = false,
     var contentList: List<T> = emptyList(),
 ): ViewModel() {
 
@@ -33,7 +34,7 @@ open class BottomDrawerViewModel<T> (
     val list: List<T> = _contentList
 
     private val _show : MutableState<Boolean> = mutableStateOf(false)
-    var isBottomDrawerVisible = _show
+    var isBottomSheetVisible = _show
 
     private val _drawerShouldBeOpened = MutableStateFlow(false)
     val drawerShouldBeOpened = _drawerShouldBeOpened.asStateFlow()
@@ -60,6 +61,7 @@ open class BottomDrawerViewModel<T> (
 
     fun closeDrawer(){
         _show.value = false
+        _enable.value = false
     }
 
     fun openBottomDrawer() {
