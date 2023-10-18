@@ -34,7 +34,7 @@ import io.agora.chatroom.theme.LargeCorner
 import io.agora.chatroom.theme.neutralColor20
 import io.agora.chatroom.theme.neutralColor95
 import io.agora.chatroom.theme.primaryColor50
-import io.agora.chatroom.viewmodel.messages.MessageComposerViewModel
+import io.agora.chatroom.viewmodel.messages.MessageChatBarViewModel
 import io.agora.chatroom.uikit.R
 import kotlinx.coroutines.delay
 
@@ -64,7 +64,7 @@ fun WidgetInputField(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    viewModel: MessageComposerViewModel,
+    viewModel: MessageChatBarViewModel,
     maxLines: Int = Int.MAX_VALUE,
     border: BorderStroke = BorderStroke(1.dp, if (isDarkTheme == true) neutralColor20 else neutralColor95),
     innerPadding: PaddingValues = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
