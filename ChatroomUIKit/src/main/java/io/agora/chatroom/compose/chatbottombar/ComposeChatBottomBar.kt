@@ -67,11 +67,11 @@ import io.agora.chatroom.theme.barrageLightColor20
 import io.agora.chatroom.theme.neutralColor10
 import io.agora.chatroom.theme.neutralColor98
 import io.agora.chatroom.theme.primaryColor50
-import io.agora.chatroom.viewmodel.messages.MessageComposerViewModel
+import io.agora.chatroom.viewmodel.messages.MessageChatBarViewModel
 import io.agora.chatroom.uikit.R
 
 /**
- * Default ComposeChatBottomBar component that relies on [MessageComposerViewModel] to handle data and
+ * Default ComposeChatBottomBar component that relies on [MessageChatBarViewModel] to handle data and
  * communicate various events.
  *
  * @param viewModel The ViewModel that provides pieces of data to show in the composer, like the
@@ -87,7 +87,7 @@ import io.agora.chatroom.uikit.R
  */
 @Composable
 fun ComposeChatBottomBar(
-    viewModel: MessageComposerViewModel,
+    viewModel: MessageChatBarViewModel,
     modifier: Modifier = Modifier,
     showInput: Boolean = false,
     onInputClick: () -> Unit = {},
@@ -175,7 +175,7 @@ fun ComposeChatBottomBar(
 @Composable
 fun ComposeChatBottomBar(
     isDarkTheme: Boolean?,
-    viewModel: MessageComposerViewModel,
+    viewModel: MessageChatBarViewModel,
     composerMessageState: ComposerInputMessageState,
     onSendMessage: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -397,7 +397,7 @@ fun DefaultComposerEmoji(
     isDarkTheme: Boolean?,
     emojis:List<UIExpressionEntity>,
     maxH:Int,
-    viewModel: MessageComposerViewModel,
+    viewModel: MessageChatBarViewModel,
 ){
     Log.e("apex","DefaultComposerEmoji: $maxH")
     Column(modifier = Modifier
@@ -450,7 +450,7 @@ fun DefaultComposerEmoji(
 @Composable
 fun RowScope.DefaultComposerInputContent(
     isDarkTheme: Boolean? = false,
-    viewModel: MessageComposerViewModel,
+    viewModel: MessageChatBarViewModel,
     composerMessageState: ComposerInputMessageState,
     onValueChange: (String) -> Unit,
     label: @Composable (ComposerInputMessageState) -> Unit,
@@ -539,7 +539,7 @@ internal fun DefaultMessageComposerVoiceContent(
 @Composable
 internal fun DefaultMessageComposerEmojiContent(
     isDarkTheme: Boolean? = false,
-    viewModel: MessageComposerViewModel,
+    viewModel: MessageChatBarViewModel,
     onEmojiClick: (isShowFace:Boolean) -> Unit,
 ) {
     val resourceId = remember { mutableStateOf(R.drawable.icon_face) }

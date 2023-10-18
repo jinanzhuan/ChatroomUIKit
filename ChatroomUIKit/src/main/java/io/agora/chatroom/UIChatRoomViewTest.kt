@@ -28,7 +28,7 @@ import io.agora.chatroom.compose.chatmessagelist.ComposeChatMessageList
 import io.agora.chatroom.theme.ChatroomUIKitTheme
 import io.agora.chatroom.theme.primaryColor80
 import io.agora.chatroom.theme.secondaryColor80
-import io.agora.chatroom.viewmodel.messages.MessageComposerViewModel
+import io.agora.chatroom.viewmodel.messages.MessageChatBarViewModel
 import io.agora.chatroom.viewmodel.messages.MessageListViewModel
 import io.agora.chatroom.viewmodel.messages.MessagesViewModelFactory
 import io.agora.chatroom.uikit.databinding.ActivityUiChatroomTestBinding
@@ -37,7 +37,7 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener {
     private val mRoomViewBinding = ActivityUiChatroomTestBinding.inflate(LayoutInflater.from(context))
     private val inputField: MutableState<Boolean> = mutableStateOf(false)
     private lateinit var listViewModel:MessageListViewModel
-    private lateinit var bottomBarViewModel:MessageComposerViewModel
+    private lateinit var bottomBarViewModel:MessageChatBarViewModel
     private lateinit var service:UIChatroomService
 
     constructor(context: Context) : this(context, null)
@@ -80,7 +80,7 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener {
             )
 
             listViewModel = viewModel(MessageListViewModel::class.java, factory = factory)
-            bottomBarViewModel = viewModel(MessageComposerViewModel::class.java, factory = factory)
+            bottomBarViewModel = viewModel(MessageChatBarViewModel::class.java, factory = factory)
 
             val isShowInput by inputField
 

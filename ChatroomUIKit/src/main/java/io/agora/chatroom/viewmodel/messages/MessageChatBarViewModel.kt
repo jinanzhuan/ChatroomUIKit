@@ -9,7 +9,7 @@ import io.agora.chatroom.model.UIChatBarMenuItem
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class MessageComposerViewModel(
+class MessageChatBarViewModel(
     private val isDarkTheme:Boolean?,
     private val emojiColumns:Int,
     private val composerChatBarController: ComposerChatBarController,

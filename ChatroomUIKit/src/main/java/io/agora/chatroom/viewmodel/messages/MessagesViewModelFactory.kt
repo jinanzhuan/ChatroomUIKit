@@ -40,8 +40,8 @@ class MessagesViewModelFactory(
      * The list of factories that can build [ViewModel]s that our Messages feature components use.
      */
     private val factories: Map<Class<*>, () -> ViewModel> = mapOf(
-        MessageComposerViewModel::class.java to {
-            MessageComposerViewModel(
+        MessageChatBarViewModel::class.java to {
+            MessageChatBarViewModel(
                 isDarkTheme = isDarkTheme,
                 menuItemResource = menuItemResource,
                 emojiColumns = emojiColumns,

@@ -14,7 +14,7 @@ import io.agora.chatroom.service.ChatroomService
 import io.agora.chatroom.ui.UIChatroomService
 import io.agora.chatroom.compose.chatbottombar.ComposeChatBottomBar
 import io.agora.chatroom.theme.ChatroomUIKitTheme
-import io.agora.chatroom.viewmodel.messages.MessageComposerViewModel
+import io.agora.chatroom.viewmodel.messages.MessageChatBarViewModel
 import io.agora.chatroom.viewmodel.messages.MessagesViewModelFactory
 
 class UIChatBottomBarBinder(
@@ -30,7 +30,7 @@ class UIChatBottomBarBinder(
         chatBottomBar.setContent {
             ChatroomUIKitTheme{
 
-                val composerViewModel = viewModel(MessageComposerViewModel::class.java, factory = factory)
+                val composerViewModel = viewModel(MessageChatBarViewModel::class.java, factory = factory)
                 val isShowInput by inputField
 
                 ComposeChatBottomBar(

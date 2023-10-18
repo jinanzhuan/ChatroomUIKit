@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import io.agora.chatroom.commons.ComposerInputMessageState
-import io.agora.chatroom.viewmodel.messages.MessageComposerViewModel
+import io.agora.chatroom.viewmodel.messages.MessageChatBarViewModel
 import io.agora.chatroom.widget.WidgetInputField
 
 /**
@@ -35,7 +35,7 @@ fun ComposeMessageInput(
     composerMessageState: ComposerInputMessageState,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: MessageComposerViewModel,
+    viewModel: MessageChatBarViewModel,
     maxLines: Int = DefaultMessageInputMaxLines,
     keyboardOptions: KeyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
     label: @Composable (ComposerInputMessageState) -> Unit = {
