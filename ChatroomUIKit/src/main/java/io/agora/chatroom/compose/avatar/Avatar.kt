@@ -1,5 +1,6 @@
 package io.agora.chatroom.compose.avatar
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -18,6 +19,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImagePainter
+import coil.compose.rememberAsyncImagePainter
 import io.agora.chatroom.compose.utils.rememberStreamImagePainter
 import io.agora.chatroom.model.UserInfoProtocol
 import io.agora.chatroom.theme.ChatroomUIKitTheme
@@ -96,31 +98,38 @@ fun Avatar(
         data = imageUrl,
         placeholderPainter = defaultPainter,
     )
+    Log.e("apex","painter.state $imageUrl -  ${painter.state} ")
 
-    if (painter.state is AsyncImagePainter.State.Error) {
-        ImageAvatar(
-            modifier = modifier,
-            shape = shape,
-            painter = defaultPainter,
-            contentDescription = contentDescription,
-            onClick = onClick,
-        )
-    } else if (painter.state is AsyncImagePainter.State.Loading) {
-        ImageAvatar(
-            modifier = modifier,
-            shape = shape,
-            painter = defaultPainter,
-            contentDescription = contentDescription,
-            onClick = onClick,
-        )
-    } else {
-        ImageAvatar(
-            modifier = modifier,
-            shape = shape,
-            painter = painter,
-            contentDescription = contentDescription,
-            onClick = onClick,
-        )
+    when (painter.state) {
+        is AsyncImagePainter.State.Error -> {
+            ImageAvatar(
+                modifier = modifier,
+                shape = shape,
+                painter = defaultPainter,
+                contentDescription = contentDescription,
+                onClick = onClick,
+            )
+        }
+
+        is AsyncImagePainter.State.Loading -> {
+            ImageAvatar(
+                modifier = modifier,
+                shape = shape,
+                painter = defaultPainter,
+                contentDescription = contentDescription,
+                onClick = onClick,
+            )
+        }
+
+        else -> {
+            ImageAvatar(
+                modifier = modifier,
+                shape = shape,
+                painter = painter,
+                contentDescription = contentDescription,
+                onClick = onClick,
+            )
+        }
     }
 }
 

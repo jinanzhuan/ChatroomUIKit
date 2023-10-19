@@ -8,13 +8,17 @@ import android.widget.FrameLayout
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -25,6 +29,12 @@ import io.agora.chatroom.service.ChatroomChangeListener
 import io.agora.chatroom.ui.UIChatroomService
 import io.agora.chatroom.compose.chatbottombar.ComposeChatBottomBar
 import io.agora.chatroom.compose.chatmessagelist.ComposeChatMessageList
+import io.agora.chatroom.compose.gift.ComposeGiftBottomSheet
+import io.agora.chatroom.compose.gift.ComposeGiftItemState
+import io.agora.chatroom.compose.gift.ComposeGiftList
+import io.agora.chatroom.compose.gift.ComposeGiftListItemState
+import io.agora.chatroom.service.GiftEntity
+import io.agora.chatroom.service.GiftReceiveListener
 import io.agora.chatroom.theme.ChatroomUIKitTheme
 import io.agora.chatroom.theme.primaryColor80
 import io.agora.chatroom.theme.secondaryColor80
@@ -32,12 +42,16 @@ import io.agora.chatroom.viewmodel.messages.MessageChatBarViewModel
 import io.agora.chatroom.viewmodel.messages.MessageListViewModel
 import io.agora.chatroom.viewmodel.messages.MessagesViewModelFactory
 import io.agora.chatroom.uikit.databinding.ActivityUiChatroomTestBinding
+import io.agora.chatroom.viewmodel.gift.ComposeGiftListViewModel
+import io.agora.chatroom.viewmodel.gift.ComposeGiftSheetViewModel
 
-class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener {
+class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListener {
     private val mRoomViewBinding = ActivityUiChatroomTestBinding.inflate(LayoutInflater.from(context))
     private val inputField: MutableState<Boolean> = mutableStateOf(false)
     private lateinit var listViewModel:MessageListViewModel
+    private lateinit var giftListViewModel:ComposeGiftListViewModel
     private lateinit var bottomBarViewModel:MessageChatBarViewModel
+    private lateinit var giftViewModel:ComposeGiftSheetViewModel
     private lateinit var service:UIChatroomService
 
     constructor(context: Context) : this(context, null)
@@ -55,6 +69,7 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener {
         val roomId = service.getRoomInfo().roomId
 
         service.getChatService().bindListener(this)
+        service.getGiftService().bindGiftListener(this)
 
         if (!ChatroomUIKitClient.shared.isLoginBefore()){
             ChatClient.getInstance().login("apex1","1",object : CallBack {
@@ -81,6 +96,8 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener {
 
             listViewModel = viewModel(MessageListViewModel::class.java, factory = factory)
             bottomBarViewModel = viewModel(MessageChatBarViewModel::class.java, factory = factory)
+            giftViewModel = viewModel(ComposeGiftSheetViewModel::class.java, factory = factory)
+            giftListViewModel = ComposeGiftListViewModel()
 
             val isShowInput by inputField
 
@@ -92,7 +109,36 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener {
                         inputField.value = false
                     }
                 ) {
-                    val (msgList, bottomBar) = createRefs()
+                    val (giftList, msgList, bottomBar) = createRefs()
+                    ComposeGiftBottomSheet(
+                        modifier = Modifier.height((LocalConfiguration.current.screenHeightDp/2).dp),
+                        viewModel = giftViewModel,
+                        screenContent = {},
+                        onGiftItemClick = {
+                            Log.e("apex","ComposeGiftList GiftEntity $it")
+                            service.getGiftService().sendGift(it,
+                                onSuccess = {
+                                    Log.e("apex","sendGift onSuccess")
+                                    giftListViewModel.addData(ComposeGiftItemState(it))
+                                },
+                                onError = {code, error ->  }
+                            )
+                        },
+                        onDismissRequest = {
+                            giftViewModel.closeDrawer()
+                        }
+                    )
+
+                    ComposeGiftList(
+                        modifier = Modifier
+                            .wrapContentWidth()
+                            .height(84.dp)
+                            .padding(bottom = 4.dp)
+                            .constrainAs(giftList){
+                                 bottom.linkTo(msgList.top)
+                            },
+                        viewModel = giftListViewModel,
+                    )
 
                     ComposeChatMessageList(
                         viewModel = listViewModel,
@@ -128,7 +174,9 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener {
                                 })
                         },
                         onMenuClick = {
-                            Log.e("apex","onMenuClick:  $it")
+                            if (it == 0){
+                                giftViewModel.openDrawer()
+                            }
                         },
                         onInputClick = {
                             Log.e("apex","onInputClick: ")
@@ -171,6 +219,11 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener {
     override fun onMessageReceived(message: ChatMessage) {
         super.onMessageReceived(message)
         listViewModel.addTextMessage(message)
+    }
+
+    override fun onGiftReceived(gift: GiftEntity) {
+        super.onGiftReceived(gift)
+        giftListViewModel.addData(ComposeGiftItemState(gift))
     }
 
 
