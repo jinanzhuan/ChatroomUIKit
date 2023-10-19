@@ -16,7 +16,7 @@ import io.agora.chatroom.model.gift.AUIGiftTabInfo
 import io.agora.chatroom.theme.primaryColor80
 import io.agora.chatroom.theme.secondaryColor80
 import io.agora.chatroom.uikit.R
-import io.agora.chatroom.viewmodel.gift.ComposeGiftViewModel
+import io.agora.chatroom.viewmodel.gift.ComposeGiftSheetViewModel
 
 class MessagesViewModelFactory(
     private val context: Context,
@@ -69,8 +69,8 @@ class MessagesViewModelFactory(
 
             )
         },
-        ComposeGiftViewModel::class.java to {
-            ComposeGiftViewModel(
+        ComposeGiftSheetViewModel::class.java to {
+            ComposeGiftSheetViewModel(
                 giftTabInfo = giftTabInfo
             )
         },

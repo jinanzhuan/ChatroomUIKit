@@ -55,7 +55,6 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    Log.e("apex","gift: ${parsingGift(this)}")
                     ShowComposeMenuDrawer(viewModel = viewModel1)
                     ShowDefaultComposeDrawer(viewModel = viewModel2)
 
