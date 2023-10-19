@@ -1,9 +1,9 @@
 package io.agora.chatroom.compose.gift
 
-import io.agora.chatroom.service.ChatMessage
+import io.agora.chatroom.service.GiftEntity
 
 sealed class ComposeGiftListItemState
 
 data class ComposeGiftItemState(
-    val message: ChatMessage
+    val gift: GiftEntity
 ): ComposeGiftListItemState()

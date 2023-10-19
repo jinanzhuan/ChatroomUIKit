@@ -229,12 +229,13 @@ fun DefaultGiftVpContent(
                             }
                         }
                 ) {
-                    val (giftIcon,giftName,tagLayout,sendBtn) = createRefs()
+                    val (giftIcon,tagLayout,sendBtn) = createRefs()
 
                     val painter = rememberStreamImagePainter(
                         data = emoji.giftIcon,
                         placeholderPainter = painterResource(id = R.drawable.icon_default_sweet_heart)
                     )
+                    Log.e("apex","rememberStreamImagePainter ${painter.state}")
                     Image(
                         modifier = Modifier
                             .size(48.dp, 48.dp)
@@ -332,7 +333,6 @@ fun DefaultGiftVpContent(
 @Composable
 fun DefaultGiftTabLayout(viewModel: ComposeGiftTabViewModel, index:Int, tabInfo:AUIGiftTabInfo){
     val pageIndex = viewModel.pageIndex
-    Log.e("apex","DefaultGiftVpContent ${viewModel.list}")
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,

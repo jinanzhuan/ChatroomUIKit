@@ -16,5 +16,5 @@ data class GiftEntity(
     val giftIcon: String,
     val giftEffect: String,
 //    val selected: Boolean,
-    val sendUserId: String
+    var sendUserId: String
 )

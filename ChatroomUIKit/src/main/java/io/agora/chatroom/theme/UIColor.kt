@@ -224,6 +224,7 @@ data class UIColors(
     val tabUnSelected:Color,
     val giftSelected:Color,
     val giftSend:Color,
+    val giftBg:Color,
 ) {
     companion object {
         @Composable
@@ -241,6 +242,7 @@ data class UIColors(
             tabUnSelected = neutralColor70,
             giftSelected = primaryColor95,
             giftSend = neutralColor98,
+            giftBg = barrageLightColor20,
         )
 
         @Composable
@@ -258,6 +260,7 @@ data class UIColors(
             tabUnSelected = neutralColor40,
             giftSelected = primaryColor20,
             giftSend = neutralColor98,
+            giftBg = barrageDarkColor10,
         )
     }
 }
