@@ -30,4 +30,7 @@
     <string name="compose_bottom_drawer_cancel">Cancel</string>
     <string name="compose_empty_text"></string>
 
+    <string name="role_owner">Host</string>
+    <string name="role_admin">Admin</string>
+
 </resources>

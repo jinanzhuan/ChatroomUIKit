@@ -24,8 +24,18 @@ interface UserStateChangeListener {
 
 data class UserEntity(
     val userId: String,
-    val nickname: String,
-    val avatar: String,
-    val gender: Int,
-    val identify: String
+    val nickname: String? = "",
+    val avatar: String? = "",
+    val gender: Int? = 0,
+    val identify: String? = "",
+    val role: ROLE = ROLE.MEMBER
 )
+
+enum class ROLE {
+    OWNER,
+    ADMIN,
+    MEMBER
+}
+
+fun ChatUserInfo.transfer() = UserEntity(userId, nickname, avatarUrl, gender,ext )
+fun UserEntity.transfer(): UserInfoProtocol = UserInfoProtocol(userId, nickname, avatar, gender, identify)
