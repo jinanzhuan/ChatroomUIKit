@@ -33,4 +33,5 @@ android {
 
 dependencies {
     api("io.agora.rtc:chat-sdk:1.2.0")
+    implementation("com.google.code.gson:gson:2.9.0")
 }

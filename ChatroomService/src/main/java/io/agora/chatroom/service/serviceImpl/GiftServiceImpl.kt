@@ -10,6 +10,7 @@ import io.agora.chatroom.service.GiftReceiveListener
 import io.agora.chatroom.service.GiftService
 import io.agora.chatroom.service.OnError
 import io.agora.chatroom.service.OnSuccess
+import io.agora.chatroom.utils.GsonTools
 
 class GiftServiceImpl: GiftService {
     companion object {
@@ -25,11 +26,11 @@ class GiftServiceImpl: GiftService {
         if (listeners.contains(listener)) listeners.remove(listener)
     }
 
-    override fun sendGift(gift: GiftEntity, onSuccess: OnSuccess, onError: OnError) {
+    override fun sendGift(giftEntity: GiftEntity, onSuccess: OnSuccess, onError: OnError) {
         val message = ChatMessage.createSendMessage(ChatMessageType.CUSTOM)
         val customBody = ChatCustomMessageBody(GIFT_EVENT)
-        // todo: 将 gift 对象转为 json 格式
-        customBody.params[GIFT_KEY] = gift.toString()
+        val gift = GsonTools.beanToString(giftEntity)
+        customBody.params[GIFT_KEY] = gift
         message.chatType = ChatType.ChatRoom
         message.body = customBody
         message.setMessageStatusCallback(CallbackImpl(onSuccess, onError))

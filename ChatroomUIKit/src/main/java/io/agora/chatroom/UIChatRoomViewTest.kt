@@ -8,6 +8,7 @@ import android.widget.FrameLayout
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.MutableState
@@ -15,6 +16,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -25,6 +27,7 @@ import io.agora.chatroom.service.ChatroomChangeListener
 import io.agora.chatroom.ui.UIChatroomService
 import io.agora.chatroom.compose.chatbottombar.ComposeChatBottomBar
 import io.agora.chatroom.compose.chatmessagelist.ComposeChatMessageList
+import io.agora.chatroom.compose.gift.ComposeGiftBottomSheet
 import io.agora.chatroom.theme.ChatroomUIKitTheme
 import io.agora.chatroom.theme.primaryColor80
 import io.agora.chatroom.theme.secondaryColor80
@@ -32,12 +35,14 @@ import io.agora.chatroom.viewmodel.messages.MessageChatBarViewModel
 import io.agora.chatroom.viewmodel.messages.MessageListViewModel
 import io.agora.chatroom.viewmodel.messages.MessagesViewModelFactory
 import io.agora.chatroom.uikit.databinding.ActivityUiChatroomTestBinding
+import io.agora.chatroom.viewmodel.gift.ComposeGiftSheetViewModel
 
 class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener {
     private val mRoomViewBinding = ActivityUiChatroomTestBinding.inflate(LayoutInflater.from(context))
     private val inputField: MutableState<Boolean> = mutableStateOf(false)
     private lateinit var listViewModel:MessageListViewModel
     private lateinit var bottomBarViewModel:MessageChatBarViewModel
+    private lateinit var giftViewModel:ComposeGiftSheetViewModel
     private lateinit var service:UIChatroomService
 
     constructor(context: Context) : this(context, null)
@@ -81,6 +86,7 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener {
 
             listViewModel = viewModel(MessageListViewModel::class.java, factory = factory)
             bottomBarViewModel = viewModel(MessageChatBarViewModel::class.java, factory = factory)
+            giftViewModel = viewModel(ComposeGiftSheetViewModel::class.java, factory = factory)
 
             val isShowInput by inputField
 
@@ -93,6 +99,21 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener {
                     }
                 ) {
                     val (msgList, bottomBar) = createRefs()
+                    ComposeGiftBottomSheet(
+                        modifier = Modifier.height((LocalConfiguration.current.screenHeightDp/2).dp),
+                        viewModel = giftViewModel,
+                        screenContent = {},
+                        onGiftItemClick = {
+                            Log.e("apex","ComposeGiftList GiftEntity $it")
+                            service.getGiftService().sendGift(it,
+                                onSuccess = {},
+                                onError = {code, error ->  }
+                            )
+                        },
+                        onDismissRequest = {
+                            giftViewModel.closeDrawer()
+                        }
+                    )
 
                     ComposeChatMessageList(
                         viewModel = listViewModel,
@@ -128,7 +149,10 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener {
                                 })
                         },
                         onMenuClick = {
-                            Log.e("apex","onMenuClick:  $it")
+                            Log.e("apex","onMenuClick:  $it  test ${giftViewModel.contentList}")
+                            if (it == 0){
+                                giftViewModel.openDrawer()
+                            }
                         },
                         onInputClick = {
                             Log.e("apex","onInputClick: ")

@@ -222,6 +222,8 @@ data class UIColors(
     val outline: Color,
     val outlineVariant: Color,
     val tabUnSelected:Color,
+    val giftSelected:Color,
+    val giftSend:Color,
 ) {
     companion object {
         @Composable
@@ -237,6 +239,8 @@ data class UIColors(
             outline = neutralColor70,
             outlineVariant = neutralColor90,
             tabUnSelected = neutralColor70,
+            giftSelected = primaryColor95,
+            giftSend = neutralColor98,
         )
 
         @Composable
@@ -251,7 +255,9 @@ data class UIColors(
             onError = errorColor100,
             outline = neutralColor70,
             outlineVariant = neutralColor20,
-            tabUnSelected = neutralColor40
+            tabUnSelected = neutralColor40,
+            giftSelected = primaryColor20,
+            giftSend = neutralColor98,
         )
     }
 }

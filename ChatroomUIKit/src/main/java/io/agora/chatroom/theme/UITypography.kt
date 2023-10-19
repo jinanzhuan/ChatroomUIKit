@@ -135,6 +135,7 @@ data class UITypography(
     val labelLarge: TextStyle ,
     val labelMedium: TextStyle ,
     val labelSmall: TextStyle ,
+    val labelExtraSmall:TextStyle,
 ) {
     companion object {
         @Composable
@@ -150,6 +151,8 @@ data class UITypography(
             bodySmall = BodySmall,
             labelLarge = LabelLarge,
             labelMedium = LabelMedium,
-            labelSmall = LabelSmall)
+            labelSmall = LabelSmall,
+            labelExtraSmall = LabelExtraSmall,
+        )
     }
 }

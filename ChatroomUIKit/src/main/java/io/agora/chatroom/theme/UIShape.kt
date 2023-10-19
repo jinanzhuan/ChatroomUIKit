@@ -54,6 +54,7 @@ data class UIShapes(
     val medium: Shape = MediumCorner,
     val large: Shape = LargeCorner,
     val extraLarge: Shape = ShapeDefaults.ExtraLarge,
+    val sendGift:Shape,
 ) {
     companion object {
         @Composable
@@ -71,6 +72,7 @@ data class UIShapes(
             medium  = MediumCorner,
             large  = LargeCorner,
             extraLarge  = ShapeDefaults.ExtraLarge,
+            sendGift = RoundedCornerShape(bottomStart = 8.dp, bottomEnd = 8.dp)
         )
     }
 
