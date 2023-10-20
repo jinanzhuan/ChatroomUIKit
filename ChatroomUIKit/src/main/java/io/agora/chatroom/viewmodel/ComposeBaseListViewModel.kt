@@ -13,8 +13,21 @@ open class ComposeBaseListViewModel<T>(
     val items: List<T> = _items
 
     fun addData(msg: T) {
-        _items.add(0, msg)
+        _items.add(msg)
     }
+
+    fun addDateToIndex(index:Int = 0,msg: T){
+        _items.add(index,msg)
+    }
+
+    fun addDataList(msgList:List<T>){
+        _items.addAll(msgList)
+    }
+
+    fun addDataListToIndex(index:Int = 0,msgList:List<T>){
+        _items.addAll(index,msgList)
+    }
+
     fun removeData(msg: T){
         if (_items.contains(msg)  ){
             _items.remove(msg)

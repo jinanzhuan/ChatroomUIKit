@@ -97,15 +97,15 @@ fun ComposeGiftItem(
             ),
     ){
 
-        var userName = "大王叫我来巡山"
-        var avatarUrl = ""
         val userInfo = UIChatroomCacheManager.cacheManager.getUserInfo(gift.sendUserId)
 
-        userInfo?.let {
-            Log.e("apex","ComposeGiftItem userInfo $it")
-            userName = it.nickname.ifEmpty { gift.sendUserId }
-            avatarUrl = it.avatarUrl
-        }
+        val userName = userInfo.nickname?.let {
+            it.ifEmpty { userInfo.userId }
+        } ?: userInfo.userId
+
+        val avatarUrl = userInfo.avatarUrl?.let {
+            it.ifEmpty { "" }
+        } ?: ""
 
         val userPainter = rememberStreamImagePainter(avatarUrl, placeholderPainter = painterResource(id = R.drawable.icon_default_avatar))
         val giftPainter = rememberStreamImagePainter(gift.giftIcon, placeholderPainter = painterResource(id = R.drawable.icon_default_sweet_heart))
