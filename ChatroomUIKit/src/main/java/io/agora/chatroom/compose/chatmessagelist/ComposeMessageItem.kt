@@ -90,11 +90,10 @@ fun ComposeMessageItem(
             ""
         }
 
-        var userName = ""
         val userInfo = UIChatroomCacheManager.cacheManager.getUserInfo(message.from)
-        userInfo?.let {
-            userName = it.nickname.ifEmpty { it.userId }
-        }
+        var userName = userInfo.nickname?.let {
+            it.ifEmpty { userInfo.userId }
+        } ?: userInfo.userId
         val inlineMap = mutableMapOf<String,InlineTextContent>()
         val annotatedText = buildAnnotatedString {
 
@@ -247,7 +246,7 @@ fun DrawLabelImage(userInfo:UserInfoProtocol?) {
 }
 @Composable
 fun DrawAvatarImage(userInfo:UserInfoProtocol?){
-    var avatarUrl = ""
+    var avatarUrl:String? = ""
     userInfo?.let {
         avatarUrl = it.avatarUrl
     }
@@ -258,7 +257,7 @@ fun DrawAvatarImage(userInfo:UserInfoProtocol?){
         modifier = Modifier
             .size(28.dp, 28.dp)
             .padding(start = 4.dp, end = 4.dp),
-        painter = if (avatarUrl.isEmpty())painterResource(id = R.drawable.icon_default_avatar) else painter,
+        painter = if (avatarUrl?.isEmpty() == true)painterResource(id = R.drawable.icon_default_avatar) else painter,
         contentDescription = "Avatar"
     )
 }

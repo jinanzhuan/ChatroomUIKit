@@ -38,7 +38,7 @@ fun UserAvatar(
     Box(modifier = modifier) {
         Avatar(
             modifier = Modifier.fillMaxSize(),
-            imageUrl = user.avatarUrl,
+            imageUrl = user.avatarUrl ?: "",
             shape = shape,
             contentDescription = contentDescription,
             onClick = onClick,

@@ -31,7 +31,7 @@ class UIChatroomActivity : ComponentActivity(){
             roomBg.setImageResource(R.drawable.icon_chatroom_bg_light)
         }
 
-        roomView.bindService(UIChatroomService(UIChatroomInfo(roomId, UserInfoProtocol())))
+        roomView.bindService(UIChatroomService(UIChatroomInfo(roomId, UserInfoProtocol(""))))
     }
 
 

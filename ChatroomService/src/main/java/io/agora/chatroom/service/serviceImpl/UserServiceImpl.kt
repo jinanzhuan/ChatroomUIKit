@@ -1,6 +1,7 @@
 package io.agora.chatroom.service.serviceImpl
 
 import io.agora.chatroom.model.UserInfoProtocol
+import io.agora.chatroom.model.transfer
 import io.agora.chatroom.service.CallbackImpl
 import io.agora.chatroom.service.ChatClient
 import io.agora.chatroom.service.ChatUserInfo
@@ -8,20 +9,10 @@ import io.agora.chatroom.service.ChatValueCallback
 import io.agora.chatroom.service.OnError
 import io.agora.chatroom.service.OnSuccess
 import io.agora.chatroom.service.OnValueSuccess
-import io.agora.chatroom.service.UserEntity
 import io.agora.chatroom.service.UserService
 import io.agora.chatroom.service.UserStateChangeListener
+import io.agora.chatroom.service.transfer
 
-fun ChatUserInfo.transfer() = UserEntity(userId, nickname, avatarUrl, gender,ext )
-fun UserEntity.transfer(): UserInfoProtocol {
-    val user = UserInfoProtocol()
-    user.userId = userId
-    user.nickname = nickname
-    user.avatarUrl = avatar
-    user.gender = gender
-    user.identify = identify
-    return user
-}
 
 class UserServiceImpl: UserService {
     private val listeners = mutableListOf<UserStateChangeListener>()
@@ -65,7 +56,7 @@ class UserServiceImpl: UserService {
         onSuccess: OnSuccess,
         onError: OnError
     ) {
-        userInfoManager.updateOwnInfo(userEntity, object :ChatValueCallback<String> {
+        userInfoManager.updateOwnInfo(userEntity.transfer(), object :ChatValueCallback<String> {
             override fun onSuccess(value: String?) {
                 onSuccess.invoke()
             }

@@ -20,7 +20,8 @@ class UIChatroomCacheManager
 private constructor() {
     private var mEditor: SharedPreferences.Editor? = null
     private var mSharedPreferences: SharedPreferences? = null
-    private var userCache:MutableMap<String, UserInfoProtocol> = mutableMapOf()
+    private var userCache: MutableMap<String, UserInfoProtocol> = mutableMapOf()
+    private val muteCache: MutableSet<String> = mutableSetOf()
 
     companion object {
         const val TAG = "UIChatroomCacheManager"
@@ -39,11 +40,39 @@ private constructor() {
         userCache[userId] = userInfo
     }
 
-    fun getUserInfo(userId:String):UserInfoProtocol?{
+    fun getUserInfo(userId:String):UserInfoProtocol{
         if (userCache.contains(userId)){
-            return userCache[userId]
+            return userCache[userId] ?: UserInfoProtocol(userId)
         }
-        return null
+        return UserInfoProtocol(userId)
+    }
+
+    /**
+     * Judge whether the user information is in the cache
+     */
+    fun inCache(userId:String):Boolean{
+        return userCache.contains(userId)
+    }
+
+    /**
+     * Save the mute list
+     */
+    fun saveMuteList(muteList: List<String>){
+        muteCache.addAll(muteList)
+    }
+
+    /**
+     * Get the mute list
+     */
+    fun getMuteList():List<String>{
+        return muteCache.toList()
+    }
+
+    /**
+     * Check whether the user is in the mute list
+     */
+    fun inMuteCache(userId:String):Boolean{
+        return muteCache.contains(userId)
     }
 
     fun setUseProperties(use:Boolean){
