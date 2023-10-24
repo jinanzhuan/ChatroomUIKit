@@ -30,7 +30,6 @@ import io.agora.chatroom.viewmodel.member.MemberListViewModel
 import io.agora.chatroom.viewmodel.member.MemberViewModelFactory
 import io.agora.chatroom.viewmodel.member.MembersBottomSheetViewModel
 import io.agora.chatroom.viewmodel.member.MutedListViewModel
-import io.agora.chatroom.viewmodel.menu.BottomSheetViewModel
 import io.agora.chatroom.viewmodel.pager.PagerViewModel
 import io.agora.chatroom.viewmodel.pager.TabInfo
 
