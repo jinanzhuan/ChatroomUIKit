@@ -15,6 +15,8 @@ interface UserService {
 
     fun login(userId: String, token: String, onSuccess: OnSuccess, onError: OnError)
 
+    fun login(user: UserInfoProtocol,token: String,userProperties: Boolean = true,onSuccess: OnSuccess, onError: OnError)
+
     fun logout(onSuccess: OnSuccess, onFailure: OnError)
 }
 
@@ -28,7 +30,7 @@ data class UserEntity(
     val avatar: String? = "",
     val gender: Int? = 0,
     val identify: String? = "",
-    val role: ROLE = ROLE.MEMBER
+    var role: ROLE = ROLE.MEMBER
 )
 
 enum class ROLE {

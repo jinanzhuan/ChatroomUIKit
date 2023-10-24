@@ -21,8 +21,26 @@ data class ComposeMessageListState(
     val messages: List<ComposeMessageListItemState> = _messages
 
     fun addMessage(msg: ComposeMessageListItemState) {
-        _messages.add(0, msg)
+        _messages.add(msg)
     }
+    fun addMessageByIndex(index:Int = 0,msg: ComposeMessageListItemState){
+        _messages.add(index, msg)
+    }
+
+    fun addMessageList(msgList:List<ComposeMessageListItemState>){
+        _messages.addAll(msgList)
+    }
+
+    fun addMessageListByIndex(index:Int = 0,msgList:List<ComposeMessageListItemState>){
+        _messages.addAll(index,msgList)
+    }
+
+    fun updateMessage(index: Int,newState: ComposeMessageListItemState){
+        if (index in 0 until _messages.size) {
+            _messages[index] = newState
+        }
+    }
+
     fun removeMessage(msg: ComposeMessageListItemState){
         if (_messages.contains(msg)  ){
             _messages.remove(msg)

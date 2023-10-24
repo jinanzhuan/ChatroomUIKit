@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.sp
 import io.agora.chatroom.data.RegexList
 import io.agora.chatroom.data.emojiList
 import io.agora.chatroom.data.emojiMap
-import io.agora.chatroom.model.emoji.RegexEntity
+import io.agora.chatroom.model.emoji.UIRegexEntity
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -102,7 +102,7 @@ object ExpressionUtils {
             var insertIndex = -1
             var oldTagLength = 0
 
-            val insertMap = mutableMapOf<Int,RegexEntity>()
+            val insertMap = mutableMapOf<Int,UIRegexEntity>()
             val roleList = getRole(content)
 
             for (i in 0 until roleList.size){
@@ -154,7 +154,7 @@ object ExpressionUtils {
         return annotatedText
     }
 
-    fun addLienMap(regex:RegexEntity,inLienMap:MutableMap<String,InlineTextContent>){
+    fun addLienMap(regex:UIRegexEntity, inLienMap:MutableMap<String,InlineTextContent>){
         inLienMap[regex.emojiTag] = InlineTextContent(
             placeholder = Placeholder(18.sp,18.sp, PlaceholderVerticalAlign.Center),
             children = {
@@ -169,8 +169,8 @@ object ExpressionUtils {
         )
     }
 
-    fun getRole(content:String):MutableList<RegexEntity>{
-        val list = mutableListOf<RegexEntity>()
+    fun getRole(content:String):MutableList<UIRegexEntity>{
+        val list = mutableListOf<UIRegexEntity>()
         // 将list元素拼接成正则表达式
         val regexBuilder = StringBuilder()
         regexBuilder.append("(")
@@ -194,13 +194,13 @@ object ExpressionUtils {
             val startIndex = matcher.start()
             val endIndex = matcher.end()
             icon?.let {
-                val regexEntity = RegexEntity(
+                val UIRegexEntity = UIRegexEntity(
                     startIndex = startIndex,
                     endIndex = endIndex,
                     emojiTag = matchedString,
                     emojiIcon = it
                 )
-                list.add(regexEntity)
+                list.add(UIRegexEntity)
             }
         }
         return list

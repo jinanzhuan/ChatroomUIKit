@@ -1,6 +1,6 @@
 package io.agora.chatroom.model
 
-public object UICapabilities {
+object UICapabilities {
 
     /** Ability to send a message. */
     public const val SEND_MESSAGE: String = "send-message"

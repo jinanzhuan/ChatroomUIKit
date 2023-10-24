@@ -4,36 +4,44 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.text.TextUtils
-import io.agora.chatroom.UIChatroomContext
 import org.jetbrains.annotations.Nullable
 import java.io.ByteArrayOutputStream
 import java.io.ObjectOutputStream
 import java.io.Serializable
 import android.util.Base64
 import io.agora.chatroom.model.UIConstant
-import io.agora.chatroom.service.ROLE
 import io.agora.chatroom.service.UserEntity
 import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.io.ObjectInputStream
 
-class UIChatroomCacheManager
-private constructor() {
-    private var mEditor: SharedPreferences.Editor? = null
-    private var mSharedPreferences: SharedPreferences? = null
-    private var userCache: MutableMap<String, UserEntity> = mutableMapOf()
-    private val muteCache: MutableSet<String> = mutableSetOf()
+class UIChatroomCacheManager{
 
     companion object {
         const val TAG = "UIChatroomCacheManager"
-        val cacheManager = UIChatroomCacheManager().apply {
-            mSharedPreferences = UIChatroomContext.shared.getCommonConfig().context?.getSharedPreferences(
-                "SP_AT_PROFILE",
-                Context.MODE_PRIVATE
-            )
-            mSharedPreferences.let {
-                mEditor = it?.edit()
+
+        private var instance: UIChatroomCacheManager? = null
+        private var mSharedPreferences: SharedPreferences? = null
+        private var mEditor: SharedPreferences.Editor? = null
+        private var userCache: MutableMap<String, UserEntity> = mutableMapOf()
+        private val muteCache: MutableSet<String> = mutableSetOf()
+
+        fun getInstance(): UIChatroomCacheManager {
+            if (instance == null) {
+                synchronized(UIChatroomCacheManager::class.java) {
+                    if (instance == null) {
+                        instance = UIChatroomCacheManager()
+                    }
+                }
             }
+            return instance!!
+        }
+    }
+
+    fun init(context: Context){
+        mSharedPreferences = context.getSharedPreferences("SP_AT_PROFILE", Context.MODE_PRIVATE)
+        mSharedPreferences.let {
+            mEditor = it?.edit()
         }
     }
 
@@ -55,37 +63,37 @@ private constructor() {
         return userCache.contains(userId)
     }
 
-    /**
-     * Save the owner
-     */
-    fun saveOwner(owner: String) {
-        if (inCache(owner)) {
-            getUserInfo(owner).apply {
-                if (role != ROLE.OWNER) {
-                    role = ROLE.OWNER
-                }
-            }
-        } else {
-            saveUserInfo(owner, UserEntity(owner))
-        }
-    }
-
-    /**
-     * Save the admin list
-     */
-    fun saveAdminList(adminList: List<String>){
-        adminList.forEach { admin ->
-            if (inCache(admin)){
-                getUserInfo(admin).apply {
-                    if (role != ROLE.ADMIN) {
-                        role = ROLE.ADMIN
-                    }
-                }
-            } else {
-                saveUserInfo(admin, UserEntity(admin))
-            }
-        }
-    }
+//    /**
+//     * Save the owner
+//     */
+//    fun saveOwner(owner: String) {
+//        if (inCache(owner)) {
+//            getUserInfo(owner).apply {
+//                if (role != ROLE.OWNER) {
+//                    role = ROLE.OWNER
+//                }
+//            }
+//        } else {
+//            saveUserInfo(owner, UserInfoProtocol(owner))
+//        }
+//    }
+//
+//    /**
+//     * Save the admin list
+//     */
+//    fun saveAdminList(adminList: List<String>){
+//        adminList.forEach { admin ->
+//            if (inCache(admin)){
+//                getUserInfo(admin).apply {
+//                    if (role != ROLE.ADMIN) {
+//                        role = ROLE.ADMIN
+//                    }
+//                }
+//            } else {
+//                saveUserInfo(admin, UserInfoProtocol(admin))
+//            }
+//        }
+//    }
 
     /**
      * Save the mute list
@@ -122,6 +130,14 @@ private constructor() {
 
     fun getCurrentTheme():Boolean{
         return getBoolean(UIConstant.CHATROOM_THEME,false)
+    }
+
+    fun setUseGiftsInMsg(use: Boolean){
+        putBoolean(UIConstant.CHATROOM_USE_GIFTS_IN_LIST,use)
+    }
+
+    fun getUseGiftsInMsg():Boolean{
+        return getBoolean(UIConstant.CHATROOM_USE_GIFTS_IN_LIST,false)
     }
 
 

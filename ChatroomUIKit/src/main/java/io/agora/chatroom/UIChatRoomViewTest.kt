@@ -6,7 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,7 +19,6 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -38,12 +37,10 @@ import io.agora.chatroom.compose.gift.ComposeGiftItemState
 import io.agora.chatroom.compose.gift.ComposeGiftList
 import io.agora.chatroom.compose.member.ComposeMembersBottomSheet
 import io.agora.chatroom.model.UIComposeSheetItem
-import io.agora.chatroom.service.GiftEntity
+import io.agora.chatroom.service.GiftEntityProtocol
 import io.agora.chatroom.service.GiftReceiveListener
-import io.agora.chatroom.service.cache.UIChatroomCacheManager
+import io.agora.chatroom.service.UserEntity
 import io.agora.chatroom.theme.ChatroomUIKitTheme
-import io.agora.chatroom.theme.primaryColor80
-import io.agora.chatroom.theme.secondaryColor80
 import io.agora.chatroom.uikit.R
 import io.agora.chatroom.viewmodel.messages.MessageChatBarViewModel
 import io.agora.chatroom.viewmodel.messages.MessageListViewModel
@@ -80,28 +77,28 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
         addView(mRoomViewBinding.root)
     }
 
-    fun bindService(service: UIChatroomService){
+    fun bindService(service: UIChatroomService?){
+        if (service == null) return
         this.service = service
         val roomId = service.getRoomInfo().roomId
 
         service.getChatService().bindListener(this)
         service.getGiftService().bindGiftListener(this)
 
-        if (!ChatroomUIKitClient.shared.isLoginBefore()){
-            ChatClient.getInstance().login("apex1","1",object : CallBack {
-                override fun onSuccess() {
-                    Log.e("apex","login onSuccess")
-                    joinChatroom(roomId)
-                }
+        // 测试登录代码
+        ChatClient.getInstance().login("apex1","1",object : CallBack {
+            override fun onSuccess() {
+                Log.e("apex","login onSuccess")
+                ChatroomUIKitClient.getInstance().getChatroomUser().setUserInfo(
+                    "apex1", UserEntity(userId = "apex1", nickname = "大威天龙")
+                )
+                joinChatroom(roomId)
+            }
 
-                override fun onError(code: Int, error: String?) {
-                    Log.e("apex","login onError $code  $error")
-                }
-
-            })
-        }else{
-            joinChatroom(roomId)
-        }
+            override fun onError(code: Int, error: String?) {
+                Log.e("apex","login onError $code  $error")
+            }
+        })
 
         mRoomViewBinding.composeChatroom.setContent {
 
@@ -114,6 +111,11 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
             bottomBarViewModel = viewModel(MessageChatBarViewModel::class.java, factory = factory)
             giftViewModel = viewModel(ComposeGiftSheetViewModel::class.java, factory = factory)
             giftListViewModel = ComposeGiftListViewModel()
+            giftListViewModel.openAutoClear()
+            giftListViewModel.setAutoClearTime(3000L)
+
+            ChatroomUIKitClient.getInstance().getContext().setUseGiftsInList(true)
+
             val membersBottomSheet = MembersBottomSheetViewModel(roomId = roomId, roomService = service, isAdmin = true)
 
             val isShowInput by inputField
@@ -128,15 +130,20 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
                 ) {
                     val (giftList, msgList, bottomBar) = createRefs()
                     ComposeGiftBottomSheet(
-                        modifier = Modifier.height((LocalConfiguration.current.screenHeightDp/2).dp),
+                        modifier = Modifier
+                            .height((LocalConfiguration.current.screenHeightDp/2).dp)
+                            ,
                         viewModel = giftViewModel,
+                        containerColor = ChatroomUIKitTheme.colors.background,
                         screenContent = {},
                         onGiftItemClick = {
-                            Log.e("apex","ComposeGiftList GiftEntity $it")
                             service.getGiftService().sendGift(it,
-                                onSuccess = {
-                                    Log.e("apex","sendGift onSuccess")
-                                    giftListViewModel.addData(ComposeGiftItemState(it))
+                                onSuccess = {msg ->
+                                    if (ChatroomUIKitClient.getInstance().getContext().getUseGiftsInMsg()){
+                                        listViewModel.addGiftMessageByIndex(message = msg, gift = it)
+                                    }else{
+                                        giftListViewModel.addDateToIndex(data=ComposeGiftItemState(it))
+                                    }
                                 },
                                 onError = {code, error ->  }
                             )
@@ -224,7 +231,7 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
                                 message = input,
                                 roomId = roomId,//service.getRoomInfo().roomId
                                 onSuccess = {
-                                    listViewModel.addTextMessage(it)
+                                    listViewModel.addTextMessageByIndex(message = it)
                                 },
                                 onError = {code, error ->
 
@@ -251,20 +258,14 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
         service: UIChatroomService,
         showDateSeparators: Boolean = true,
         showLabel: Boolean = true,
-        showGift: Boolean = true,
         showAvatar: Boolean = true,
-        dateSeparatorColor: Color = secondaryColor80,
-        nickNameColor: Color = primaryColor80,
     ): MessagesViewModelFactory {
         return MessagesViewModelFactory(
             context = context,
             service = service,
             showDateSeparators = showDateSeparators,
             showLabel = showLabel,
-            showGift = showGift,
             showAvatar = showAvatar,
-            dateSeparatorColor = dateSeparatorColor,
-            nickNameColor = nickNameColor
         )
     }
 
@@ -276,21 +277,30 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
 
     override fun onMessageReceived(message: ChatMessage) {
         super.onMessageReceived(message)
-        listViewModel.addTextMessage(message)
+        listViewModel.addTextMessageByIndex(message = message)
     }
 
-    override fun onGiftReceived(gift: GiftEntity) {
-        super.onGiftReceived(gift)
-        giftListViewModel.addData(ComposeGiftItemState(gift))
+    override fun onGiftReceived(roomId: String, gift: GiftEntityProtocol, message: ChatMessage) {
+        super.onGiftReceived(roomId, gift, message)
+        if (ChatroomUIKitClient.getInstance().getContext().getUseGiftsInMsg()){
+            listViewModel.addGiftMessageByIndex(message = message, gift = gift)
+        }else{
+            giftListViewModel.addDateToIndex(data = ComposeGiftItemState(gift))
+        }
+    }
+
+    override fun onUserJoined(roomId: String, userId: String) {
+        Log.e("apex","onUserJoined $roomId  - $userId")
     }
 
 
     fun joinChatroom(roomId:String){
         service.getChatService().joinChatroom(roomId,"apex1"
             , onSuccess = {
-                UIChatroomCacheManager.cacheManager.saveOwner(it.owner)
-                UIChatroomCacheManager.cacheManager.saveAdminList(it.adminList)
+//                UIChatroomCacheManager.cacheManager.saveOwner(it.owner)
+//                UIChatroomCacheManager.cacheManager.saveAdminList(it.adminList)
                 Log.e("apex","joinChatroom  193314355740675 onSuccess admin: ${it.adminList} owner: ${it.owner}")
+                listViewModel.addJoinedMessageByIndex(message = ChatroomUIKitClient.getInstance().getJoinedMessage())
             }
             , onError = {errorCode,result->
                 Log.e("apex","joinChatroom  193314355740675 onError $errorCode $result")

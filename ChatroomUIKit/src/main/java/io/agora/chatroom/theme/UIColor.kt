@@ -222,9 +222,12 @@ data class UIColors(
     val outline: Color,
     val outlineVariant: Color,
     val tabUnSelected:Color,
-    val giftSelected:Color,
-    val giftSend:Color,
-    val giftBg:Color,
+    val barrageL20D10:Color,
+    val neutralL98D98:Color,
+    val primaryL95D20:Color,
+    val primaryL80D80:Color,
+    val secondaryL80D70:Color,
+
 ) {
     companion object {
         @Composable
@@ -240,9 +243,11 @@ data class UIColors(
             outline = neutralColor70,
             outlineVariant = neutralColor90,
             tabUnSelected = neutralColor70,
-            giftSelected = primaryColor95,
-            giftSend = neutralColor98,
-            giftBg = barrageLightColor20,
+            primaryL95D20 = primaryColor95,
+            neutralL98D98 = neutralColor98,
+            barrageL20D10 = barrageLightColor20,
+            secondaryL80D70 = secondaryColor80,
+            primaryL80D80 = primaryColor80,
         )
 
         @Composable
@@ -258,9 +263,11 @@ data class UIColors(
             outline = neutralColor70,
             outlineVariant = neutralColor20,
             tabUnSelected = neutralColor40,
-            giftSelected = primaryColor20,
-            giftSend = neutralColor98,
-            giftBg = barrageDarkColor10,
+            primaryL95D20 = primaryColor20,
+            neutralL98D98 = neutralColor98,
+            barrageL20D10 = barrageDarkColor10,
+            secondaryL80D70 = secondaryColor70,
+            primaryL80D80 = primaryColor80,
         )
     }
 }

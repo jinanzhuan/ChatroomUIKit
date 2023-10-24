@@ -76,6 +76,7 @@ class MainActivity : ComponentActivity() {
                                 this.startActivity(
                                     UIChatroomActivity.createIntent(
                                         context = this,
+                                        ownerId = "apex1",
                                         roomId = "193314355740675",
                                     ))
                             }

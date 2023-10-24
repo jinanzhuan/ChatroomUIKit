@@ -15,7 +15,7 @@ import io.agora.chatroom.viewmodel.menu.MenuViewModelFactory
 class UIChatRoomBinder(
     private val chatroom: ComposeView,
     private val service: UIChatroomService,
-): io.agora.chatroom.binder.UIBinder {
+): UIBinder {
    lateinit var menuViewModel:MenuViewModel
     init {
 

@@ -20,7 +20,7 @@ fun MemberList(
     onItemClick: ((UserEntity) -> Unit)? = null,
     onExtendClick: ((UserEntity) -> Unit)? = null,
     itemContent: @Composable (Int, UserEntity) -> Unit = { index, item ->
-        val user = UIChatroomCacheManager.cacheManager.getUserInfo(item.userId)
+        val user = UIChatroomCacheManager.getInstance().getUserInfo(item.userId)
         DefaultMemberItem(
             user = user,
             showRole = showRole,

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="ui_text">测试tab</string>
+    <string name="ui_text">test</string>
 
     <string name="cancel">Cancel</string>
     <string name="Confirm">Confirm</string>
@@ -38,5 +38,12 @@
     <string name="menu_item_mute">Mute</string>
     <string name="menu_item_unmute">Unmute</string>
     <string name="menu_item_remove">Remove</string>
+
+    <!-- Gift  -->
+    <string name="compose_gift_item_subtitle">Sent %1$s </string>
+
+    <!-- Message  -->
+    <string name="compose_message_item_joined">Joined</string>
+    <string name="compose_message_gift_sent">Sent </string>
 
 </resources>

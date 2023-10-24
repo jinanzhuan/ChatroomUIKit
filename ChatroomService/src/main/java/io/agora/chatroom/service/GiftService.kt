@@ -8,7 +8,7 @@ interface GiftService : GiftMessageHandleService {
 
 }
 
-data class GiftEntity(
+data class GiftEntityProtocol(
     val giftId: String,
     val giftName: String,
     val gitPrice: Double,

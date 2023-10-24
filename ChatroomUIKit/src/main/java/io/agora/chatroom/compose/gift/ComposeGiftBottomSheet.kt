@@ -12,7 +12,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import io.agora.chatroom.compose.drawer.ComposeBottomSheet
 import io.agora.chatroom.compose.drawer.GiftTabLayoutWithViewPager
-import io.agora.chatroom.service.GiftEntity
+import io.agora.chatroom.service.GiftEntityProtocol
 import io.agora.chatroom.theme.ChatroomUIKitTheme
 import io.agora.chatroom.viewmodel.gift.ComposeGiftTabViewModel
 import io.agora.chatroom.viewmodel.gift.ComposeGiftSheetViewModel
@@ -22,7 +22,7 @@ import io.agora.chatroom.viewmodel.gift.ComposeGiftSheetViewModel
  fun ComposeGiftBottomSheet(
     viewModel:ComposeGiftSheetViewModel,
     modifier: Modifier = Modifier,
-    onGiftItemClick: (GiftEntity) -> Unit = {},
+    onGiftItemClick: (GiftEntityProtocol) -> Unit = {},
     drawerContent: @Composable () -> Unit = { DefaultGiftContent(viewModel, onGiftItemClick) },
     screenContent: @Composable () -> Unit = {  },
     onDismissRequest: () -> Unit,
@@ -52,7 +52,7 @@ import io.agora.chatroom.viewmodel.gift.ComposeGiftSheetViewModel
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun DefaultGiftContent(viewModel: ComposeGiftSheetViewModel, onGiftItemClick: (GiftEntity) -> Unit){
+fun DefaultGiftContent(viewModel: ComposeGiftSheetViewModel, onGiftItemClick: (GiftEntityProtocol) -> Unit){
     GiftTabLayoutWithViewPager(
         viewModel =  ComposeGiftTabViewModel(giftTabInfo = viewModel.contentList),
         modifier = Modifier,

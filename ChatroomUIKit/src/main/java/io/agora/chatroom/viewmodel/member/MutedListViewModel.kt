@@ -16,9 +16,9 @@ data class MutedListViewModel(
      */
     fun fetchMuteList(onSuccess: OnValueSuccess<List<UserEntity>> = {}) {
         loading()
-        val muteList = UIChatroomCacheManager.cacheManager.getMuteList()
+        val muteList = UIChatroomCacheManager.getInstance().getMuteList()
         muteList.map { userId ->
-            UIChatroomCacheManager.cacheManager.getUserInfo(userId)
+            UIChatroomCacheManager.getInstance().getUserInfo(userId)
         }.let {
             add(it)
             onSuccess.invoke(it)

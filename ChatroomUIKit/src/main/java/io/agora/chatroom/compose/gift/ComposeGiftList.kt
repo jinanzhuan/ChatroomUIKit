@@ -1,6 +1,5 @@
 package io.agora.chatroom.compose.gift
 
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -17,11 +16,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import io.agora.chatroom.ChatroomUIKitClient
+import io.agora.chatroom.UIChatroomContext
 import io.agora.chatroom.compose.list.ComposeBaseList
 import io.agora.chatroom.compose.utils.rememberStreamImagePainter
-import io.agora.chatroom.service.cache.UIChatroomCacheManager
 import io.agora.chatroom.theme.ChatroomUIKitTheme
 import io.agora.chatroom.uikit.R
 import io.agora.chatroom.viewmodel.gift.ComposeGiftListViewModel
@@ -92,12 +94,12 @@ fun ComposeGiftItem(
             .wrapContentWidth()
             .height(44.dp)
             .background(
-                color = ChatroomUIKitTheme.colors.giftBg,
+                color = ChatroomUIKitTheme.colors.barrageL20D10,
                 shape = ChatroomUIKitTheme.shapes.giftItemBg
             ),
     ){
 
-        val userInfo = UIChatroomCacheManager.cacheManager.getUserInfo(gift.sendUserId)
+        val userInfo = ChatroomUIKitClient.getInstance().getChatroomUser().getUserInfo(gift.sendUserId)
 
         val userName = userInfo.nickname?.let {
             it.ifEmpty { userInfo.userId }
@@ -113,7 +115,7 @@ fun ComposeGiftItem(
 
         if (avatarUrl.isBlank()){
             Image(
-                modifier = Modifier.size(36.dp, 36.dp),
+                modifier = Modifier.size(36.dp, 36.dp).padding(start = 4.dp),
                 painter = painterResource(id = R.drawable.icon_default_avatar),
                 alignment = Alignment.Center,
                 contentDescription = "userAvatar"
@@ -137,12 +139,17 @@ fun ComposeGiftItem(
             Text(
                 text = userName,
                 modifier = Modifier.wrapContentWidth().wrapContentHeight(),
-                style = ChatroomUIKitTheme.typography.bodySmall
+                style = ChatroomUIKitTheme.typography.bodySmall.copy(
+                    color = Color.White
+                )
             )
+
             Text(
-                text = gift.giftName,
+                text = stringResource(id = R.string.compose_gift_item_subtitle,gift.giftName),
                 modifier = Modifier.wrapContentWidth().wrapContentHeight(),
-                style = ChatroomUIKitTheme.typography.bodySmall
+                style = ChatroomUIKitTheme.typography.bodySmall.copy(
+                    color = Color.White
+                )
             )
 
         }
@@ -154,13 +161,20 @@ fun ComposeGiftItem(
             contentDescription = "gifts"
         )
 
+//        val assetManager = LocalContext.current.assets
+//        val fontPath = "RobotoNumbersVF.ttf"
+//        val font = Font(fontPath,assetManager )
+//        val fontFamily = FontFamily(font)
+
         Text(
             modifier = Modifier
                 .wrapContentWidth()
                 .wrapContentHeight()
                 .padding(start = 6.dp, end = 6.dp),
             text = "X1",
-            style = ChatroomUIKitTheme.typography.titleSmall
+            style = ChatroomUIKitTheme.typography.titleSmall.copy(
+                color = Color.White,
+            )
         )
 
     }

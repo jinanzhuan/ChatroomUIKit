@@ -4,11 +4,8 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
-import androidx.compose.ui.graphics.Color
 import io.agora.chatroom.binder.UIChatListBinder
 import io.agora.chatroom.binder.UIChatRoomBinder
-import io.agora.chatroom.theme.primaryColor80
-import io.agora.chatroom.theme.secondaryColor80
 import io.agora.chatroom.viewmodel.messages.MessagesViewModelFactory
 import io.agora.chatroom.uikit.databinding.ActivityUiChatroomBinding
 
@@ -75,20 +72,14 @@ class UIChatRoomView : FrameLayout{
         service: UIChatroomService,
         showDateSeparators: Boolean = true,
         showLabel: Boolean = true,
-        showGift: Boolean = true,
         showAvatar: Boolean = true,
-        dateSeparatorColor: Color = secondaryColor80,
-        nickNameColor: Color = primaryColor80,
     ): MessagesViewModelFactory {
         return MessagesViewModelFactory(
             context = context,
             service = service,
             showDateSeparators = showDateSeparators,
             showLabel = showLabel,
-            showGift = showGift,
             showAvatar = showAvatar,
-            dateSeparatorColor = dateSeparatorColor,
-            nickNameColor = nickNameColor
         )
     }
 

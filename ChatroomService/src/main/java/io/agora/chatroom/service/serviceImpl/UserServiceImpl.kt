@@ -71,6 +71,16 @@ class UserServiceImpl: UserService {
         ChatClient.getInstance().loginWithAgoraToken(userId, token, CallbackImpl(onSuccess, onError))
     }
 
+    override fun login(
+        user: UserInfoProtocol,
+        token: String,
+        userProperties: Boolean,//放options里面
+        onSuccess: OnSuccess,
+        onError: OnError
+    ) {
+        ChatClient.getInstance().loginWithAgoraToken(user.userId, token, CallbackImpl(onSuccess, onError))
+    }
+
     override fun logout(onSuccess: OnSuccess, onError: OnError) {
         ChatClient.getInstance().logout(true, CallbackImpl(onSuccess, onError))
     }
