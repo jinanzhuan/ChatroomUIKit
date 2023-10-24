@@ -67,7 +67,8 @@ fun <T> ComposeBottomSheet(
             scrimColor = scrimColor,
             dragHandle = dragHandle,
             windowInsets = windowInsets,
-            modifier = modifier) {
+            modifier = modifier
+        ) {
 
             Column(
                 modifier = modifier

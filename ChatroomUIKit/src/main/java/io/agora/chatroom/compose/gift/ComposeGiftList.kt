@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.UIChatroomContext
 import io.agora.chatroom.compose.list.ComposeBaseList
 import io.agora.chatroom.compose.utils.rememberStreamImagePainter
@@ -98,7 +99,7 @@ fun ComposeGiftItem(
             ),
     ){
 
-        val userInfo = UIChatroomContext.getInstance().getUserInfo(gift.sendUserId)
+        val userInfo = ChatroomUIKitClient.getInstance().getChatroomUser().getUserInfo(gift.sendUserId)
 
         val userName = userInfo.nickname?.let {
             it.ifEmpty { userInfo.userId }

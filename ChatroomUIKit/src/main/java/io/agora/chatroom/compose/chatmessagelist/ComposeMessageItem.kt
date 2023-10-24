@@ -26,11 +26,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import io.agora.chat.TextMessageBody
+import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.UIChatroomContext
 import io.agora.chatroom.compose.utils.ExpressionUtils
 import io.agora.chatroom.model.UserInfoProtocol
 import io.agora.chatroom.model.emoji.UIRegexEntity
 import io.agora.chatroom.service.GiftEntityProtocol
+import io.agora.chatroom.service.UserEntity
 import io.agora.chatroom.theme.ChatroomUIKitTheme
 import io.agora.chatroom.uikit.R
 import java.text.SimpleDateFormat
@@ -84,7 +86,7 @@ fun ComposeMessageItem(
                 shape = ChatroomUIKitTheme.shapes.small
             ),
     ){
-        var userInfo:UserInfoProtocol? = null
+        var userInfo:UserEntity? = null
         var userId = ""
         var userName = ""
         if (itemType == ComposeItemType.ITEM_GIFT){
@@ -98,7 +100,7 @@ fun ComposeMessageItem(
         }
 
         if (userId.isNotEmpty()){
-            userInfo = UIChatroomContext.getInstance().getUserInfo(userId)
+            userInfo = ChatroomUIKitClient.getInstance().getChatroomUser().getUserInfo(userId)
             userName = userInfo.nickname?.let {
                 it.ifEmpty { userInfo.userId }
             } ?: userInfo.userId
@@ -234,7 +236,7 @@ fun ComposeMessageItem(
             inlineMap["Label"] = InlineTextContent(
                 placeholder = Placeholder(18.sp,18.sp, PlaceholderVerticalAlign.Center),
                 children = {
-                    DrawLabelImage(userInfo.transfer())
+                    DrawLabelImage(userInfo)
                 }
             )
         }
@@ -243,7 +245,7 @@ fun ComposeMessageItem(
             inlineMap["Avatar"] = InlineTextContent(
                 placeholder = Placeholder(28.sp,28.sp, PlaceholderVerticalAlign.Center),
                 children = {
-                    DrawAvatarImage(userInfo.transfer())
+                    DrawAvatarImage(userInfo)
                 }
             )
         }
@@ -260,7 +262,7 @@ fun ComposeMessageItem(
 }
 
 @Composable
-fun DrawLabelImage(userInfo:UserInfoProtocol?) {
+fun DrawLabelImage(userInfo:UserEntity?) {
     var labelUrl = ""
     userInfo?.let {
         labelUrl = it.identify.toString()
@@ -277,10 +279,10 @@ fun DrawLabelImage(userInfo:UserInfoProtocol?) {
     )
 }
 @Composable
-fun DrawAvatarImage(userInfo:UserInfoProtocol?){
+fun DrawAvatarImage(userInfo:UserEntity?){
     var avatarUrl:String? = ""
     userInfo?.let {
-        avatarUrl = it.avatarUrl
+        avatarUrl = it.avatar
     }
     val painter = rememberAsyncImagePainter(
         model = avatarUrl

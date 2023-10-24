@@ -2,7 +2,6 @@ package io.agora.chatroom.service.serviceImpl
 
 import io.agora.CallBack
 import io.agora.chatroom.ChatroomUIKitClient
-import io.agora.chatroom.UIChatroomContext
 import io.agora.chatroom.service.ChatClient
 import io.agora.chatroom.service.ChatCustomMessageBody
 import io.agora.chatroom.service.ChatMessage
@@ -40,7 +39,7 @@ class GiftServiceImpl: GiftService {
         message.setAttribute(GIFT_KEY, gift?.let { JSONObject(it) })
         message.chatType = ChatType.ChatRoom
         message.body = customBody
-        message.to = ChatroomUIKitClient.getInstance().getChatRoomInfo()?.roomId
+        message.to = ChatroomUIKitClient.getInstance().getContext().getCurrentRoomInfo().roomId
         message.setMessageStatusCallback(object : CallBack{
             override fun onSuccess() {
                 onSuccess.invoke(message)

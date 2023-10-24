@@ -36,25 +36,25 @@ open class MemberListViewModel(
             hasMore = cursorResult.data.size == pageSize
             cursor = cursorResult.cursor
             val propertyList = cursorResult.data.filter { userId ->
-                !UIChatroomCacheManager.cacheManager.inCache(userId)
+                !UIChatroomCacheManager.getInstance().inCache(userId)
             }
             if (fetchUserInfo && propertyList.isNotEmpty()) {
                 fetchUsersInfo(propertyList, { list ->
                     val result = cursorResult.data.map { userId ->
-                        UIChatroomCacheManager.cacheManager.getUserInfo(userId)
+                        UIChatroomCacheManager.getInstance().getUserInfo(userId)
                     }
                     add(result)
                     onSuccess.invoke(result)
                 }, { code, error ->
                     val result = cursorResult.data.map { userId ->
-                        UIChatroomCacheManager.cacheManager.getUserInfo(userId)
+                        UIChatroomCacheManager.getInstance().getUserInfo(userId)
                     }
                     add(result)
                     onError.invoke(code, error)
                 })
             } else {
                 val result = cursorResult.data.map { userId ->
-                    UIChatroomCacheManager.cacheManager.getUserInfo(userId)
+                    UIChatroomCacheManager.getInstance().getUserInfo(userId)
                 }
                 add(result)
                 onSuccess.invoke(result)
@@ -77,7 +77,7 @@ open class MemberListViewModel(
                 it.toUser()
             }
             users.forEach {
-                UIChatroomCacheManager.cacheManager.saveUserInfo(it.userId, it)
+                UIChatroomCacheManager.getInstance().saveUserInfo(it.userId, it)
             }
             refresh()
             onSuccess.invoke(users)
@@ -96,7 +96,7 @@ open class MemberListViewModel(
     fun fetchUsersInfo(firstVisibleIndex: Int, lastVisibleIndex: Int) {
         Log.e("apex", "fetchUsersInfo: $firstVisibleIndex, $lastVisibleIndex")
         items.subList(firstVisibleIndex, lastVisibleIndex).filter { user ->
-            !UIChatroomCacheManager.cacheManager.inCache(user.userId)
+            !UIChatroomCacheManager.getInstance().inCache(user.userId)
         }.let { list ->
             if (list.isNotEmpty()) {
                 fetchUsersInfo(list.map { it.userId })

@@ -30,7 +30,7 @@ data class UserEntity(
     val avatar: String? = "",
     val gender: Int? = 0,
     val identify: String? = "",
-    val role: ROLE = ROLE.MEMBER
+    var role: ROLE = ROLE.MEMBER
 )
 
 enum class ROLE {

@@ -3,6 +3,7 @@ package io.agora.chatroom.viewmodel.messages
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.UIChatroomContext
 import io.agora.chatroom.ui.UIChatroomService
 import io.agora.chatroom.commons.ComposeChatListController
@@ -18,7 +19,7 @@ import io.agora.chatroom.viewmodel.gift.ComposeGiftSheetViewModel
 class MessagesViewModelFactory(
     private val context: Context,
     private val service: UIChatroomService,
-    private val isDarkTheme: Boolean? = UIChatroomContext.getInstance().getCurrentTheme(),
+    private val isDarkTheme: Boolean? = ChatroomUIKitClient.getInstance().getContext().getCurrentTheme(),
     private val showDateSeparators: Boolean = true,
     private val showLabel: Boolean = true,
     private val showAvatar: Boolean = true,

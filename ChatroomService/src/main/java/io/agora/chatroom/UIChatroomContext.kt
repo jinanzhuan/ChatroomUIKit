@@ -1,26 +1,21 @@
 package io.agora.chatroom
 
+import android.content.Context
+import io.agora.chatroom.model.UIChatroomInfo
 import io.agora.chatroom.model.UICommonConfig
-import io.agora.chatroom.model.UserInfoProtocol
 import io.agora.chatroom.service.cache.UIChatroomCacheManager
 
 class UIChatroomContext{
     private lateinit var mCommonConfig: UICommonConfig
+    private lateinit var mChatroomInfo: UIChatroomInfo
+    var context: Context? = null
 
     companion object {
-        const val TAG = "ChatroomUIKitClient"
-        private var instance: UIChatroomContext? = null
+        const val TAG = "UIChatroomContext"
+    }
 
-        fun getInstance(): UIChatroomContext {
-            if (instance == null) {
-                synchronized(UIChatroomContext::class) {
-                    if (instance == null) {
-                        instance = UIChatroomContext()
-                    }
-                }
-            }
-            return instance!!
-        }
+    fun setRoomContext(context: Context){
+        this.context = context
     }
 
     fun setCommonConfig(config: UICommonConfig) {
@@ -31,27 +26,28 @@ class UIChatroomContext{
         return mCommonConfig
     }
 
+    fun setCurrentRoomInfo(info: UIChatroomInfo){
+        mChatroomInfo = info
+    }
+
+    fun getCurrentRoomInfo(): UIChatroomInfo{
+        return mChatroomInfo
+    }
+
     fun setCurrentTheme(isDark:Boolean){
-        UIChatroomCacheManager.getInstance(mCommonConfig.context).setCurrentTheme(isDark)
+        UIChatroomCacheManager.getInstance().setCurrentTheme(isDark)
     }
 
     fun getCurrentTheme():Boolean{
-        return UIChatroomCacheManager.getInstance(mCommonConfig.context).getCurrentTheme()
+        return UIChatroomCacheManager.getInstance().getCurrentTheme()
     }
 
     fun setUseGiftsInList(use:Boolean){
-        UIChatroomCacheManager.getInstance(mCommonConfig.context).setUseGiftsInMsg(use)
+        UIChatroomCacheManager.getInstance().setUseGiftsInMsg(use)
     }
 
     fun getUseGiftsInMsg():Boolean{
-        return UIChatroomCacheManager.getInstance(mCommonConfig.context).getUseGiftsInMsg()
+        return UIChatroomCacheManager.getInstance().getUseGiftsInMsg()
     }
 
-    fun getUserInfo(userId:String): UserInfoProtocol {
-       return UIChatroomCacheManager.getInstance(mCommonConfig.context).getUserInfo(userId)
-    }
-
-    fun setUserInfo(userId:String,userInfo:UserInfoProtocol){
-        UIChatroomCacheManager.getInstance(mCommonConfig.context).saveUserInfo(userId,userInfo)
-    }
 }

@@ -8,6 +8,5 @@ class ChatroomApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         ChatroomUIKitClient.getInstance().setUp(this,BuildConfig.CHATROOM_APP_KEY)
-        UIChatroomContext.getInstance().setCommonConfig(UICommonConfig(this))
     }
 }

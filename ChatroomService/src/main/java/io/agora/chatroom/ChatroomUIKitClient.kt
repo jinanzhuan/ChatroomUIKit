@@ -9,12 +9,14 @@ import io.agora.chatroom.service.ChatCustomMessageBody
 import io.agora.chatroom.service.ChatMessage
 import io.agora.chatroom.service.ChatMessageType
 import io.agora.chatroom.service.ChatOptions
+import io.agora.chatroom.service.UserEntity
+import io.agora.chatroom.service.cache.UIChatroomCacheManager
 import io.agora.chatroom.utils.GsonTools
 import org.json.JSONObject
 
 class ChatroomUIKitClient{
-    private var currentRoomInfo:UIChatroomInfo? = null
-    private var ownerInfo:UserInfoProtocol? = null
+    private var currentRoomContext:UIChatroomContext = UIChatroomContext()
+    private var chatroomUser:UIChatroomUser = UIChatroomUser()
 
     companion object {
         const val TAG = "ChatroomUIKitClient"
@@ -32,41 +34,46 @@ class ChatroomUIKitClient{
         }
     }
 
+    fun getContext():UIChatroomContext{
+        return currentRoomContext
+    }
+
+    fun getChatroomUser():UIChatroomUser{
+        return chatroomUser
+    }
+
     fun checkJoinedMsg(msg:ChatMessage):Boolean{
         val ext = msg.ext()
         return ext.containsKey(UIConstant.CHATROOM_UIKIT_USER_JOIN)
     }
 
-    fun setChatRoomInfo(roomId:String,ownerId:String){
-        ownerInfo = UIChatroomContext.getInstance().getUserInfo(ownerId)
-        currentRoomInfo = UIChatroomInfo(roomId,ownerInfo)
-    }
-
-    fun getChatRoomInfo():UIChatroomInfo?{
-        return currentRoomInfo
+    fun initRoom(roomId:String,ownerId:String){
+        currentRoomContext.setCurrentRoomInfo(UIChatroomInfo(roomId,chatroomUser.getUserInfo(ownerId)))
     }
 
     fun setUp(applicationContext: Context, appKey:String){
+        currentRoomContext.setRoomContext(applicationContext)
         val chatOptions = ChatOptions()
         chatOptions.appKey = appKey
         chatOptions.autoLogin = false
         ChatClient.getInstance().init(applicationContext,chatOptions)
+        UIChatroomCacheManager.getInstance().init(applicationContext)
     }
 
     fun isLoginBefore():Boolean{
        return ChatClient.getInstance().isLoggedInBefore
     }
 
-    fun getCurrentUser():UserInfoProtocol{
+    fun getCurrentUser():UserEntity{
         val currentUser = ChatClient.getInstance().currentUser
-        return  UIChatroomContext.getInstance().getUserInfo(currentUser)
+        return chatroomUser.getUserInfo(currentUser)
     }
 
     fun getJoinedMessage():ChatMessage{
         val joinedMessage = ChatMessage.createSendMessage(ChatMessageType.CUSTOM)
         val customMessageBody = ChatCustomMessageBody(UIConstant.CHATROOM_UIKIT_USER_JOIN)
         joinedMessage.addBody(customMessageBody)
-        joinedMessage.to = currentRoomInfo?.roomId
+        joinedMessage.to = currentRoomContext.getCurrentRoomInfo().roomId
         val jsonString = GsonTools.beanToString(getCurrentUser())
         joinedMessage.setAttribute(UIConstant.CHATROOM_UIKIT_USER_INFO, jsonString?.let { JSONObject(it) })
         return joinedMessage

@@ -8,6 +8,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -220,10 +221,10 @@ fun DefaultGiftVpContent(
                             ), ChatroomUIKitTheme.shapes.imageThumbnail
                         )
                         .clickable {
-                            if (selectedItemIndex.intValue == index){
+                            if (selectedItemIndex.intValue == index) {
                                 emoji.selected = false
                                 selectedItemIndex.intValue = -1
-                            }else{
+                            } else {
                                 emoji.selected = true
                                 selectedItemIndex.intValue = index
                             }
@@ -254,12 +255,12 @@ fun DefaultGiftVpContent(
                         modifier = Modifier
                             .fillMaxWidth()
                             .wrapContentHeight()
-                            .constrainAs(tagLayout){
+                            .constrainAs(tagLayout) {
                                 top.linkTo(giftIcon.bottom)
                                 bottom.linkTo(sendBtn.top)
                                 start.linkTo(parent.start)
                                 end.linkTo(parent.end)
-                        },
+                            },
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         if (index != selectedItemIndex.intValue){
@@ -301,28 +302,42 @@ fun DefaultGiftVpContent(
 
                     }
                     if (index == selectedItemIndex.intValue){
-                        Text(
-                            maxLines = 1,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier
-                                .background(
-                                    ChatroomUIKitTheme.colors.primary,
-                                    ChatroomUIKitTheme.shapes.sendGift
-                                )
-                                .fillMaxWidth()
-                                .height(28.dp)
-                                .constrainAs(sendBtn) {
-                                    bottom.linkTo(parent.bottom)
-                                }
-                                .clickable {
-                                    sendGift(emoji)
-                                },
-                            style = ChatroomUIKitTheme.typography.labelMedium.copy(
-                                fontWeight = FontWeight.Bold,
-                                color = ChatroomUIKitTheme.colors.neutralL98D98
-                            ),
-                            text = "Send"
-                        )
+                        Box(modifier = Modifier
+                            .background(
+                                ChatroomUIKitTheme.colors.primary,
+                                ChatroomUIKitTheme.shapes.sendGift
+                            )
+                            .fillMaxWidth()
+                            .height(28.dp)
+                            .constrainAs(sendBtn) {
+                                bottom.linkTo(parent.bottom)
+                            }
+                            .clickable {
+                                sendGift(emoji)
+                            },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                maxLines = 1,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier
+                                    .background(
+                                        ChatroomUIKitTheme.colors.primary,
+                                        ChatroomUIKitTheme.shapes.sendGift
+                                    )
+                                    .wrapContentWidth()
+                                    .wrapContentHeight()
+                                    .clickable {
+                                        sendGift(emoji)
+                                    },
+                                style = ChatroomUIKitTheme.typography.labelMedium.copy(
+                                    fontWeight = FontWeight.Bold,
+                                    color = ChatroomUIKitTheme.colors.neutralL98D98
+                                ),
+                                text = "Send"
+                            )
+                        }
+
                     }
                 }
             }

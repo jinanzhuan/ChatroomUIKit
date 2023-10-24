@@ -4,21 +4,18 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.text.TextUtils
-import io.agora.chatroom.model.UserInfoProtocol
-import io.agora.chatroom.UIChatroomContext
 import org.jetbrains.annotations.Nullable
 import java.io.ByteArrayOutputStream
 import java.io.ObjectOutputStream
 import java.io.Serializable
 import android.util.Base64
 import io.agora.chatroom.model.UIConstant
-import io.agora.chatroom.service.ROLE
 import io.agora.chatroom.service.UserEntity
 import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.io.ObjectInputStream
 
-class UIChatroomCacheManager(context: Context){
+class UIChatroomCacheManager{
 
     companion object {
         const val TAG = "UIChatroomCacheManager"
@@ -26,14 +23,14 @@ class UIChatroomCacheManager(context: Context){
         private var instance: UIChatroomCacheManager? = null
         private var mSharedPreferences: SharedPreferences? = null
         private var mEditor: SharedPreferences.Editor? = null
-        private var userCache: MutableMap<String, UserInfoProtocol> = mutableMapOf()
+        private var userCache: MutableMap<String, UserEntity> = mutableMapOf()
         private val muteCache: MutableSet<String> = mutableSetOf()
 
-        fun getInstance(context: Context): UIChatroomCacheManager {
+        fun getInstance(): UIChatroomCacheManager {
             if (instance == null) {
                 synchronized(UIChatroomCacheManager::class.java) {
                     if (instance == null) {
-                        instance = UIChatroomCacheManager(context)
+                        instance = UIChatroomCacheManager()
                     }
                 }
             }
@@ -41,22 +38,22 @@ class UIChatroomCacheManager(context: Context){
         }
     }
 
-    init {
+    fun init(context: Context){
         mSharedPreferences = context.getSharedPreferences("SP_AT_PROFILE", Context.MODE_PRIVATE)
         mSharedPreferences.let {
             mEditor = it?.edit()
         }
     }
 
-    fun saveUserInfo(userId:String,userInfo: UserInfoProtocol){
+    fun saveUserInfo(userId:String,userInfo: UserEntity){
         userCache[userId] = userInfo
     }
 
-    fun getUserInfo(userId:String):UserInfoProtocol{
+    fun getUserInfo(userId:String):UserEntity{
         if (userCache.contains(userId)){
-            return userCache[userId] ?: UserInfoProtocol(userId)
+            return userCache[userId] ?: UserEntity(userId)
         }
-        return UserInfoProtocol(userId)
+        return UserEntity(userId)
     }
 
     /**
@@ -66,37 +63,37 @@ class UIChatroomCacheManager(context: Context){
         return userCache.contains(userId)
     }
 
-    /**
-     * Save the owner
-     */
-    fun saveOwner(owner: String) {
-        if (inCache(owner)) {
-            getUserInfo(owner).apply {
-                if (role != ROLE.OWNER) {
-                    role = ROLE.OWNER
-                }
-            }
-        } else {
-            saveUserInfo(owner, UserInfoProtocol(owner))
-        }
-    }
-
-    /**
-     * Save the admin list
-     */
-    fun saveAdminList(adminList: List<String>){
-        adminList.forEach { admin ->
-            if (inCache(admin)){
-                getUserInfo(admin).apply {
-                    if (role != ROLE.ADMIN) {
-                        role = ROLE.ADMIN
-                    }
-                }
-            } else {
-                saveUserInfo(admin, UserInfoProtocol(admin))
-            }
-        }
-    }
+//    /**
+//     * Save the owner
+//     */
+//    fun saveOwner(owner: String) {
+//        if (inCache(owner)) {
+//            getUserInfo(owner).apply {
+//                if (role != ROLE.OWNER) {
+//                    role = ROLE.OWNER
+//                }
+//            }
+//        } else {
+//            saveUserInfo(owner, UserInfoProtocol(owner))
+//        }
+//    }
+//
+//    /**
+//     * Save the admin list
+//     */
+//    fun saveAdminList(adminList: List<String>){
+//        adminList.forEach { admin ->
+//            if (inCache(admin)){
+//                getUserInfo(admin).apply {
+//                    if (role != ROLE.ADMIN) {
+//                        role = ROLE.ADMIN
+//                    }
+//                }
+//            } else {
+//                saveUserInfo(admin, UserInfoProtocol(admin))
+//            }
+//        }
+//    }
 
     /**
      * Save the mute list

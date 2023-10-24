@@ -8,7 +8,6 @@ import androidx.activity.ComponentActivity
 import androidx.core.view.WindowCompat
 import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.UIChatRoomViewTest
-import io.agora.chatroom.UIChatroomContext
 import io.agora.chatroom.uikit.R
 
 class UIChatroomActivity : ComponentActivity(){
@@ -24,9 +23,9 @@ class UIChatroomActivity : ComponentActivity(){
 
         val roomId = intent.getStringExtra(KEY_ROOM_ID)?: return
         val ownerId = intent.getStringExtra(KEY_OWNER_ID)?: return
-        ChatroomUIKitClient.getInstance().setChatRoomInfo(roomId,ownerId)
+        ChatroomUIKitClient.getInstance().initRoom(roomId,ownerId)
 
-        val isDarkTheme = UIChatroomContext.getInstance().getCurrentTheme()
+        val isDarkTheme = ChatroomUIKitClient.getInstance().getContext().getCurrentTheme()
 
         if (isDarkTheme){
             roomBg.setImageResource(R.drawable.icon_chatroom_bg_dark)
@@ -34,8 +33,8 @@ class UIChatroomActivity : ComponentActivity(){
             roomBg.setImageResource(R.drawable.icon_chatroom_bg_light)
         }
 
-        val chatRoomInfo = ChatroomUIKitClient.getInstance().getChatRoomInfo()
-        chatRoomInfo?.let {
+        val chatRoomInfo = ChatroomUIKitClient.getInstance().getContext().getCurrentRoomInfo()
+        chatRoomInfo.let {
             service = UIChatroomService(it)
             // 注册监听
         }
