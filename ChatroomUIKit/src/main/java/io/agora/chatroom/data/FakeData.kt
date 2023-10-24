@@ -7,23 +7,23 @@ import io.agora.chatroom.model.gift.AUIGiftTabInfo
 import java.nio.charset.Charset
 
 val initialLongClickMenu = listOf(
-    UIComposeSheetItem("Translate"),
-    UIComposeSheetItem("Delete"),
-    UIComposeSheetItem("Mute"),
-    UIComposeSheetItem("Report", true)
+    UIComposeSheetItem(title = "Translate"),
+    UIComposeSheetItem(title = "Delete"),
+    UIComposeSheetItem(title = "Mute"),
+    UIComposeSheetItem(title = "Report", isError = true)
 )
 
 val testMenuList = listOf(
-    UIComposeSheetItem("Item 1"),
-    UIComposeSheetItem("Item 2"),
-    UIComposeSheetItem("Item 3")
+    UIComposeSheetItem(title = "Item 1"),
+    UIComposeSheetItem(title = "Item 2"),
+    UIComposeSheetItem(title = "Item 3")
 )
 
 val testMenuList1 = listOf(
-    UIComposeSheetItem("Item 1"),
-    UIComposeSheetItem("Item 2"),
-    UIComposeSheetItem("Item 3"),
-    UIComposeSheetItem("Item 4")
+    UIComposeSheetItem(title = "Item 1"),
+    UIComposeSheetItem(title = "Item 2"),
+    UIComposeSheetItem(title = "Item 3"),
+    UIComposeSheetItem(title = "Item 4")
 
 )
 

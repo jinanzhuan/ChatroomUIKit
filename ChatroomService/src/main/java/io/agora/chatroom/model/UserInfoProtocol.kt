@@ -12,7 +12,7 @@ fun UserInfoProtocol.transfer() = UserInfo().run {
     this
 }
 
-fun UserInfoProtocol.innerTransfer() = UserEntity(userId, nickname, avatarUrl, gender, identify)
+fun UserInfoProtocol.toUser() = UserEntity(userId, nickname, avatarUrl, gender, identify)
 data class UserInfoProtocol(
     val userId: String,
     val nickname: String? = "",

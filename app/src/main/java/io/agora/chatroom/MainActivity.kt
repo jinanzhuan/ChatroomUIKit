@@ -30,19 +30,22 @@ import androidx.compose.ui.unit.dp
 import io.agora.chatroom.ui.UIChatroomActivity
 import io.agora.chatroom.compose.drawer.ComposeBottomSheet
 import io.agora.chatroom.compose.drawer.ComposeMenuBottomSheet
+import io.agora.chatroom.compose.list.LazyColumnList
 import io.agora.chatroom.data.initialLongClickMenu
-import io.agora.chatroom.data.parsingGift
 import io.agora.chatroom.data.testMenuList1
 import io.agora.chatroom.model.UIComposeSheetItem
 import io.agora.chatroom.theme.BodyLarge
 import io.agora.chatroom.theme.ChatroomUIKitTheme
 import io.agora.chatroom.theme.neutralColor20
 import io.agora.chatroom.theme.neutralColor90
+import io.agora.chatroom.viewmodel.RequestListViewModel
 import io.agora.chatroom.viewmodel.menu.MenuViewModel
+import io.agora.chatroom.viewmodel.tab.TabWithVpViewModel
 
 class MainActivity : ComponentActivity() {
     private var viewModel1:MenuViewModel = MenuViewModel(menuList = initialLongClickMenu, isExpanded = true)
     private var viewModel2:MenuViewModel = MenuViewModel(menuList = testMenuList1, isExpanded = true )
+    private val viewModel4 by lazy { TestItemViewModel() }
     var viewModel3:MenuViewModel = MenuViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,6 +60,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     ShowComposeMenuDrawer(viewModel = viewModel1)
                     ShowDefaultComposeDrawer(viewModel = viewModel2)
+                    testLazyColumn(viewModel = viewModel4)
 
                     Greeting(viewModel1,viewModel2,onItemClick = {
                         Log.e("apex","onItemClick $it")
@@ -75,6 +79,13 @@ class MainActivity : ComponentActivity() {
                                         ownerId = "apex1",
                                         roomId = "193314355740675",
                                     ))
+                            }
+                            4 -> {
+                                val list = mutableListOf<String>()
+                                for (index in 1..50) {
+                                    list.add("Item $index")
+                                }
+                                viewModel4.add(list)
                             }
                         }
                     })
@@ -120,10 +131,10 @@ fun ShowComposeMenuDrawer(viewModel:MenuViewModel){
 @Composable
 fun ShowCustomComposeDrawer(viewModel: MenuViewModel){
     val list = mutableListOf<UIComposeSheetItem>()
-    list.add(UIComposeSheetItem("Item 1"))
-    list.add(UIComposeSheetItem("Item 2"))
-    list.add(UIComposeSheetItem("Item 3"))
-    list.add(UIComposeSheetItem("Item 4"))
+    list.add(UIComposeSheetItem(title = "Item 1"))
+    list.add(UIComposeSheetItem(title = "Item 2"))
+    list.add(UIComposeSheetItem(title = "Item 3"))
+    list.add(UIComposeSheetItem(title = "Item 4"))
 
     ComposeBottomSheet(
         viewModel = viewModel,
@@ -203,6 +214,14 @@ fun Greeting(viewModel1: MenuViewModel,viewModel2: MenuViewModel,onItemClick:(in
         }) {
             Text("UIChatroomActivity")
         }
+        Spacer(modifier = Modifier.height(8.dp))
+        Button(onClick = {
+            onItemClick(4)
+        }) {
+            Text("Add test data")
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
     }
 
 }
@@ -214,3 +233,18 @@ fun GreetingPreview() {
 //        Greeting("Android")
     }
 }
+
+@Composable
+fun testLazyColumn(viewModel: TestItemViewModel) {
+    ChatroomUIKitTheme {
+        LazyColumnList(viewModel) { index, item ->
+            Text(text = item, modifier = Modifier.padding(16.dp))
+        }
+    }
+}
+
+class TestItemViewModel: RequestListViewModel<String>()
+
+class ViewPagerViewModel(list: List<String> = emptyList()): TabWithVpViewModel<String>(contentList = list)
+
+

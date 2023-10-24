@@ -234,7 +234,7 @@ fun ComposeMessageItem(
             inlineMap["Label"] = InlineTextContent(
                 placeholder = Placeholder(18.sp,18.sp, PlaceholderVerticalAlign.Center),
                 children = {
-                    DrawLabelImage(userInfo)
+                    DrawLabelImage(userInfo.transfer())
                 }
             )
         }
@@ -243,7 +243,7 @@ fun ComposeMessageItem(
             inlineMap["Avatar"] = InlineTextContent(
                 placeholder = Placeholder(28.sp,28.sp, PlaceholderVerticalAlign.Center),
                 children = {
-                    DrawAvatarImage(userInfo)
+                    DrawAvatarImage(userInfo.transfer())
                 }
             )
         }

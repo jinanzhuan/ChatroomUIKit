@@ -94,4 +94,12 @@ open class BottomSheetViewModel<T> (
         return _enable.value
     }
 
+    fun add(list: List<T>) {
+        _contentList.addAll(list)
+    }
+
+    fun clear() {
+        _contentList.clear()
+    }
+
 }

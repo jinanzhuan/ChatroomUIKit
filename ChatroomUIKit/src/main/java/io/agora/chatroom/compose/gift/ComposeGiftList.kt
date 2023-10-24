@@ -104,7 +104,7 @@ fun ComposeGiftItem(
             it.ifEmpty { userInfo.userId }
         } ?: userInfo.userId
 
-        val avatarUrl = userInfo.avatarUrl?.let {
+        val avatarUrl = userInfo.avatar?.let {
             it.ifEmpty { "" }
         } ?: ""
 

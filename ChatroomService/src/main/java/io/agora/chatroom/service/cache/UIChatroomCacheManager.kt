@@ -5,12 +5,15 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.text.TextUtils
 import io.agora.chatroom.model.UserInfoProtocol
+import io.agora.chatroom.UIChatroomContext
 import org.jetbrains.annotations.Nullable
 import java.io.ByteArrayOutputStream
 import java.io.ObjectOutputStream
 import java.io.Serializable
 import android.util.Base64
 import io.agora.chatroom.model.UIConstant
+import io.agora.chatroom.service.ROLE
+import io.agora.chatroom.service.UserEntity
 import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.io.ObjectInputStream
@@ -61,6 +64,38 @@ class UIChatroomCacheManager(context: Context){
      */
     fun inCache(userId:String):Boolean{
         return userCache.contains(userId)
+    }
+
+    /**
+     * Save the owner
+     */
+    fun saveOwner(owner: String) {
+        if (inCache(owner)) {
+            getUserInfo(owner).apply {
+                if (role != ROLE.OWNER) {
+                    role = ROLE.OWNER
+                }
+            }
+        } else {
+            saveUserInfo(owner, UserInfoProtocol(owner))
+        }
+    }
+
+    /**
+     * Save the admin list
+     */
+    fun saveAdminList(adminList: List<String>){
+        adminList.forEach { admin ->
+            if (inCache(admin)){
+                getUserInfo(admin).apply {
+                    if (role != ROLE.ADMIN) {
+                        role = ROLE.ADMIN
+                    }
+                }
+            } else {
+                saveUserInfo(admin, UserInfoProtocol(admin))
+            }
+        }
     }
 
     /**

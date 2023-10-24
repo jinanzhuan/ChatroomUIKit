@@ -5,6 +5,8 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
 import android.widget.FrameLayout
+import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.agora.CallBack
 import io.agora.chat.ChatClient
@@ -28,19 +31,30 @@ import io.agora.chatroom.service.ChatroomChangeListener
 import io.agora.chatroom.ui.UIChatroomService
 import io.agora.chatroom.compose.chatbottombar.ComposeChatBottomBar
 import io.agora.chatroom.compose.chatmessagelist.ComposeChatMessageList
+import io.agora.chatroom.compose.drawer.ComposeMenuBottomSheet
 import io.agora.chatroom.compose.gift.ComposeGiftBottomSheet
 import io.agora.chatroom.compose.gift.ComposeGiftItemState
 import io.agora.chatroom.compose.gift.ComposeGiftList
+import io.agora.chatroom.compose.member.ComposeMembersBottomSheet
+import io.agora.chatroom.model.UIComposeSheetItem
+import io.agora.chatroom.service.GiftEntity
 import io.agora.chatroom.model.UserInfoProtocol
 import io.agora.chatroom.service.GiftEntityProtocol
 import io.agora.chatroom.service.GiftReceiveListener
+import io.agora.chatroom.service.cache.UIChatroomCacheManager
 import io.agora.chatroom.theme.ChatroomUIKitTheme
+import io.agora.chatroom.theme.primaryColor80
+import io.agora.chatroom.theme.secondaryColor80
+import io.agora.chatroom.uikit.R
 import io.agora.chatroom.viewmodel.messages.MessageChatBarViewModel
 import io.agora.chatroom.viewmodel.messages.MessageListViewModel
 import io.agora.chatroom.viewmodel.messages.MessagesViewModelFactory
 import io.agora.chatroom.uikit.databinding.ActivityUiChatroomTestBinding
 import io.agora.chatroom.viewmodel.gift.ComposeGiftListViewModel
 import io.agora.chatroom.viewmodel.gift.ComposeGiftSheetViewModel
+import io.agora.chatroom.viewmodel.member.MembersBottomSheetViewModel
+import io.agora.chatroom.viewmodel.menu.MenuViewModel
+import io.agora.chatroom.viewmodel.menu.MenuViewModelFactory
 
 class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListener {
     private val mRoomViewBinding = ActivityUiChatroomTestBinding.inflate(LayoutInflater.from(context))
@@ -50,7 +64,13 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
     private lateinit var bottomBarViewModel:MessageChatBarViewModel
     private lateinit var giftViewModel:ComposeGiftSheetViewModel
     private lateinit var service:UIChatroomService
-
+    private val memberMenuViewModel by lazy {
+        if (context is AppCompatActivity) {
+            ViewModelProvider(context as AppCompatActivity, MenuViewModelFactory())[MenuViewModel::class.java]
+        } else {
+            MenuViewModel()
+        }
+    }
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
@@ -103,6 +123,7 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
             giftListViewModel.setAutoClearTime(3000L)
 
             UIChatroomContext.getInstance().setUseGiftsInList(true)
+            val membersBottomSheet = MembersBottomSheetViewModel(roomId = roomId, roomService = service, isAdmin = true)
 
             val isShowInput by inputField
 
@@ -136,13 +157,53 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
                         }
                     )
 
+                    ComposeMembersBottomSheet(
+                        modifier = Modifier.height((LocalConfiguration.current.screenHeightDp/2).dp),
+                        viewModel = membersBottomSheet,
+                        onDismissRequest = {
+                            membersBottomSheet.closeDrawer()
+                        },
+                        onExtendClick = { tab, user ->
+                            val memberMenuList = mutableListOf<UIComposeSheetItem>()
+                            when(tab){
+                                context.getString(R.string.member_management_participant) -> {
+                                    memberMenuList.add(UIComposeSheetItem(0, context.getString(R.string.menu_item_mute)))
+                                    memberMenuList.add(UIComposeSheetItem(1, context.getString(R.string.menu_item_remove)))
+                                }
+                                context.getString(R.string.member_management_mute) -> {
+                                    memberMenuList.add(UIComposeSheetItem(0, context.getString(R.string.menu_item_unmute)))
+                                    memberMenuList.add(UIComposeSheetItem(1, context.getString(R.string.menu_item_remove)))
+                                }
+                            }
+                            memberMenuViewModel.clear()
+                            memberMenuViewModel.add(memberMenuList)
+                            Log.e("apex","ComposeMembersBottomSheet onExtendClick $tab $user")
+                            memberMenuViewModel.openDrawer()
+                        },
+                        onSearchClick = { title ->
+                            Log.e("apex","ComposeMembersBottomSheet onSearchClick $title")
+                        },
+                        onItemClick = { tab, user ->
+                            Log.e("apex","ComposeMembersBottomSheet onItemClick $tab $user")}
+                    )
+
+                    ComposeMenuBottomSheet(
+                        viewModel = memberMenuViewModel,
+                        onListItemClick = { index,item ->
+                            Log.e("apex"," default item: $index ${item.title}")
+                        },
+                        onDismissRequest = {
+                            memberMenuViewModel.closeDrawer()
+                        }
+                    )
+
                     ComposeGiftList(
                         modifier = Modifier
                             .wrapContentWidth()
                             .height(84.dp)
                             .padding(bottom = 4.dp)
-                            .constrainAs(giftList){
-                                 bottom.linkTo(msgList.top)
+                            .constrainAs(giftList) {
+                                bottom.linkTo(msgList.top)
                             },
                         viewModel = giftListViewModel,
                     )
@@ -183,6 +244,7 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
                         onMenuClick = {
                             if (it == 0){
                                 giftViewModel.openDrawer()
+                                //membersBottomSheet.openDrawer()
                             }
                         },
                         onInputClick = {
@@ -239,7 +301,9 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
     fun joinChatroom(roomId:String){
         service.getChatService().joinChatroom(roomId,"apex1"
             , onSuccess = {
-                Log.e("apex","joinChatroom  193314355740675 onSuccess ${ChatroomUIKitClient.getInstance().getJoinedMessage()}")
+//                UIChatroomCacheManager.cacheManager.saveOwner(it.owner)
+//                UIChatroomCacheManager.cacheManager.saveAdminList(it.adminList)
+                Log.e("apex","joinChatroom  193314355740675 onSuccess admin: ${it.adminList} owner: ${it.owner}")
                 listViewModel.addJoinedMessageByIndex(message = ChatroomUIKitClient.getInstance().getJoinedMessage())
             }
             , onError = {errorCode,result->
