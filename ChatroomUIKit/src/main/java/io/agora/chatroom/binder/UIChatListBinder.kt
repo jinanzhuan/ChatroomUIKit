@@ -50,12 +50,12 @@ class UIChatListBinder(
 
     override fun onMessageReceived(message: ChatMessage) {
         Log.e("apex","onMessageReceived")
-        listViewModel.addTextMessage(message)
+        listViewModel.addTextMessageByIndex(message = message)
     }
 
     override fun onRefreshMessage(message: ChatMessage) {
         Log.e("apex","refreshMessage")
-        listViewModel.addTextMessage(message)
+        listViewModel.addTextMessageByIndex(message = message)
     }
 
 }

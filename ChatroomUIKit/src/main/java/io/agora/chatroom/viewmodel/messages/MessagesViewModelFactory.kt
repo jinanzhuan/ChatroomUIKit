@@ -1,7 +1,6 @@
 package io.agora.chatroom.viewmodel.messages
 
 import android.content.Context
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import io.agora.chatroom.UIChatroomContext
@@ -13,21 +12,16 @@ import io.agora.chatroom.data.parsingGift
 import io.agora.chatroom.model.UICapabilities
 import io.agora.chatroom.model.UIChatBarMenuItem
 import io.agora.chatroom.model.gift.AUIGiftTabInfo
-import io.agora.chatroom.theme.primaryColor80
-import io.agora.chatroom.theme.secondaryColor80
 import io.agora.chatroom.uikit.R
 import io.agora.chatroom.viewmodel.gift.ComposeGiftSheetViewModel
 
 class MessagesViewModelFactory(
     private val context: Context,
     private val service: UIChatroomService,
-    private val isDarkTheme: Boolean? = UIChatroomContext.shared.getCurrentTheme(),
+    private val isDarkTheme: Boolean? = UIChatroomContext.getInstance().getCurrentTheme(),
     private val showDateSeparators: Boolean = true,
     private val showLabel: Boolean = true,
-    private val showGift: Boolean = true,
     private val showAvatar: Boolean = true,
-    private val dateSeparatorColor: Color = secondaryColor80,
-    private val nickNameColor: Color = primaryColor80,
     private val emojiColumns:Int = 7,
     private val menuItemResource: List<UIChatBarMenuItem> = listOf(
         UIChatBarMenuItem(R.drawable.icon_bottom_bar_more, 1),
@@ -57,14 +51,10 @@ class MessagesViewModelFactory(
                 isDarkTheme = isDarkTheme,
                 showDateSeparators = showDateSeparators,
                 showLabel = showLabel,
-                showGift = showGift,
                 showAvatar = showAvatar,
-                dateSeparatorColor = dateSeparatorColor,
-                nickNameColor = nickNameColor,
                 composeChatListController = ComposeChatListController(
                     roomId = service.getRoomInfo().roomId,
                     messageState = ComposeMessageListState(),
-                    chatService = service.getChatService()
                 )
 
             )

@@ -24,16 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.agora.chatroom.model.UIComposeSheetItem
-import io.agora.chatroom.theme.BodyLarge
 import io.agora.chatroom.theme.ChatroomUIKitTheme
-import io.agora.chatroom.theme.errorColor50
-import io.agora.chatroom.theme.errorColor60
-import io.agora.chatroom.theme.neutralColor10
-import io.agora.chatroom.theme.neutralColor20
-import io.agora.chatroom.theme.neutralColor90
-import io.agora.chatroom.theme.neutralColor98
-import io.agora.chatroom.theme.primaryColor50
-import io.agora.chatroom.theme.primaryColor60
 import io.agora.chatroom.viewmodel.menu.MenuViewModel
 import io.agora.chatroom.viewmodel.menu.BottomSheetViewModel
 import kotlinx.coroutines.launch

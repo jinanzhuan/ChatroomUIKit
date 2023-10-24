@@ -17,7 +17,6 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -32,12 +31,10 @@ import io.agora.chatroom.compose.chatmessagelist.ComposeChatMessageList
 import io.agora.chatroom.compose.gift.ComposeGiftBottomSheet
 import io.agora.chatroom.compose.gift.ComposeGiftItemState
 import io.agora.chatroom.compose.gift.ComposeGiftList
-import io.agora.chatroom.compose.gift.ComposeGiftListItemState
-import io.agora.chatroom.service.GiftEntity
+import io.agora.chatroom.model.UserInfoProtocol
+import io.agora.chatroom.service.GiftEntityProtocol
 import io.agora.chatroom.service.GiftReceiveListener
 import io.agora.chatroom.theme.ChatroomUIKitTheme
-import io.agora.chatroom.theme.primaryColor80
-import io.agora.chatroom.theme.secondaryColor80
 import io.agora.chatroom.viewmodel.messages.MessageChatBarViewModel
 import io.agora.chatroom.viewmodel.messages.MessageListViewModel
 import io.agora.chatroom.viewmodel.messages.MessagesViewModelFactory
@@ -64,17 +61,21 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
         addView(mRoomViewBinding.root)
     }
 
-    fun bindService(service: UIChatroomService){
+    fun bindService(service: UIChatroomService?){
+        if (service == null) return
         this.service = service
         val roomId = service.getRoomInfo().roomId
 
         service.getChatService().bindListener(this)
         service.getGiftService().bindGiftListener(this)
 
-        if (!ChatroomUIKitClient.shared.isLoginBefore()){
+        Log.e("apex"," ${ChatroomUIKitClient.getInstance().isLoginBefore()}")
+        if (ChatroomUIKitClient.getInstance().isLoginBefore()){
             ChatClient.getInstance().login("apex1","1",object : CallBack {
                 override fun onSuccess() {
                     Log.e("apex","login onSuccess")
+                    UIChatroomContext.getInstance().setUserInfo(
+                        "apex1", UserInfoProtocol(userId = "apex1", nickname = "大威天龙"))
                     joinChatroom(roomId)
                 }
 
@@ -98,6 +99,10 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
             bottomBarViewModel = viewModel(MessageChatBarViewModel::class.java, factory = factory)
             giftViewModel = viewModel(ComposeGiftSheetViewModel::class.java, factory = factory)
             giftListViewModel = ComposeGiftListViewModel()
+            giftListViewModel.openAutoClear()
+            giftListViewModel.setAutoClearTime(3000L)
+
+            UIChatroomContext.getInstance().setUseGiftsInList(true)
 
             val isShowInput by inputField
 
@@ -115,11 +120,13 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
                         viewModel = giftViewModel,
                         screenContent = {},
                         onGiftItemClick = {
-                            Log.e("apex","ComposeGiftList GiftEntity $it")
                             service.getGiftService().sendGift(it,
-                                onSuccess = {
-                                    Log.e("apex","sendGift onSuccess")
-                                    giftListViewModel.addData(ComposeGiftItemState(it))
+                                onSuccess = {msg ->
+                                    if (UIChatroomContext.getInstance().getUseGiftsInMsg()){
+                                        listViewModel.addGiftMessageByIndex(message = msg, gift = it)
+                                    }else{
+                                        giftListViewModel.addDateToIndex(data=ComposeGiftItemState(it))
+                                    }
                                 },
                                 onError = {code, error ->  }
                             )
@@ -167,7 +174,7 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
                                 message = input,
                                 roomId = roomId,//service.getRoomInfo().roomId
                                 onSuccess = {
-                                    listViewModel.addTextMessage(it)
+                                    listViewModel.addTextMessageByIndex(message = it)
                                 },
                                 onError = {code, error ->
 
@@ -193,20 +200,14 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
         service: UIChatroomService,
         showDateSeparators: Boolean = true,
         showLabel: Boolean = true,
-        showGift: Boolean = true,
         showAvatar: Boolean = true,
-        dateSeparatorColor: Color = secondaryColor80,
-        nickNameColor: Color = primaryColor80,
     ): MessagesViewModelFactory {
         return MessagesViewModelFactory(
             context = context,
             service = service,
             showDateSeparators = showDateSeparators,
             showLabel = showLabel,
-            showGift = showGift,
             showAvatar = showAvatar,
-            dateSeparatorColor = dateSeparatorColor,
-            nickNameColor = nickNameColor
         )
     }
 
@@ -218,19 +219,28 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
 
     override fun onMessageReceived(message: ChatMessage) {
         super.onMessageReceived(message)
-        listViewModel.addTextMessage(message)
+        listViewModel.addTextMessageByIndex(message = message)
     }
 
-    override fun onGiftReceived(gift: GiftEntity) {
-        super.onGiftReceived(gift)
-        giftListViewModel.addData(ComposeGiftItemState(gift))
+    override fun onGiftReceived(roomId: String, gift: GiftEntityProtocol, message: ChatMessage) {
+        super.onGiftReceived(roomId, gift, message)
+        if (UIChatroomContext.getInstance().getUseGiftsInMsg()){
+            listViewModel.addGiftMessageByIndex(message = message, gift = gift)
+        }else{
+            giftListViewModel.addDateToIndex(data = ComposeGiftItemState(gift))
+        }
+    }
+
+    override fun onUserJoined(roomId: String, userId: String) {
+        Log.e("apex","onUserJoined $roomId  - $userId")
     }
 
 
     fun joinChatroom(roomId:String){
         service.getChatService().joinChatroom(roomId,"apex1"
             , onSuccess = {
-                Log.e("apex","joinChatroom  193314355740675 onSuccess")
+                Log.e("apex","joinChatroom  193314355740675 onSuccess ${ChatroomUIKitClient.getInstance().getJoinedMessage()}")
+                listViewModel.addJoinedMessageByIndex(message = ChatroomUIKitClient.getInstance().getJoinedMessage())
             }
             , onError = {errorCode,result->
                 Log.e("apex","joinChatroom  193314355740675 onError $errorCode $result")

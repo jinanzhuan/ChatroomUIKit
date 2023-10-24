@@ -1,5 +1,8 @@
 package io.agora.chatroom.viewmodel
 
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.unit.IntSize
 import androidx.lifecycle.ViewModel
@@ -7,35 +10,53 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 open class ComposeBaseListViewModel<T>(
-    private var contentList: List<T> = emptyList()
+    private val contentList: List<T> = emptyList(),
 ): ViewModel(){
     private val _items: MutableList<T> = contentList.toMutableStateList()
     val items: List<T> = _items
 
-    fun addData(msg: T) {
-        _items.add(msg)
+    private val _isAutoClear = mutableStateOf(false)
+    val isAutoClear: State<Boolean> get() = _isAutoClear
+
+    private val _autoClearTime = mutableLongStateOf(3000)
+    val autoClearTime: State<Long> get() = _autoClearTime
+
+    open fun addData(data: T) {
+        _items.add(data)
     }
 
-    fun addDateToIndex(index:Int = 0,msg: T){
-        _items.add(index,msg)
+    open fun addDateToIndex(index:Int = 0,data: T){
+        _items.add(index,data)
     }
 
-    fun addDataList(msgList:List<T>){
+    open fun addDataList(msgList:List<T>){
         _items.addAll(msgList)
     }
 
-    fun addDataListToIndex(index:Int = 0,msgList:List<T>){
+    open fun addDataListToIndex(index:Int = 0,msgList:List<T>){
         _items.addAll(index,msgList)
     }
 
-    fun removeData(msg: T){
-        if (_items.contains(msg)  ){
-            _items.remove(msg)
+    open fun removeData(data: T){
+        if (_items.contains(data)  ){
+            _items.remove(data)
         }
     }
 
-    fun clear(){
+    open fun clear(){
         _items.clear()
+    }
+
+    fun setAutoClearTime(time:Long){
+        _autoClearTime.longValue = time
+    }
+
+    fun openAutoClear(){
+        _isAutoClear.value = true
+    }
+
+    fun closeAutoClear(){
+        _isAutoClear.value = false
     }
 
     /**

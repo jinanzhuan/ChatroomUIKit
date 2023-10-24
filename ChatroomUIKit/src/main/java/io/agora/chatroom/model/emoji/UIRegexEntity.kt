@@ -1,6 +1,6 @@
 package io.agora.chatroom.model.emoji
 
-data class RegexEntity(
+data class UIRegexEntity(
     val startIndex:Int,
     val endIndex:Int,
     val emojiTag:String,

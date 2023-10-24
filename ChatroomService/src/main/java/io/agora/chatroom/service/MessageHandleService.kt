@@ -85,7 +85,7 @@ interface MessageHandleService {
 }
 
 interface GiftMessageHandleService {
-    fun sendGift(gift: GiftEntity, onSuccess: OnSuccess, onError: OnError)
+    fun sendGift(gift: GiftEntityProtocol, onSuccess: OnValueSuccess<ChatMessage>, onError: OnError)
 }
 
 interface MessageListener {
@@ -100,5 +100,7 @@ interface MessageListener {
 
 interface GiftReceiveListener {
 
-    fun onGiftReceived(gift: GiftEntity){}
+    fun onGiftReceived(gift: GiftEntityProtocol){}
+
+    fun onGiftReceived(roomId:String,gift: GiftEntityProtocol,message: ChatMessage){}
 }

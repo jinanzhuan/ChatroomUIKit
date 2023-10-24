@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.text.TextUtils
-import io.agora.chatroom.UIChatroomContext
 import io.agora.chatroom.model.UserInfoProtocol
 import org.jetbrains.annotations.Nullable
 import java.io.ByteArrayOutputStream
@@ -16,23 +15,33 @@ import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.io.ObjectInputStream
 
-class UIChatroomCacheManager
-private constructor() {
-    private var mEditor: SharedPreferences.Editor? = null
-    private var mSharedPreferences: SharedPreferences? = null
-    private var userCache: MutableMap<String, UserInfoProtocol> = mutableMapOf()
-    private val muteCache: MutableSet<String> = mutableSetOf()
+class UIChatroomCacheManager(context: Context){
 
     companion object {
         const val TAG = "UIChatroomCacheManager"
-        val cacheManager = UIChatroomCacheManager().apply {
-            mSharedPreferences = UIChatroomContext.shared.getCommonConfig().context?.getSharedPreferences(
-                "SP_AT_PROFILE",
-                Context.MODE_PRIVATE
-            )
-            mSharedPreferences.let {
-                mEditor = it?.edit()
+
+        private var instance: UIChatroomCacheManager? = null
+        private var mSharedPreferences: SharedPreferences? = null
+        private var mEditor: SharedPreferences.Editor? = null
+        private var userCache: MutableMap<String, UserInfoProtocol> = mutableMapOf()
+        private val muteCache: MutableSet<String> = mutableSetOf()
+
+        fun getInstance(context: Context): UIChatroomCacheManager {
+            if (instance == null) {
+                synchronized(UIChatroomCacheManager::class.java) {
+                    if (instance == null) {
+                        instance = UIChatroomCacheManager(context)
+                    }
+                }
             }
+            return instance!!
+        }
+    }
+
+    init {
+        mSharedPreferences = context.getSharedPreferences("SP_AT_PROFILE", Context.MODE_PRIVATE)
+        mSharedPreferences.let {
+            mEditor = it?.edit()
         }
     }
 
@@ -89,6 +98,14 @@ private constructor() {
 
     fun getCurrentTheme():Boolean{
         return getBoolean(UIConstant.CHATROOM_THEME,false)
+    }
+
+    fun setUseGiftsInMsg(use: Boolean){
+        putBoolean(UIConstant.CHATROOM_USE_GIFTS_IN_LIST,use)
+    }
+
+    fun getUseGiftsInMsg():Boolean{
+        return getBoolean(UIConstant.CHATROOM_USE_GIFTS_IN_LIST,false)
     }
 
 

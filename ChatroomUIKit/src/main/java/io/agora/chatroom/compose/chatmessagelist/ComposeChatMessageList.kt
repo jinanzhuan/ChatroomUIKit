@@ -1,6 +1,5 @@
 package io.agora.chatroom.compose.chatmessagelist
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,8 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import io.agora.chatroom.compose.LoadingIndicator
-import io.agora.chatroom.theme.HeadlineMedium
-import io.agora.chatroom.theme.primaryColor50
+import io.agora.chatroom.theme.ChatroomUIKitTheme
 import io.agora.chatroom.viewmodel.messages.MessageListViewModel
 import io.agora.chatroom.uikit.R
 
@@ -32,11 +30,11 @@ fun ComposeChatMessageList(
     onLongItemClick: (Int, ComposeMessageListItemState) -> Unit = { index, message->},
     loadingContent: @Composable () -> Unit = { DefaultMessageListLoadingIndicator(modifier) },
     emptyContent: @Composable () -> Unit = { DefaultMessageListEmptyContent(modifier) },
-    itemContent: @Composable (Int, ComposeMessageListItemState) -> Unit = { index, messageListItem ->
+    itemContent: @Composable (Int, ComposeMessageListItemState) -> Unit = { index, it ->
         DefaultMessageContainer(
             itemIndex = index,
             viewModel = viewModel,
-            messageListItem = messageListItem,
+            messageListItem = it,
             onLongItemClick = onLongItemClick,
         )
     },
@@ -74,8 +72,6 @@ fun MessageList(
 
     val loading = remember { mutableStateOf(messagesState.isLoading) }
     val isLoading by loading
-
-    Log.e("apex","状态改变重新计算")
 
     when {
         isLoading -> {
@@ -117,8 +113,8 @@ internal fun DefaultMessageListEmptyContent(modifier: Modifier) {
     ) {
         Text(
             text = stringResource(R.string.stream_compose_message_list_empty_messages),
-            style = HeadlineMedium,
-            color = primaryColor50,
+            style = ChatroomUIKitTheme.typography.headlineMedium,
+            color = ChatroomUIKitTheme.colors.primary,
             textAlign = TextAlign.Center
         )
     }

@@ -4,6 +4,6 @@ import java.io.Serializable
 
 class UIChatroomInfo(
     var roomId:String,
-    var roomOwner:UserInfoProtocol
+    var roomOwner:UserInfoProtocol?
 
 ):UICreateRoomInfo(), Serializable

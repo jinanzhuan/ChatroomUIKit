@@ -1,18 +1,20 @@
 package io.agora.chatroom.service.serviceImpl
 
-import android.util.Log
-import io.agora.chatroom.service.CallbackImpl
+import io.agora.CallBack
+import io.agora.chatroom.ChatroomUIKitClient
+import io.agora.chatroom.UIChatroomContext
 import io.agora.chatroom.service.ChatClient
 import io.agora.chatroom.service.ChatCustomMessageBody
 import io.agora.chatroom.service.ChatMessage
 import io.agora.chatroom.service.ChatMessageType
 import io.agora.chatroom.service.ChatType
-import io.agora.chatroom.service.GiftEntity
+import io.agora.chatroom.service.GiftEntityProtocol
 import io.agora.chatroom.service.GiftReceiveListener
 import io.agora.chatroom.service.GiftService
 import io.agora.chatroom.service.OnError
-import io.agora.chatroom.service.OnSuccess
+import io.agora.chatroom.service.OnValueSuccess
 import io.agora.chatroom.utils.GsonTools
+import org.json.JSONObject
 
 class GiftServiceImpl: GiftService {
     private val chatManager by lazy { ChatClient.getInstance().chatManager() }
@@ -29,17 +31,25 @@ class GiftServiceImpl: GiftService {
         if (listeners.contains(listener)) listeners.remove(listener)
     }
 
-    override fun sendGift(data: GiftEntity, onSuccess: OnSuccess, onError: OnError) {
+    override fun sendGift(data: GiftEntityProtocol, onSuccess: OnValueSuccess<ChatMessage>, onError: OnError) {
         val message = ChatMessage.createSendMessage(ChatMessageType.CUSTOM)
         val customBody = ChatCustomMessageBody(GIFT_EVENT)
-        data.sendUserId = "apex1"
+        data.sendUserId = ChatroomUIKitClient.getInstance().getCurrentUser().userId
         val gift = GsonTools.beanToString(data)
-        Log.e("apex","sendGift $gift")
-        customBody.params[GIFT_KEY] = gift
+//        customBody.params[GIFT_KEY] = gift
+        message.setAttribute(GIFT_KEY, gift?.let { JSONObject(it) })
         message.chatType = ChatType.ChatRoom
         message.body = customBody
-        message.to = "193314355740675"
-        message.setMessageStatusCallback(CallbackImpl(onSuccess, onError))
+        message.to = ChatroomUIKitClient.getInstance().getChatRoomInfo()?.roomId
+        message.setMessageStatusCallback(object : CallBack{
+            override fun onSuccess() {
+                onSuccess.invoke(message)
+            }
+
+            override fun onError(code: Int, error: String?) {
+                onError.invoke(code,error)
+            }
+        })
         chatManager.sendMessage(message)
     }
 }

@@ -45,7 +45,7 @@ import io.agora.chatroom.compose.utils.rememberStreamImagePainter
 import io.agora.chatroom.data.parsingGift
 import io.agora.chatroom.model.gift.AUIGiftTabInfo
 import io.agora.chatroom.model.gift.selected
-import io.agora.chatroom.service.GiftEntity
+import io.agora.chatroom.service.GiftEntityProtocol
 import io.agora.chatroom.theme.ChatroomUIKitTheme
 import io.agora.chatroom.uikit.R
 import io.agora.chatroom.viewmodel.gift.ComposeGiftTabViewModel
@@ -167,7 +167,7 @@ fun <T> DefaultVpContent(viewModel: TabWithVpViewModel<T>){
 fun GiftTabLayoutWithViewPager(
     viewModel:ComposeGiftTabViewModel,
     modifier: Modifier = Modifier,
-    sendGift: (GiftEntity) -> Unit = { },
+    sendGift: (GiftEntityProtocol) -> Unit = { },
 ) {
     ComposeTabLayoutWithViewPager(
         modifier = modifier,
@@ -185,7 +185,7 @@ fun GiftTabLayoutWithViewPager(
 @Composable
 fun DefaultGiftVpContent(
     viewModel:ComposeGiftTabViewModel,
-    sendGift: (GiftEntity) -> Unit,
+    sendGift: (GiftEntityProtocol) -> Unit,
 ){
     val contentList = viewModel.contentList
     val pageIndex = viewModel.pageIndex
@@ -207,7 +207,7 @@ fun DefaultGiftVpContent(
                         .size(80.dp, 98.dp)
                         .background(
                             (if (index == selectedItemIndex.intValue)
-                                ChatroomUIKitTheme.colors.giftSelected
+                                ChatroomUIKitTheme.colors.primaryL95D20
                             else ChatroomUIKitTheme.colors.background),
                             ChatroomUIKitTheme.shapes.imageThumbnail
                         )
@@ -235,7 +235,7 @@ fun DefaultGiftVpContent(
                         data = emoji.giftIcon,
                         placeholderPainter = painterResource(id = R.drawable.icon_default_sweet_heart)
                     )
-                    Log.e("apex","rememberStreamImagePainter ${painter.state}")
+
                     Image(
                         modifier = Modifier
                             .size(48.dp, 48.dp)
@@ -319,7 +319,7 @@ fun DefaultGiftVpContent(
                                 },
                             style = ChatroomUIKitTheme.typography.labelMedium.copy(
                                 fontWeight = FontWeight.Bold,
-                                color = ChatroomUIKitTheme.colors.giftSend
+                                color = ChatroomUIKitTheme.colors.neutralL98D98
                             ),
                             text = "Send"
                         )

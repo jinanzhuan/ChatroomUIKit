@@ -61,12 +61,7 @@ import io.agora.chatroom.data.emojiList
 import io.agora.chatroom.model.UICapabilities
 import io.agora.chatroom.model.UIChatBarMenuItem
 import io.agora.chatroom.model.emoji.UIExpressionEntity
-import io.agora.chatroom.theme.BodyLarge
-import io.agora.chatroom.theme.barrageDarkColor20
-import io.agora.chatroom.theme.barrageLightColor20
-import io.agora.chatroom.theme.neutralColor10
-import io.agora.chatroom.theme.neutralColor98
-import io.agora.chatroom.theme.primaryColor50
+import io.agora.chatroom.theme.ChatroomUIKitTheme
 import io.agora.chatroom.viewmodel.messages.MessageChatBarViewModel
 import io.agora.chatroom.uikit.R
 
@@ -277,7 +272,7 @@ fun ComposeChatBottomBar(
                     Modifier
                         .fillMaxWidth()
                         .height(52.dp)
-                        .background(if (isDarkTheme == true) neutralColor10 else neutralColor98),
+                        .background(ChatroomUIKitTheme.colors.background),
                     verticalAlignment = Bottom
                 ) {
 
@@ -326,7 +321,7 @@ fun ComposeChatBottomBar(
                     Modifier
                         .fillMaxWidth()
                         .height(if (viewModel.isShowKeyboard.value) 269.dp else 0.dp)
-                        .background(if (isDarkTheme == true) neutralColor10 else neutralColor98),
+                        .background(ChatroomUIKitTheme.colors.background),
                     verticalAlignment = Bottom
                 ) {
 
@@ -354,7 +349,7 @@ fun ComposeChatBottomBar(
                             .padding(top = 8.dp, bottom = 8.dp, start = 8.dp)
                             .background(
                                 shape = RoundedCornerShape(size = 20.dp),
-                                color = if (isDarkTheme == true) barrageDarkColor20 else barrageLightColor20
+                                color = ChatroomUIKitTheme.colors.barrageL20D10
                             )
                             .clickable {
                                 viewModel.showKeyBoard()
@@ -387,8 +382,8 @@ internal fun DefaultComposerLabel(
 {
     Text(
         text = stringResource(id = R.string.stream_compose_message_label),
-        style = BodyLarge,
-        color = if (isDarkTheme == true) neutralColor98 else neutralColor10
+        style = ChatroomUIKitTheme.typography.bodyLarge,
+        color = ChatroomUIKitTheme.colors.onBackground
     )
 }
 
@@ -403,7 +398,7 @@ fun DefaultComposerEmoji(
     Column(modifier = Modifier
         .fillMaxWidth()
         .height(maxH.dp)
-        .background(if (isDarkTheme == true) neutralColor10 else neutralColor98)
+        .background(ChatroomUIKitTheme.colors.background)
     ){
         LazyVerticalGrid(
             columns = GridCells.Fixed(viewModel.eColumns.value)) {
@@ -495,7 +490,7 @@ internal fun DefaultMessageComposerTrailingContent(
                 modifier = Modifier.mirrorRtl(layoutDirection = layoutDirection),
                 painter = painterResource(id = R.drawable.icon_send),
                 contentDescription = stringResource(id = R.string.stream_compose_send_message),
-                tint = if (isInputValid) primaryColor50 else primaryColor50
+                tint = ChatroomUIKitTheme.colors.primary
             )
         },
         onClick = {
@@ -526,7 +521,7 @@ internal fun DefaultMessageComposerVoiceContent(
                         .size(30.dp, 30.dp),
                     painter = painterResource(id = R.drawable.icon_wave_in_circle),
                     contentDescription = stringResource(id = R.string.stream_compose_send_message),
-                    tint = if (isDarkTheme == true) neutralColor98 else neutralColor10
+                    tint = ChatroomUIKitTheme.colors.onBackground
                 )
             },
             onClick = {
@@ -558,7 +553,7 @@ internal fun DefaultMessageComposerEmojiContent(
                     .size(30.dp, 30.dp),
                 painter = painterResource(id = resource),
                 contentDescription = stringResource(id = R.string.stream_compose_send_message),
-                tint = if (isDarkTheme == true) neutralColor98 else neutralColor10
+                tint = ChatroomUIKitTheme.colors.onBackground
             )
 //            LaunchedEffect(resource) {
 //                Log.e("apex","LaunchedEffect:  ${resource}")
@@ -593,7 +588,7 @@ internal fun DefaultChatBarMenuComposerContent(
                     modifier = Modifier
                         .size(38.dp, 38.dp)
                         .background(
-                            color = if (isDarkTheme == true) barrageDarkColor20 else barrageLightColor20,
+                            color = ChatroomUIKitTheme.colors.barrageL20D10,
                             shape = RoundedCornerShape(20.dp)
                         )
                 ){
@@ -612,7 +607,7 @@ internal fun DefaultChatBarMenuComposerContent(
                                 .size(30.dp, 30.dp),
                             painter = painterResource(id = it.drawableResource),
                             contentDescription = "",
-                            tint = if (isDarkTheme == true) neutralColor98 else neutralColor98
+                            tint = ChatroomUIKitTheme.colors.neutralL98D98
                         )
                     }
                 }
@@ -638,7 +633,7 @@ internal fun DefaultChatBarComposerContent(
                     .size(20.dp, 20.dp),
                 painter = painterResource(id = R.drawable.icon_bubble_fill),
                 contentDescription = "",
-                tint = if (isDarkTheme == true) neutralColor98 else neutralColor98,
+                tint = ChatroomUIKitTheme.colors.neutralL98D98,
             )
         },
         enabled = false,
@@ -652,7 +647,7 @@ internal fun DefaultChatBarComposerContent(
             fontWeight = FontWeight.Normal,
             lineHeight = 22.sp,
             fontSize = 16.sp,
-            color = if (isDarkTheme == true) neutralColor98 else neutralColor98,
+            color = ChatroomUIKitTheme.colors.neutralL98D98,
             letterSpacing = 0.03.sp,
         ),
         modifier = Modifier.padding(start = 4.dp)

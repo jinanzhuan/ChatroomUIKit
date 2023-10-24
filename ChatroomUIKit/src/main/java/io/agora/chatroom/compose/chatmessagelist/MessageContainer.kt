@@ -1,14 +1,6 @@
 package io.agora.chatroom.compose.chatmessagelist
 
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import io.agora.chatroom.theme.LabelLarge
-import io.agora.chatroom.theme.primaryColor60
 import io.agora.chatroom.viewmodel.messages.MessageListViewModel
 
 /**
@@ -26,7 +18,12 @@ fun MessageContainer(
     messageListItem: ComposeMessageListItemState,
     onLongItemClick: (Int, ComposeMessageListItemState) -> Unit = { index, message ->},
     giftMessageContent: @Composable (GiftMessageState) -> Unit = {
-        DefaultGiftMessageContainer(giftMessageState = it)
+        DefaultGiftMessageContainer(
+            itemIndex = itemIndex,
+            viewModel = viewModel,
+            giftMessageState = it,
+            onLongItemClick = onLongItemClick,
+        )
     },
     messageItemContent: @Composable (ComposeMessageItemState) -> Unit = {
         DefaultMessageContainer(
@@ -62,15 +59,20 @@ fun MessageContainer(
  * @param giftMessageState The system message item to show.
  */
 @Composable
-internal fun DefaultGiftMessageContainer(giftMessageState: GiftMessageState) {
-    Text(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 12.dp, horizontal = 16.dp),
-        text = giftMessageState.message.body.toString(),
-        color = primaryColor60,
-        style = LabelLarge,
-        textAlign = TextAlign.Center
+internal fun DefaultGiftMessageContainer(
+    itemIndex: Int,
+    viewModel: MessageListViewModel,
+    giftMessageState: GiftMessageState,
+    onLongItemClick: (Int, ComposeMessageListItemState) -> Unit = {index,item ->},
+) {
+    ComposeMessageItem(
+        itemIndex = itemIndex,
+        itemType = ComposeItemType.ITEM_GIFT,
+        isShowDateSeparator = viewModel.isShowDateSeparators,
+        isShowLabel = viewModel.isShowLabel,
+        isShowAvatar = viewModel.isShowAvatar,
+        messageItem = giftMessageState,
+        onLongItemClick = onLongItemClick,
     )
 }
 
@@ -85,18 +87,14 @@ internal fun DefaultMessageContainer(
     itemIndex: Int,
     viewModel: MessageListViewModel,
     messageItem: ComposeMessageItemState,
-    onLongItemClick: (Int, ComposeMessageListItemState) -> Unit,
+    onLongItemClick: (Int, ComposeMessageListItemState) -> Unit = {index,item ->},
 ) {
     ComposeMessageItem(
         itemIndex = itemIndex,
         itemType = ComposeItemType.NORMAL,
         isShowDateSeparator = viewModel.isShowDateSeparators,
         isShowLabel  = viewModel.isShowLabel,
-        isShowGift = viewModel.isShowGift,
         isShowAvatar  = viewModel.isShowAvatar,
-        dateSeparatorColor = viewModel.getDateSeparatorColor,
-        userNameColor = viewModel.getNickNameColor,
-        isDarkTheme = viewModel.getTheme,
         messageItem = messageItem,
         onLongItemClick = onLongItemClick,
     )
@@ -113,18 +111,14 @@ internal fun DefaultJoinedMessageContainer(
     itemIndex: Int,
     viewModel: MessageListViewModel,
     messageItem: JoinedMessageState,
-    onLongItemClick: (Int, ComposeMessageListItemState) -> Unit,
+    onLongItemClick: (Int, ComposeMessageListItemState) -> Unit = {index,item ->},
 ) {
     ComposeMessageItem(
         itemIndex = itemIndex,
         itemType = ComposeItemType.ITEM_JOIN,
         isShowDateSeparator = viewModel.isShowDateSeparators,
         isShowLabel = viewModel.isShowLabel,
-        isShowGift = false,
         isShowAvatar = viewModel.isShowAvatar,
-        dateSeparatorColor = viewModel.getDateSeparatorColor,
-        userNameColor = viewModel.getNickNameColor,
-        isDarkTheme = viewModel.getTheme,
         messageItem = messageItem,
         onLongItemClick = onLongItemClick,
     )
