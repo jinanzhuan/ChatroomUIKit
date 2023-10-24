@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
@@ -120,7 +121,7 @@ fun DefaultMemberItem(
                 } ?: user.userId ,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(20.dp),
+                    .wrapContentHeight(),
                 style = ChatroomUIKitTheme.typography.titleMedium,
                 color = ChatroomUIKitTheme.colors.onBackground
             )
@@ -144,8 +145,8 @@ fun DefaultMemberItem(
         if (user.role == ROLE.ADMIN || user.role == ROLE.OWNER) {
             Surface(onClick = { onExtendClick?.invoke(user) }) {
                 Icon(
-                    painter = painterResource(id = R.drawable.icon_bottom_bar_more),
-                    modifier = Modifier.fillMaxHeight(),
+                    painter = painterResource(id = R.drawable.icon_more),
+                    modifier = Modifier.fillMaxHeight().background(ChatroomUIKitTheme.colors.background),
                     contentDescription = null)
             }
 

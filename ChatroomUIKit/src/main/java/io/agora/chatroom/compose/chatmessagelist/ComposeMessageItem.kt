@@ -31,6 +31,7 @@ import io.agora.chatroom.model.UserInfoProtocol
 import io.agora.chatroom.model.emoji.RegexEntity
 import io.agora.chatroom.service.ChatMessage
 import io.agora.chatroom.service.cache.UIChatroomCacheManager
+import io.agora.chatroom.service.transfer
 import io.agora.chatroom.theme.BodyMedium
 import io.agora.chatroom.theme.SmallCorner
 import io.agora.chatroom.theme.barrageDarkColor10
@@ -195,7 +196,7 @@ fun ComposeMessageItem(
             inlineMap["Label"] = InlineTextContent(
                 placeholder = Placeholder(18.sp,18.sp, PlaceholderVerticalAlign.Center),
                 children = {
-                    DrawLabelImage(userInfo)
+                    DrawLabelImage(userInfo.transfer())
                 }
             )
         }
@@ -204,7 +205,7 @@ fun ComposeMessageItem(
             inlineMap["Avatar"] = InlineTextContent(
                 placeholder = Placeholder(28.sp,28.sp, PlaceholderVerticalAlign.Center),
                 children = {
-                    DrawAvatarImage(userInfo)
+                    DrawAvatarImage(userInfo.transfer())
                 }
             )
         }

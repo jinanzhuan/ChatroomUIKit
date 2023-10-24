@@ -24,7 +24,7 @@ interface UserStateChangeListener {
 
 data class UserEntity(
     val userId: String,
-    val nickname: String? = "",
+    var nickname: String? = "",
     val avatar: String? = "",
     val gender: Int? = 0,
     val identify: String? = "",

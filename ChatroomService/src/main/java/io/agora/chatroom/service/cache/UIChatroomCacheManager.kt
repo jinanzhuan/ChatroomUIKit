@@ -5,13 +5,14 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.text.TextUtils
 import io.agora.chatroom.UIChatroomContext
-import io.agora.chatroom.model.UserInfoProtocol
 import org.jetbrains.annotations.Nullable
 import java.io.ByteArrayOutputStream
 import java.io.ObjectOutputStream
 import java.io.Serializable
 import android.util.Base64
 import io.agora.chatroom.model.UIConstant
+import io.agora.chatroom.service.ROLE
+import io.agora.chatroom.service.UserEntity
 import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.io.ObjectInputStream
@@ -20,7 +21,7 @@ class UIChatroomCacheManager
 private constructor() {
     private var mEditor: SharedPreferences.Editor? = null
     private var mSharedPreferences: SharedPreferences? = null
-    private var userCache: MutableMap<String, UserInfoProtocol> = mutableMapOf()
+    private var userCache: MutableMap<String, UserEntity> = mutableMapOf()
     private val muteCache: MutableSet<String> = mutableSetOf()
 
     companion object {
@@ -36,15 +37,15 @@ private constructor() {
         }
     }
 
-    fun saveUserInfo(userId:String,userInfo: UserInfoProtocol){
+    fun saveUserInfo(userId:String,userInfo: UserEntity){
         userCache[userId] = userInfo
     }
 
-    fun getUserInfo(userId:String):UserInfoProtocol{
+    fun getUserInfo(userId:String):UserEntity{
         if (userCache.contains(userId)){
-            return userCache[userId] ?: UserInfoProtocol(userId)
+            return userCache[userId] ?: UserEntity(userId)
         }
-        return UserInfoProtocol(userId)
+        return UserEntity(userId)
     }
 
     /**
@@ -52,6 +53,38 @@ private constructor() {
      */
     fun inCache(userId:String):Boolean{
         return userCache.contains(userId)
+    }
+
+    /**
+     * Save the owner
+     */
+    fun saveOwner(owner: String) {
+        if (inCache(owner)) {
+            getUserInfo(owner).apply {
+                if (role != ROLE.OWNER) {
+                    role = ROLE.OWNER
+                }
+            }
+        } else {
+            saveUserInfo(owner, UserEntity(owner))
+        }
+    }
+
+    /**
+     * Save the admin list
+     */
+    fun saveAdminList(adminList: List<String>){
+        adminList.forEach { admin ->
+            if (inCache(admin)){
+                getUserInfo(admin).apply {
+                    if (role != ROLE.ADMIN) {
+                        role = ROLE.ADMIN
+                    }
+                }
+            } else {
+                saveUserInfo(admin, UserEntity(admin))
+            }
+        }
     }
 
     /**

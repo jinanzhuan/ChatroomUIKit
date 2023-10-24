@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.contentColorFor
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
@@ -24,16 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.agora.chatroom.model.UIComposeSheetItem
-import io.agora.chatroom.theme.BodyLarge
 import io.agora.chatroom.theme.ChatroomUIKitTheme
-import io.agora.chatroom.theme.errorColor50
-import io.agora.chatroom.theme.errorColor60
-import io.agora.chatroom.theme.neutralColor10
-import io.agora.chatroom.theme.neutralColor20
-import io.agora.chatroom.theme.neutralColor90
-import io.agora.chatroom.theme.neutralColor98
-import io.agora.chatroom.theme.primaryColor50
-import io.agora.chatroom.theme.primaryColor60
 import io.agora.chatroom.viewmodel.menu.MenuViewModel
 import io.agora.chatroom.viewmodel.menu.BottomSheetViewModel
 import kotlinx.coroutines.launch
@@ -101,19 +93,17 @@ fun <T> ComposeBottomSheet(
                             .height(8.dp)
                             .background(ChatroomUIKitTheme.colors.onBackground)
                     )
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 13.dp, bottom = 13.dp)
-                            .clickable {
-                                onCancelListener()
-                                viewModel.closeDrawer()
-                            },
-                        textAlign = TextAlign.Center,
-                        text = stringResource(id = viewModel.getCancelText),
-                        color = ChatroomUIKitTheme.colors.primary,
-                        style = ChatroomUIKitTheme.typography.bodyLarge
-                    )
+                    Box(modifier = Modifier
+                        .fillMaxWidth().height(56.dp).clickable {
+                            onCancelListener()
+                            viewModel.closeDrawer() },
+                        contentAlignment = Alignment.Center) {
+                            Text(
+                                text = stringResource(id = viewModel.getCancelText),
+                                color = ChatroomUIKitTheme.colors.primary,
+                                style = ChatroomUIKitTheme.typography.bodyLarge
+                            )
+                        }
                 }
 
                 Box {
@@ -143,7 +133,7 @@ fun ComposeMenuBottomSheet(
     modifier: Modifier = Modifier,
     onListItemClick: (Int, UIComposeSheetItem) -> Unit,
     drawerContent: @Composable () -> Unit = { DefaultDrawerContent(viewModel, onListItemClick)},
-    screenContent: @Composable () -> Unit = { defaultScreenContent() },
+    screenContent: @Composable () -> Unit = { },
     onCancelListener:() -> Unit = {},
     onDismissRequest: () -> Unit,
     shape: Shape = ChatroomUIKitTheme.shapes.bottomSheet,
@@ -212,11 +202,6 @@ fun DefaultDrawerContent(viewModel: MenuViewModel, onListItemClick: (Int, UIComp
             )
         }
     }
-}
-
-@Composable
-fun defaultScreenContent(){
-    Divider(modifier = Modifier.height(34.dp).background(Color.Red))
 }
 
 @Preview(showBackground = true)
