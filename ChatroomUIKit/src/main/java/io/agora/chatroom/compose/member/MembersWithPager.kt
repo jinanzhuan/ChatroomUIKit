@@ -69,6 +69,7 @@ fun MembersWithPager(
                     viewModel = memberViewModel,
                     tab = tabInfo.title,
                     showSearch = true,
+                    autoRequest = true,
                     onItemClick = onItemClick,
                     onExtendClick = onExtendClick,
                     onSearchClick = onSearchClick)
@@ -78,6 +79,7 @@ fun MembersWithPager(
                     viewModel = mutedViewModel,
                     tab = tabInfo.title,
                     showSearch = true,
+                    autoRequest = true,
                     onItemClick = onItemClick,
                     onExtendClick = onExtendClick,
                     onSearchClick = onSearchClick)
@@ -91,13 +93,14 @@ fun MembersPage(
     modifier: Modifier = Modifier,
     viewModel: MemberListViewModel,
     showSearch: Boolean = false,
+    autoRequest: Boolean = false,
     tab: String,
     onItemClick: ((String, UserEntity) -> Unit)? = null,
     onExtendClick: ((String, UserEntity) -> Unit)? = null,
     onSearchClick: ((String) -> Unit)? = null
 ) {
-    val state = viewModel.state
-    if (state == RequestState.Idle) {
+    val state = viewModel.getState
+    if (autoRequest && state == RequestState.Idle) {
         viewModel.fetchRoomMembers()
     }
     Column(modifier = modifier) {
@@ -136,14 +139,15 @@ fun MutedListPage(
     modifier: Modifier = Modifier,
     viewModel: MutedListViewModel,
     showSearch: Boolean = false,
+    autoRequest: Boolean = false,
     tab: String,
     onItemClick: ((String, UserEntity) -> Unit)? = null,
     onExtendClick: ((String, UserEntity) -> Unit)? = null,
     onSearchClick: ((String) -> Unit)? = null
 ) {
-    val state = viewModel.state
-    if (state == RequestState.Idle) {
-        viewModel.fetchMuteList()
+    val state = viewModel.getState
+    if (autoRequest && state == RequestState.Idle) {
+        viewModel.getMuteList()
     }
     Column(modifier = modifier) {
         if (showSearch) {

@@ -26,8 +26,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.compose.avatar.Avatar
-import io.agora.chatroom.service.ROLE
+import io.agora.chatroom.service.ChatClient
 import io.agora.chatroom.service.UserEntity
 import io.agora.chatroom.theme.ChatroomUIKitTheme
 import io.agora.chatroom.uikit.R
@@ -125,11 +126,9 @@ fun DefaultMemberItem(
                 style = ChatroomUIKitTheme.typography.titleMedium,
                 color = ChatroomUIKitTheme.colors.onBackground
             )
-            if (showRole && (user.role == ROLE.OWNER || user.role == ROLE.ADMIN)) {
+            if (showRole && (ChatroomUIKitClient.getInstance().getContext().getCurrentRoomInfo().roomOwner?.userId == ChatClient.getInstance().currentUser)) {
                 Text(
-                    text = stringResource(id = user.role.let {
-                        if (it == ROLE.OWNER) R.string.role_owner else R.string.role_admin }
-                    ),
+                    text = stringResource(id = R.string.role_owner),
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(18.dp),
@@ -142,7 +141,7 @@ fun DefaultMemberItem(
     onItemClick: ((UserEntity) -> Unit)? = null,
     onExtendClick: ((UserEntity) -> Unit)? = null,
     extendContent: @Composable ((UserEntity) -> Unit)? = {user ->
-        if (user.role == ROLE.ADMIN || user.role == ROLE.OWNER) {
+        if (ChatroomUIKitClient.getInstance().getContext().getCurrentRoomInfo().roomOwner?.userId == ChatClient.getInstance().currentUser) {
             Surface(onClick = { onExtendClick?.invoke(user) }) {
                 Icon(
                     painter = painterResource(id = R.drawable.icon_more),
