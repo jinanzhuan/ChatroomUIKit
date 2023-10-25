@@ -3,7 +3,6 @@ package io.agora.chatroom
 import android.content.Context
 import io.agora.chatroom.model.UIChatroomInfo
 import io.agora.chatroom.model.UICommonConfig
-import io.agora.chatroom.service.cache.UIChatroomCacheManager
 
 class UIChatroomContext{
     private lateinit var mCommonConfig: UICommonConfig
@@ -35,19 +34,19 @@ class UIChatroomContext{
     }
 
     fun setCurrentTheme(isDark:Boolean){
-        UIChatroomCacheManager.getInstance().setCurrentTheme(isDark)
+        ChatroomUIKitClient.getInstance().getCacheManager().setCurrentTheme(isDark)
     }
 
     fun getCurrentTheme():Boolean{
-        return UIChatroomCacheManager.getInstance().getCurrentTheme()
+        return ChatroomUIKitClient.getInstance().getCacheManager().getCurrentTheme()
     }
 
     fun setUseGiftsInList(use:Boolean){
-        UIChatroomCacheManager.getInstance().setUseGiftsInMsg(use)
+        ChatroomUIKitClient.getInstance().getCacheManager().setUseGiftsInMsg(use)
     }
 
     fun getUseGiftsInMsg():Boolean{
-        return UIChatroomCacheManager.getInstance().getUseGiftsInMsg()
+        return ChatroomUIKitClient.getInstance().getCacheManager().getUseGiftsInMsg()
     }
 
 }

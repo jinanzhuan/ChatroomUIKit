@@ -4,10 +4,10 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.compose.list.LazyColumnList
 import io.agora.chatroom.compose.list.LazyColumnListState
 import io.agora.chatroom.service.UserEntity
-import io.agora.chatroom.service.cache.UIChatroomCacheManager
 import io.agora.chatroom.viewmodel.member.MemberListViewModel
 
 @Composable
@@ -20,7 +20,7 @@ fun MemberList(
     onItemClick: ((UserEntity) -> Unit)? = null,
     onExtendClick: ((UserEntity) -> Unit)? = null,
     itemContent: @Composable (Int, UserEntity) -> Unit = { index, item ->
-        val user = UIChatroomCacheManager.getInstance().getUserInfo(item.userId)
+        val user = ChatroomUIKitClient.getInstance().getCacheManager().getUserInfo(item.userId)
         DefaultMemberItem(
             user = user,
             showRole = showRole,

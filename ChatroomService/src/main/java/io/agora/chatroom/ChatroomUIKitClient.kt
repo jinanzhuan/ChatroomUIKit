@@ -16,7 +16,8 @@ import org.json.JSONObject
 
 class ChatroomUIKitClient{
     private var currentRoomContext:UIChatroomContext = UIChatroomContext()
-    private var chatroomUser:UIChatroomUser = UIChatroomUser()
+    private var chatroomUser: UIChatroomUser = UIChatroomUser()
+    private val cacheManager: UIChatroomCacheManager = UIChatroomCacheManager()
 
     companion object {
         const val TAG = "ChatroomUIKitClient"
@@ -42,6 +43,10 @@ class ChatroomUIKitClient{
         return chatroomUser
     }
 
+    fun getCacheManager():UIChatroomCacheManager{
+        return cacheManager
+    }
+
     fun checkJoinedMsg(msg:ChatMessage):Boolean{
         val ext = msg.ext()
         return ext.containsKey(UIConstant.CHATROOM_UIKIT_USER_JOIN)
@@ -57,7 +62,7 @@ class ChatroomUIKitClient{
         chatOptions.appKey = appKey
         chatOptions.autoLogin = false
         ChatClient.getInstance().init(applicationContext,chatOptions)
-        UIChatroomCacheManager.getInstance().init(applicationContext)
+        cacheManager.init(applicationContext)
     }
 
     fun isLoginBefore():Boolean{

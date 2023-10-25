@@ -16,27 +16,11 @@ import java.io.IOException
 import java.io.ObjectInputStream
 
 class UIChatroomCacheManager{
-
-    companion object {
-        const val TAG = "UIChatroomCacheManager"
-
-        private var instance: UIChatroomCacheManager? = null
-        private var mSharedPreferences: SharedPreferences? = null
-        private var mEditor: SharedPreferences.Editor? = null
-        private var userCache: MutableMap<String, UserEntity> = mutableMapOf()
-        private val muteCache: MutableSet<String> = mutableSetOf()
-
-        fun getInstance(): UIChatroomCacheManager {
-            if (instance == null) {
-                synchronized(UIChatroomCacheManager::class.java) {
-                    if (instance == null) {
-                        instance = UIChatroomCacheManager()
-                    }
-                }
-            }
-            return instance!!
-        }
-    }
+    private val memberMap: MutableMap<String, MutableList<String>> by lazy { mutableMapOf() }
+    private val mutedMap: MutableMap<String, MutableList<String>> by lazy { mutableMapOf() }
+    private var mSharedPreferences: SharedPreferences? = null
+    private var mEditor: SharedPreferences.Editor? = null
+    private var userCache: MutableMap<String, UserEntity> = mutableMapOf()
 
     fun init(context: Context){
         mSharedPreferences = context.getSharedPreferences("SP_AT_PROFILE", Context.MODE_PRIVATE)
@@ -63,57 +47,36 @@ class UIChatroomCacheManager{
         return userCache.contains(userId)
     }
 
-//    /**
-//     * Save the owner
-//     */
-//    fun saveOwner(owner: String) {
-//        if (inCache(owner)) {
-//            getUserInfo(owner).apply {
-//                if (role != ROLE.OWNER) {
-//                    role = ROLE.OWNER
-//                }
-//            }
-//        } else {
-//            saveUserInfo(owner, UserInfoProtocol(owner))
-//        }
-//    }
-//
-//    /**
-//     * Save the admin list
-//     */
-//    fun saveAdminList(adminList: List<String>){
-//        adminList.forEach { admin ->
-//            if (inCache(admin)){
-//                getUserInfo(admin).apply {
-//                    if (role != ROLE.ADMIN) {
-//                        role = ROLE.ADMIN
-//                    }
-//                }
-//            } else {
-//                saveUserInfo(admin, UserInfoProtocol(admin))
-//            }
-//        }
-//    }
-
-    /**
-     * Save the mute list
-     */
-    fun saveMuteList(muteList: List<String>){
-        muteCache.addAll(muteList)
+    fun saveRoomMemberList(roomId: String, memberList: List<String>) {
+        val list = memberMap[roomId] ?: mutableListOf()
+        list.addAll(memberList)
+        memberMap[roomId] = memberList.toSet().toMutableList()
     }
 
-    /**
-     * Get the mute list
-     */
-    fun getMuteList():List<String>{
-        return muteCache.toList()
+    fun getRoomMemberList(roomId: String): List<String> {
+        return memberMap[roomId] ?: emptyList()
+    }
+
+    fun saveMuteList(roomId: String, muteList: List<String>) {
+        val list = mutedMap[roomId] ?: mutableListOf()
+        list.addAll(muteList)
+        mutedMap[roomId] = muteList.toSet().toMutableList()
+    }
+
+    fun getRoomMuteList(roomId: String): List<String> {
+        return mutedMap[roomId] ?: emptyList()
+    }
+
+    fun clearUserCache() {
+        memberMap.clear()
+        mutedMap.clear()
     }
 
     /**
      * Check whether the user is in the mute list
      */
-    fun inMuteCache(userId:String):Boolean{
-        return muteCache.contains(userId)
+    fun inMuteCache(roomId: String, userId:String):Boolean{
+        return mutedMap.contains(roomId) && mutedMap[roomId]?.contains(userId) ?: false
     }
 
     fun setUseProperties(use:Boolean){

@@ -1,12 +1,12 @@
 package io.agora.chatroom.viewmodel.member
 
 import android.util.Log
+import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.model.toUser
 import io.agora.chatroom.service.OnError
 import io.agora.chatroom.service.OnValueSuccess
 import io.agora.chatroom.service.UserEntity
 import io.agora.chatroom.service.UserOperationType
-import io.agora.chatroom.service.cache.UIChatroomCacheManager
 import io.agora.chatroom.ui.UIChatroomService
 import io.agora.chatroom.viewmodel.RequestListViewModel
 
@@ -36,26 +36,27 @@ open class MemberListViewModel(
         service.getChatService().fetchMembers(roomId, cursor, pageSize, {cursorResult ->
             hasMore = cursorResult.data.size == pageSize
             cursor = cursorResult.cursor
+            ChatroomUIKitClient.getInstance().getCacheManager().saveRoomMemberList(roomId, cursorResult.data)
             val propertyList = cursorResult.data.filter { userId ->
-                !UIChatroomCacheManager.getInstance().inCache(userId)
+                !ChatroomUIKitClient.getInstance().getCacheManager().inCache(userId)
             }
             if (fetchUserInfo && propertyList.isNotEmpty()) {
                 fetchUsersInfo(propertyList, { list ->
                     val result = cursorResult.data.map { userId ->
-                        UIChatroomCacheManager.getInstance().getUserInfo(userId)
+                        ChatroomUIKitClient.getInstance().getCacheManager().getUserInfo(userId)
                     }
                     add(result)
                     onSuccess.invoke(result)
                 }, { code, error ->
                     val result = cursorResult.data.map { userId ->
-                        UIChatroomCacheManager.getInstance().getUserInfo(userId)
+                        ChatroomUIKitClient.getInstance().getCacheManager().getUserInfo(userId)
                     }
                     add(result)
                     onError.invoke(code, error)
                 })
             } else {
                 val result = cursorResult.data.map { userId ->
-                    UIChatroomCacheManager.getInstance().getUserInfo(userId)
+                    ChatroomUIKitClient.getInstance().getCacheManager().getUserInfo(userId)
                 }
                 add(result)
                 onSuccess.invoke(result)
@@ -63,6 +64,15 @@ open class MemberListViewModel(
         }, {code, error ->
             error(code, error)
         })
+    }
+
+    /**
+     * Returns the cached chatroom members.
+     */
+    fun getCacheMemberList(): List<UserEntity> {
+        return ChatroomUIKitClient.getInstance().getCacheManager().getRoomMemberList(roomId).map { userId ->
+            ChatroomUIKitClient.getInstance().getCacheManager().getUserInfo(userId)
+        }
     }
 
     /**
@@ -78,7 +88,7 @@ open class MemberListViewModel(
                 it.toUser()
             }
             users.forEach {
-                UIChatroomCacheManager.getInstance().saveUserInfo(it.userId, it)
+                ChatroomUIKitClient.getInstance().getCacheManager().saveUserInfo(it.userId, it)
             }
             refresh()
             onSuccess.invoke(users)
@@ -100,7 +110,7 @@ open class MemberListViewModel(
     fun fetchUsersInfo(firstVisibleIndex: Int, lastVisibleIndex: Int) {
         Log.e("apex", "fetchUsersInfo: $firstVisibleIndex, $lastVisibleIndex")
         items.subList(firstVisibleIndex, lastVisibleIndex).filter { user ->
-            !UIChatroomCacheManager.getInstance().inCache(user.userId)
+            !ChatroomUIKitClient.getInstance().getCacheManager().inCache(user.userId)
         }.let { list ->
             if (list.isNotEmpty()) {
                 fetchUsersInfo(list.map { it.userId })
@@ -117,7 +127,7 @@ open class MemberListViewModel(
         onError: OnError = { _, _ ->}
     ) {
         service.getChatService().operateUser(roomId, userId, UserOperationType.MUTE, { chatroom ->
-            onSuccess.invoke(UIChatroomCacheManager.cacheManager.getUserInfo(userId))
+            onSuccess.invoke(ChatroomUIKitClient.getInstance().getChatroomUser().getUserInfo(userId))
         }, { code, error ->
             onError.invoke(code, error)
         })
@@ -132,7 +142,7 @@ open class MemberListViewModel(
         onError: OnError = { _, _ ->}
     ) {
         service.getChatService().operateUser(roomId, userId, UserOperationType.UNMUTE, { chatroom ->
-            onSuccess.invoke(UIChatroomCacheManager.cacheManager.getUserInfo(userId))
+            onSuccess.invoke(ChatroomUIKitClient.getInstance().getChatroomUser().getUserInfo(userId))
         }, { code, error ->
             onError.invoke(code, error)
         })
@@ -147,9 +157,45 @@ open class MemberListViewModel(
         onError: OnError = { _, _ ->}
     ) {
         service.getChatService().operateUser(roomId, userId, UserOperationType.KICK, { chatroom ->
-            onSuccess.invoke(UIChatroomCacheManager.cacheManager.getUserInfo(userId))
+            onSuccess.invoke(ChatroomUIKitClient.getInstance().getChatroomUser().getUserInfo(userId))
         }, { code, error ->
             onError.invoke(code, error)
         })
+    }
+
+    fun searchUsers(
+        keyword: String,
+        isMute: Boolean = false,
+        onSuccess: OnValueSuccess<List<UserEntity>> = {}
+    ) {
+        clear()
+        if (keyword.isEmpty()) {
+            onSuccess.invoke(emptyList())
+            return
+        }
+        if (isMute) {
+            ChatroomUIKitClient.getInstance().getCacheManager().getRoomMuteList(roomId).let { list ->
+                val result = list.filter { userId ->
+                    val user = ChatroomUIKitClient.getInstance().getCacheManager().getUserInfo(userId)
+                    user.nickname?.contains(keyword) ?: false || user.userId.contains(keyword)
+                }.map { userId ->
+                    ChatroomUIKitClient.getInstance().getCacheManager().getUserInfo(userId)
+                }
+                add(result)
+                onSuccess.invoke(result)
+            }
+        } else {
+            ChatroomUIKitClient.getInstance().getCacheManager().getRoomMemberList(roomId).let { list ->
+                val result = list.filter { userId ->
+                    val user = ChatroomUIKitClient.getInstance().getCacheManager().getUserInfo(userId)
+                    user.nickname?.contains(keyword) ?: false || user.userId.contains(keyword)
+                }.map { userId ->
+                    ChatroomUIKitClient.getInstance().getCacheManager().getUserInfo(userId)
+                }
+                add(result)
+                onSuccess.invoke(result)
+            }
+        }
+
     }
 }

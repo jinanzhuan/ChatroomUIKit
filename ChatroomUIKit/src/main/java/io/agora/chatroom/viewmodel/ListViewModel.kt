@@ -1,6 +1,5 @@
 package io.agora.chatroom.viewmodel
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
@@ -71,7 +70,7 @@ open class ListViewModel<T>(
 }
 
 open class RequestListViewModel<T>(
-   val state: RequestState = RequestState.Idle,
+   private val state: RequestState = RequestState.Idle,
 ): ComposeBaseListViewModel<T>() {
     init {
         if (state is RequestState.Success<*>){
@@ -101,7 +100,6 @@ open class RequestListViewModel<T>(
     }
 
     fun refresh(){
-        Log.e("apex", "refresh: ")
         _state.value = RequestState.Refresh
     }
 }

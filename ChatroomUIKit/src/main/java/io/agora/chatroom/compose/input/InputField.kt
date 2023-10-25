@@ -1,6 +1,5 @@
 package io.agora.chatroom.compose.input
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -167,6 +166,7 @@ fun SearchInputFiled(
     border: BorderStroke = BorderStroke(1.dp, ChatroomUIKitTheme.colors.inputSurface),
     innerPadding: PaddingValues = PaddingValues(horizontal = 8.dp, vertical = 5.dp),
     keyboardOptions: KeyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
+    onClearClick: () -> Unit = {},
     placeholder: @Composable (() -> Unit)? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
@@ -211,7 +211,10 @@ fun SearchInputFiled(
         trailingIcon = {
             if (trailingIcon == null) {
                 if (textValue.isNotBlank()) {
-                    IconButton(onClick = { textValue = "" }) {
+                    IconButton(onClick = {
+                        textValue = ""
+                        onClearClick.invoke()
+                    }) {
                         Icon(
                             painter = painterResource(id = R.drawable.icon_clear),
                             contentDescription = "Search magnifier",

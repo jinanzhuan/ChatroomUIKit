@@ -1,8 +1,9 @@
 package io.agora.chatroom.viewmodel.member
 
+import io.agora.chatroom.ChatroomUIKitClient
+import io.agora.chatroom.service.OnError
 import io.agora.chatroom.service.OnValueSuccess
 import io.agora.chatroom.service.UserEntity
-import io.agora.chatroom.service.cache.UIChatroomCacheManager
 import io.agora.chatroom.ui.UIChatroomService
 
 data class MutedListViewModel(
@@ -12,16 +13,37 @@ data class MutedListViewModel(
 ): MemberListViewModel(roomId, service, pageSize) {
 
     /**
-     * Fetches the mute list.
+     * Gets the mute list from cache.
      */
-    fun fetchMuteList(onSuccess: OnValueSuccess<List<UserEntity>> = {}) {
+    fun getMuteList(onSuccess: OnValueSuccess<List<UserEntity>> = {}) {
         loading()
-        val muteList = UIChatroomCacheManager.getInstance().getMuteList()
+        val muteList = ChatroomUIKitClient.getInstance().getCacheManager().getRoomMuteList(roomId)
         muteList.map { userId ->
-            UIChatroomCacheManager.getInstance().getUserInfo(userId)
+            ChatroomUIKitClient.getInstance().getCacheManager().getUserInfo(userId)
         }.let {
             add(it)
             onSuccess.invoke(it)
         }
+    }
+
+    /**
+     * Fetches the mute list from the server.
+     */
+    fun fetchMuteList(
+        onSuccess: OnValueSuccess<List<UserEntity>> = {},
+        onError: OnError = { _, _ ->}
+    ) {
+        loading()
+        service.getChatService().fetchMuteList(roomId, 1, 100, { muteList ->
+            ChatroomUIKitClient.getInstance().getCacheManager().saveMuteList(roomId, muteList.map { it.key })
+            val result = muteList.map { item ->
+                ChatroomUIKitClient.getInstance().getCacheManager().getUserInfo(item.key)
+            }
+            add(result)
+            onSuccess.invoke(result)
+        }, { code, error ->
+            error(code, error)
+            onError.invoke(code, error)
+        })
     }
 }

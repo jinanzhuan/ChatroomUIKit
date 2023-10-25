@@ -30,14 +30,7 @@ data class UserEntity(
     val avatar: String? = "",
     val gender: Int? = 0,
     val identify: String? = "",
-    var role: ROLE = ROLE.MEMBER
 )
-
-enum class ROLE {
-    OWNER,
-    ADMIN,
-    MEMBER
-}
 
 fun ChatUserInfo.transfer() = UserEntity(userId, nickname, avatarUrl, gender,ext )
 fun UserEntity.transfer(): UserInfoProtocol = UserInfoProtocol(userId, nickname, avatar, gender, identify)
