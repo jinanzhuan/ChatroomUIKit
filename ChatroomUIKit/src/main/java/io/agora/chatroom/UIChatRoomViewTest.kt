@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
 import android.widget.FrameLayout
+import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
@@ -21,6 +22,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
@@ -51,9 +53,12 @@ import io.agora.chatroom.viewmodel.messages.MessagesViewModelFactory
 import io.agora.chatroom.uikit.databinding.ActivityUiChatroomTestBinding
 import io.agora.chatroom.viewmodel.gift.ComposeGiftListViewModel
 import io.agora.chatroom.viewmodel.gift.ComposeGiftSheetViewModel
+import io.agora.chatroom.viewmodel.member.MemberListViewModel
+import io.agora.chatroom.viewmodel.member.MemberViewModelFactory
 import io.agora.chatroom.viewmodel.member.MembersBottomSheetViewModel
 import io.agora.chatroom.viewmodel.menu.MenuViewModel
 import io.agora.chatroom.viewmodel.menu.MenuViewModelFactory
+import io.agora.chatroom.viewmodel.menu.RoomMemberMenuViewModel
 
 class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListener {
     private val mRoomViewBinding = ActivityUiChatroomTestBinding.inflate(LayoutInflater.from(context))
@@ -65,9 +70,9 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
     private lateinit var service:UIChatroomService
     private val memberMenuViewModel by lazy {
         if (context is AppCompatActivity) {
-            ViewModelProvider(context as AppCompatActivity, MenuViewModelFactory())[MenuViewModel::class.java]
+            ViewModelProvider(context as ComponentActivity, MenuViewModelFactory())[RoomMemberMenuViewModel::class.java]
         } else {
-            MenuViewModel()
+            RoomMemberMenuViewModel()
         }
     }
     constructor(context: Context) : this(context, null)
@@ -115,6 +120,7 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
             giftViewModel = viewModel(ComposeGiftSheetViewModel::class.java, factory = factory)
             giftListViewModel = ComposeGiftListViewModel()
             val membersBottomSheet = MembersBottomSheetViewModel(roomId = roomId, roomService = service, isAdmin = true)
+            val memberListViewModel = viewModel(MemberListViewModel::class.java, factory = MemberViewModelFactory(context = LocalContext.current, roomId = roomId, service = service))
 
             val isShowInput by inputField
 
@@ -153,24 +159,14 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
                             membersBottomSheet.closeDrawer()
                         },
                         onExtendClick = { tab, user ->
-                            val memberMenuList = mutableListOf<UIComposeSheetItem>()
-                            when(tab){
-                                context.getString(R.string.member_management_participant) -> {
-                                    memberMenuList.add(UIComposeSheetItem(0, context.getString(R.string.menu_item_mute)))
-                                    memberMenuList.add(UIComposeSheetItem(1, context.getString(R.string.menu_item_remove)))
-                                }
-                                context.getString(R.string.member_management_mute) -> {
-                                    memberMenuList.add(UIComposeSheetItem(0, context.getString(R.string.menu_item_unmute)))
-                                    memberMenuList.add(UIComposeSheetItem(1, context.getString(R.string.menu_item_remove)))
-                                }
-                            }
-                            memberMenuViewModel.clear()
-                            memberMenuViewModel.add(memberMenuList)
-                            Log.e("apex","ComposeMembersBottomSheet onExtendClick $tab $user")
+                            memberMenuViewModel.user = user
+                            memberMenuViewModel.setMenuList(context, tab)
                             memberMenuViewModel.openDrawer()
+                            membersBottomSheet.closeDrawer()
                         },
                         onSearchClick = { title ->
                             Log.e("apex","ComposeMembersBottomSheet onSearchClick $title")
+                            membersBottomSheet.closeDrawer()
                         },
                         onItemClick = { tab, user ->
                             Log.e("apex","ComposeMembersBottomSheet onItemClick $tab $user")}
@@ -180,6 +176,41 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
                         viewModel = memberMenuViewModel,
                         onListItemClick = { index,item ->
                             Log.e("apex"," default item: $index ${item.title}")
+                            when(index){
+                                0 -> {
+                                    if (item.title == context.getString(R.string.menu_item_mute)){
+                                        memberListViewModel.muteUser(memberMenuViewModel.user.userId,
+                                            onSuccess = {
+                                                memberMenuViewModel.closeDrawer()
+                                            },
+                                            onError = {code, error ->
+                                                memberMenuViewModel.closeDrawer()
+                                            }
+                                        )
+                                    }else if (item.title == context.getString(R.string.menu_item_unmute)){
+                                        memberListViewModel.unmuteUser(memberMenuViewModel.user.userId,
+                                            onSuccess = {
+                                                memberMenuViewModel.closeDrawer()
+                                            },
+                                            onError = {code, error ->
+                                                memberMenuViewModel.closeDrawer()
+                                            }
+                                        )
+                                    }
+                                }
+                                1 -> {
+                                    if (item.title == context.getString(R.string.menu_item_remove)){
+                                        memberListViewModel.removeUser(memberMenuViewModel.user.userId,
+                                            onSuccess = {
+                                                memberMenuViewModel.closeDrawer()
+                                            },
+                                            onError = {code, error ->
+                                                memberMenuViewModel.closeDrawer()
+                                            }
+                                        )
+                                    }
+                                }
+                            }
                         },
                         onDismissRequest = {
                             memberMenuViewModel.closeDrawer()

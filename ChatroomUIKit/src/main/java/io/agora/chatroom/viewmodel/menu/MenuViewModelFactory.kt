@@ -23,6 +23,15 @@ class MenuViewModelFactory(
                 isShowCancel = isShowCancel
             )
         },
+        RoomMemberMenuViewModel::class.java to {
+            RoomMemberMenuViewModel(
+                isDarkTheme = isDarkTheme,
+                title = title,
+                menuList = menuList,
+                isShowTitle = isShowTitle,
+                isShowCancel = isShowCancel
+            )
+        }
     )
 
     /**
