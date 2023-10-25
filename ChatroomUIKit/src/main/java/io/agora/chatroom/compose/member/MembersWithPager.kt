@@ -67,7 +67,8 @@ fun MembersWithPager(
             stringResource(id = R.string.member_management_participant) -> {
                 MembersPage(
                     viewModel = memberViewModel,
-                    tabInfo = tabInfo,
+                    tab = tabInfo.title,
+                    showSearch = true,
                     onItemClick = onItemClick,
                     onExtendClick = onExtendClick,
                     onSearchClick = onSearchClick)
@@ -75,7 +76,8 @@ fun MembersWithPager(
             stringResource(id = R.string.member_management_mute) -> {
                 MutedListPage(
                     viewModel = mutedViewModel,
-                    tabInfo = tabInfo,
+                    tab = tabInfo.title,
+                    showSearch = true,
                     onItemClick = onItemClick,
                     onExtendClick = onExtendClick,
                     onSearchClick = onSearchClick)
@@ -88,7 +90,8 @@ fun MembersWithPager(
 fun MembersPage(
     modifier: Modifier = Modifier,
     viewModel: MemberListViewModel,
-    tabInfo: TabInfo,
+    showSearch: Boolean = false,
+    tab: String,
     onItemClick: ((String, UserEntity) -> Unit)? = null,
     onExtendClick: ((String, UserEntity) -> Unit)? = null,
     onSearchClick: ((String) -> Unit)? = null
@@ -98,11 +101,13 @@ fun MembersPage(
         viewModel.fetchRoomMembers()
     }
     Column(modifier = modifier) {
-        DefaultSearchBar(
-            onClick = {
-                onSearchClick?.invoke(tabInfo.title)
-            }
-        )
+        if (showSearch) {
+            DefaultSearchBar(
+                onClick = {
+                    onSearchClick?.invoke(tab)
+                }
+            )
+        }
         MemberList(
             viewModel = viewModel,
             modifier = Modifier
@@ -110,10 +115,10 @@ fun MembersPage(
                 .background(ChatroomUIKitTheme.colors.background),
             showRole = true,
             onItemClick = { user ->
-                onItemClick?.invoke(tabInfo.title, user)
+                onItemClick?.invoke(tab, user)
             },
             onExtendClick = { user ->
-                onExtendClick?.invoke(tabInfo.title, user)
+                onExtendClick?.invoke(tab, user)
             },
             onScrollChange = { listState ->
                 if (listState.isScrollInProgress) {
@@ -130,7 +135,8 @@ fun MembersPage(
 fun MutedListPage(
     modifier: Modifier = Modifier,
     viewModel: MutedListViewModel,
-    tabInfo: TabInfo,
+    showSearch: Boolean = false,
+    tab: String,
     onItemClick: ((String, UserEntity) -> Unit)? = null,
     onExtendClick: ((String, UserEntity) -> Unit)? = null,
     onSearchClick: ((String) -> Unit)? = null
@@ -140,11 +146,13 @@ fun MutedListPage(
         viewModel.fetchMuteList()
     }
     Column(modifier = modifier) {
-        DefaultSearchBar(
-            onClick = {
-                onSearchClick?.invoke(tabInfo.title)
-            }
-        )
+        if (showSearch) {
+            DefaultSearchBar(
+                onClick = {
+                    onSearchClick?.invoke(tab)
+                }
+            )
+        }
         MemberList(
             viewModel = viewModel,
             modifier = Modifier
@@ -152,10 +160,10 @@ fun MutedListPage(
                 .background(ChatroomUIKitTheme.colors.background),
             showRole = false,
             onItemClick = { user ->
-                onItemClick?.invoke(tabInfo.title, user)
+                onItemClick?.invoke(tab, user)
             },
             onExtendClick = { user ->
-                onExtendClick?.invoke(tabInfo.title, user)
+                onExtendClick?.invoke(tab, user)
             },
             onScrollChange = { listState ->
                 if (!listState.isScrollInProgress) {

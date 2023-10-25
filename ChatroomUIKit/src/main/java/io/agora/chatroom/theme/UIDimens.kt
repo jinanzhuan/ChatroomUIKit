@@ -8,11 +8,13 @@ import androidx.compose.ui.unit.dp
 @Immutable
 class UIDimens(
     val messageItemMaxWidth: Dp,
+    val titleBarHeight: Dp
 ) {
     companion object {
         @Composable
         fun defaultDimens(): UIDimens = UIDimens(
             messageItemMaxWidth = 250.dp,
+            titleBarHeight = 44.dp
         )
     }
 }
