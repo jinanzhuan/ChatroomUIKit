@@ -196,3 +196,7 @@ interface ChatroomChangeListener: MessageListener {
      */
     fun onAnnouncementUpdated(roomId: String, announcement: String){}
 }
+
+interface ChatroomDestroyedListener{
+    fun onRoomDestroyed(roomId: String, roomName: String)
+}

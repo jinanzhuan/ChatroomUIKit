@@ -1,5 +1,7 @@
 package io.agora.chatroom.service.serviceImpl
 
+import io.agora.chatroom.ChatroomUIKitClient
+import io.agora.chatroom.model.UIConstant
 import io.agora.chatroom.service.CallbackImpl
 import io.agora.chatroom.service.ChatCallback
 import io.agora.chatroom.service.ChatClient
@@ -16,6 +18,8 @@ import io.agora.chatroom.service.OnSuccess
 import io.agora.chatroom.service.OnValueSuccess
 import io.agora.chatroom.service.UserOperationType
 import io.agora.chatroom.service.ValueCallbackImpl
+import io.agora.chatroom.utils.GsonTools
+import org.json.JSONObject
 
 class ChatroomServiceImpl: ChatroomService {
 
@@ -23,11 +27,17 @@ class ChatroomServiceImpl: ChatroomService {
     private val chatroomManager by lazy { ChatClient.getInstance().chatroomManager() }
     private val chatManager by lazy { ChatClient.getInstance().chatManager() }
     override fun bindListener(listener: ChatroomChangeListener) {
-        if (!listeners.contains(listener)) listeners.add(listener)
+        if (!listeners.contains(listener)) {
+            listeners.add(listener)
+            ChatroomUIKitClient.getInstance().updateChatroomChangeListener(listeners)
+        }
     }
 
     override fun unbindListener(listener: ChatroomChangeListener) {
-        if (listeners.contains(listener)) listeners.remove(listener)
+        if (listeners.contains(listener)) {
+            listeners.remove(listener)
+            ChatroomUIKitClient.getInstance().updateChatroomChangeListener(listeners)
+        }
     }
 
     override fun joinChatroom(
@@ -197,6 +207,15 @@ class ChatroomServiceImpl: ChatroomService {
             onError(ChatError.MESSAGE_INVALID, "")
             return
         }
+
+        val currentUser = ChatroomUIKitClient.getInstance().getCurrentUser()
+        val userInfo = GsonTools.beanToString(currentUser)
+        val jsonObject = if (userInfo != null) {
+            JSONObject(userInfo)
+        }else{
+            JSONObject()
+        }
+        message.setAttribute(UIConstant.CHATROOM_UIKIT_USER_INFO,jsonObject)
         message.setMessageStatusCallback(object : ChatCallback {
             override fun onSuccess() {
                 onSuccess(message)

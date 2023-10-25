@@ -2,6 +2,7 @@ package io.agora.chatroom.service.serviceImpl
 
 import io.agora.CallBack
 import io.agora.chatroom.ChatroomUIKitClient
+import io.agora.chatroom.model.UIConstant
 import io.agora.chatroom.service.ChatClient
 import io.agora.chatroom.service.ChatCustomMessageBody
 import io.agora.chatroom.service.ChatMessage
@@ -17,26 +18,28 @@ import org.json.JSONObject
 
 class GiftServiceImpl: GiftService {
     private val chatManager by lazy { ChatClient.getInstance().chatManager() }
-    companion object {
-        @JvmStatic val GIFT_EVENT = "chatroom_UIKit_gift"
-        @JvmStatic val GIFT_KEY = "gift"
-    }
     private val listeners = mutableListOf<GiftReceiveListener>()
     override fun bindGiftListener(listener: GiftReceiveListener) {
-        if (listeners.contains(listener)) listeners.add(listener)
+        if (!listeners.contains(listener)){
+            listeners.add(listener)
+            ChatroomUIKitClient.getInstance().updateChatroomGiftListener(listeners)
+        }
     }
 
     override fun unbindGiftListener(listener: GiftReceiveListener) {
-        if (listeners.contains(listener)) listeners.remove(listener)
+        if (listeners.contains(listener)) {
+            listeners.remove(listener)
+            ChatroomUIKitClient.getInstance().updateChatroomGiftListener(listeners)
+        }
     }
 
-    override fun sendGift(data: GiftEntityProtocol, onSuccess: OnValueSuccess<ChatMessage>, onError: OnError) {
+    override fun sendGift(entity: GiftEntityProtocol, onSuccess: OnValueSuccess<ChatMessage>, onError: OnError) {
         val message = ChatMessage.createSendMessage(ChatMessageType.CUSTOM)
-        val customBody = ChatCustomMessageBody(GIFT_EVENT)
-        data.sendUserId = ChatroomUIKitClient.getInstance().getCurrentUser().userId
-        val gift = GsonTools.beanToString(data)
-//        customBody.params[GIFT_KEY] = gift
-        message.setAttribute(GIFT_KEY, gift?.let { JSONObject(it) })
+        val customBody = ChatCustomMessageBody(UIConstant.CHATROOM_UIKIT_GIFT)
+        entity.sendUserId = ChatroomUIKitClient.getInstance().getCurrentUser().userId
+        val gift = GsonTools.beanToString(entity)
+//        customBody.params[UIConstant.CHATROOM_UIKIT_GIFT_INFO] = gift
+        message.setAttribute(UIConstant.CHATROOM_UIKIT_GIFT_INFO, gift?.let { JSONObject(it) })
         message.chatType = ChatType.ChatRoom
         message.body = customBody
         message.to = ChatroomUIKitClient.getInstance().getContext().getCurrentRoomInfo().roomId

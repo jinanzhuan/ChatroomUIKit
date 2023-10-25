@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.widget.FrameLayout
 import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -311,17 +310,24 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
         listViewModel.addTextMessageByIndex(message = message)
     }
 
-    override fun onGiftReceived(roomId: String, gift: GiftEntityProtocol, message: ChatMessage) {
+    override fun onGiftReceived(roomId: String, gift: GiftEntityProtocol?, message: ChatMessage) {
         super.onGiftReceived(roomId, gift, message)
         if (ChatroomUIKitClient.getInstance().getContext().getUseGiftsInMsg()){
-            listViewModel.addGiftMessageByIndex(message = message, gift = gift)
+            gift?.let {
+                listViewModel.addGiftMessageByIndex(message = message, gift = it)
+            }
         }else{
-            giftListViewModel.addDateToIndex(data = ComposeGiftItemState(gift))
+            gift?.let {
+                giftListViewModel.addDateToIndex(data = ComposeGiftItemState(it))
+            }
         }
     }
 
     override fun onUserJoined(roomId: String, userId: String) {
         Log.e("apex","onUserJoined $roomId  - $userId")
+        listViewModel.addJoinedMessageByIndex(
+            message = ChatroomUIKitClient.getInstance().insertJoinedMessage(roomId,userId)
+        )
     }
 
 
@@ -331,7 +337,11 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
 //                UIChatroomCacheManager.cacheManager.saveOwner(it.owner)
 //                UIChatroomCacheManager.cacheManager.saveAdminList(it.adminList)
                 Log.e("apex","joinChatroom  193314355740675 onSuccess admin: ${it.adminList} owner: ${it.owner}")
-                listViewModel.addJoinedMessageByIndex(message = ChatroomUIKitClient.getInstance().getJoinedMessage())
+                listViewModel.addJoinedMessageByIndex(
+                    message = ChatroomUIKitClient.getInstance().insertJoinedMessage(
+                        roomId,ChatroomUIKitClient.getInstance().getCurrentUser().userId
+                    )
+                )
             }
             , onError = {errorCode,result->
                 Log.e("apex","joinChatroom  193314355740675 onError $errorCode $result")

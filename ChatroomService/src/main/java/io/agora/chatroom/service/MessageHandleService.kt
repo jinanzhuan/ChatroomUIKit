@@ -99,8 +99,5 @@ interface MessageListener {
 }
 
 interface GiftReceiveListener {
-
-    fun onGiftReceived(gift: GiftEntityProtocol){}
-
-    fun onGiftReceived(roomId:String,gift: GiftEntityProtocol,message: ChatMessage){}
+    fun onGiftReceived(roomId:String,gift: GiftEntityProtocol?,message: ChatMessage){}
 }

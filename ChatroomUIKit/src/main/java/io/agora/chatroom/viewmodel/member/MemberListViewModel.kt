@@ -1,6 +1,7 @@
 package io.agora.chatroom.viewmodel.member
 
 import android.util.Log
+import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.model.toUser
 import io.agora.chatroom.service.OnError
 import io.agora.chatroom.service.OnValueSuccess
@@ -117,7 +118,7 @@ open class MemberListViewModel(
         onError: OnError = { _, _ ->}
     ) {
         service.getChatService().operateUser(roomId, userId, UserOperationType.MUTE, { chatroom ->
-            onSuccess.invoke(UIChatroomCacheManager.cacheManager.getUserInfo(userId))
+            onSuccess.invoke(ChatroomUIKitClient.getInstance().getChatroomUser().getUserInfo(userId))
         }, { code, error ->
             onError.invoke(code, error)
         })
@@ -132,7 +133,7 @@ open class MemberListViewModel(
         onError: OnError = { _, _ ->}
     ) {
         service.getChatService().operateUser(roomId, userId, UserOperationType.UNMUTE, { chatroom ->
-            onSuccess.invoke(UIChatroomCacheManager.cacheManager.getUserInfo(userId))
+            onSuccess.invoke(ChatroomUIKitClient.getInstance().getChatroomUser().getUserInfo(userId))
         }, { code, error ->
             onError.invoke(code, error)
         })
@@ -147,7 +148,7 @@ open class MemberListViewModel(
         onError: OnError = { _, _ ->}
     ) {
         service.getChatService().operateUser(roomId, userId, UserOperationType.KICK, { chatroom ->
-            onSuccess.invoke(UIChatroomCacheManager.cacheManager.getUserInfo(userId))
+            onSuccess.invoke(ChatroomUIKitClient.getInstance().getChatroomUser().getUserInfo(userId))
         }, { code, error ->
             onError.invoke(code, error)
         })

@@ -4,16 +4,20 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.foundation.text.appendInlineContent
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.Placeholder
@@ -27,9 +31,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import io.agora.chat.TextMessageBody
 import io.agora.chatroom.ChatroomUIKitClient
-import io.agora.chatroom.UIChatroomContext
 import io.agora.chatroom.compose.utils.ExpressionUtils
-import io.agora.chatroom.model.UserInfoProtocol
 import io.agora.chatroom.model.emoji.UIRegexEntity
 import io.agora.chatroom.service.GiftEntityProtocol
 import io.agora.chatroom.service.UserEntity
@@ -99,7 +101,7 @@ fun ComposeMessageItem(
             }
         }
 
-        if (userId.isNotEmpty()){
+        if ( userId.isNotBlank() && userId.isNotEmpty()){
             userInfo = ChatroomUIKitClient.getInstance().getChatroomUser().getUserInfo(userId)
             userName = userInfo.nickname?.let {
                 it.ifEmpty { userInfo.userId }
@@ -120,19 +122,19 @@ fun ComposeMessageItem(
 
             if (isShowDateSeparator){
                 withStyle(style = SpanStyle(color = ChatroomUIKitTheme.colors.secondaryL80D70)) {
-                    append(dateSeparator)
+                    append(dateSeparator);append(" ")
                 }
             }
 
             if (isShowLabel && itemType != ComposeItemType.ITEM_JOIN){
                 withStyle(style = SpanStyle()) {
-                    appendInlineContent("Label")
+                    appendInlineContent("Label");append(" ")
                 }
             }
 
             if (isShowAvatar){
                 withStyle(style = SpanStyle()) {
-                    appendInlineContent("Avatar")
+                    appendInlineContent("Avatar");append(" ")
                 }
             }
 
@@ -143,7 +145,7 @@ fun ComposeMessageItem(
                 fontSize = 14.sp,
                 fontFamily = FontFamily.Default,
             )) {
-                append(userName);append("  ")
+                append(userName);append(" ")
             }
 
             //设置内容
@@ -243,7 +245,7 @@ fun ComposeMessageItem(
 
         if (isShowAvatar){
             inlineMap["Avatar"] = InlineTextContent(
-                placeholder = Placeholder(28.sp,28.sp, PlaceholderVerticalAlign.Center),
+                placeholder = Placeholder(18.sp,18.sp, PlaceholderVerticalAlign.Center),
                 children = {
                     DrawAvatarImage(userInfo)
                 }
@@ -264,16 +266,15 @@ fun ComposeMessageItem(
 @Composable
 fun DrawLabelImage(userInfo:UserEntity?) {
     var labelUrl = ""
-    userInfo?.let {
-        labelUrl = it.identify.toString()
+    userInfo?.identify?.let {
+        labelUrl = it
     }
     val painter = rememberAsyncImagePainter(
         model = labelUrl
     )
     Image(
         modifier = Modifier
-            .size(18.dp, 18.dp)
-            .padding(start = 4.dp),
+            .fillMaxSize(),
         painter = if (labelUrl.isEmpty()) painterResource(id = R.drawable.icon_default_label) else painter,
         contentDescription = "Label"
     )
@@ -287,13 +288,18 @@ fun DrawAvatarImage(userInfo:UserEntity?){
     val painter = rememberAsyncImagePainter(
         model = avatarUrl
     )
-    Image(
+
+    Box(
         modifier = Modifier
-            .size(28.dp, 28.dp)
-            .padding(start = 4.dp, end = 4.dp),
-        painter = if (avatarUrl?.isEmpty() == true)painterResource(id = R.drawable.icon_default_avatar) else painter,
-        contentDescription = "Avatar"
-    )
+            .fillMaxSize() // 设置图片的大小
+            .clip(shape = CircleShape) // 将图片裁剪为圆形
+    ) {
+        Image(
+            modifier = Modifier,
+            painter = if (avatarUrl?.isEmpty() == true)painterResource(id = R.drawable.icon_default_avatar) else painter,
+            contentDescription = "Avatar"
+        )
+    }
 }
 @Composable
 fun DrawGiftImage(gift:GiftEntityProtocol?){

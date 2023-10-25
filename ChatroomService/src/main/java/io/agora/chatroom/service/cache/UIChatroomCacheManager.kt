@@ -9,6 +9,7 @@ import java.io.ByteArrayOutputStream
 import java.io.ObjectOutputStream
 import java.io.Serializable
 import android.util.Base64
+import android.util.Log
 import io.agora.chatroom.model.UIConstant
 import io.agora.chatroom.service.UserEntity
 import java.io.ByteArrayInputStream
@@ -50,6 +51,7 @@ class UIChatroomCacheManager{
     }
 
     fun getUserInfo(userId:String):UserEntity{
+        Log.e("apex","getUserInfo $userCache ")
         if (userCache.contains(userId)){
             return userCache[userId] ?: UserEntity(userId)
         }
