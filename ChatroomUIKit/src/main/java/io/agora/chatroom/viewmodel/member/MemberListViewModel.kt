@@ -5,6 +5,7 @@ import io.agora.chatroom.model.toUser
 import io.agora.chatroom.service.OnError
 import io.agora.chatroom.service.OnValueSuccess
 import io.agora.chatroom.service.UserEntity
+import io.agora.chatroom.service.UserOperationType
 import io.agora.chatroom.service.cache.UIChatroomCacheManager
 import io.agora.chatroom.ui.UIChatroomService
 import io.agora.chatroom.viewmodel.RequestListViewModel
@@ -93,6 +94,9 @@ open class MemberListViewModel(
         return hasMore
     }
 
+    /**
+     * Fetches user information based on visible items on the page.
+     */
     fun fetchUsersInfo(firstVisibleIndex: Int, lastVisibleIndex: Int) {
         Log.e("apex", "fetchUsersInfo: $firstVisibleIndex, $lastVisibleIndex")
         items.subList(firstVisibleIndex, lastVisibleIndex).filter { user ->
@@ -102,5 +106,50 @@ open class MemberListViewModel(
                 fetchUsersInfo(list.map { it.userId })
             }
         }
+    }
+
+    /**
+     * Mutes a user.
+     */
+    fun muteUser(
+        userId: String,
+        onSuccess: OnValueSuccess<UserEntity> = {},
+        onError: OnError = { _, _ ->}
+    ) {
+        service.getChatService().operateUser(roomId, userId, UserOperationType.MUTE, { chatroom ->
+            onSuccess.invoke(UIChatroomCacheManager.cacheManager.getUserInfo(userId))
+        }, { code, error ->
+            onError.invoke(code, error)
+        })
+    }
+
+    /**
+     * Unmutes a user.
+     */
+    fun unmuteUser(
+        userId: String,
+        onSuccess: OnValueSuccess<UserEntity> = {},
+        onError: OnError = { _, _ ->}
+    ) {
+        service.getChatService().operateUser(roomId, userId, UserOperationType.UNMUTE, { chatroom ->
+            onSuccess.invoke(UIChatroomCacheManager.cacheManager.getUserInfo(userId))
+        }, { code, error ->
+            onError.invoke(code, error)
+        })
+    }
+
+    /**
+     * Kicks a user.
+     */
+    fun removeUser(
+        userId: String,
+        onSuccess: OnValueSuccess<UserEntity> = {},
+        onError: OnError = { _, _ ->}
+    ) {
+        service.getChatService().operateUser(roomId, userId, UserOperationType.KICK, { chatroom ->
+            onSuccess.invoke(UIChatroomCacheManager.cacheManager.getUserInfo(userId))
+        }, { code, error ->
+            onError.invoke(code, error)
+        })
     }
 }

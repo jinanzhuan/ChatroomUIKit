@@ -29,6 +29,8 @@
     <!-- Compose default text -->
     <string name="compose_bottom_drawer_cancel">Cancel</string>
     <string name="compose_empty_text"></string>
+    
+    <string name="compose_description_input_field">UI custom input field</string>
 
     <string name="role_owner">Host</string>
     <string name="role_admin">Admin</string>

@@ -4,7 +4,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -25,10 +24,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.agora.chatroom.theme.ChatroomUIKitTheme
-import io.agora.chatroom.theme.neutralColor20
-import io.agora.chatroom.theme.neutralColor40
-import io.agora.chatroom.theme.neutralColor60
-import io.agora.chatroom.theme.neutralColor95
 import io.agora.chatroom.uikit.R
 
 @Composable
@@ -48,7 +43,7 @@ fun SearchBar(
                 modifier = Modifier.size(22.dp),
                 contentDescription = "Search bar")
             Spacer(modifier = Modifier.width(8.dp))
-            Text(text = hint, color = ChatroomUIKitTheme.colors.tabUnSelected)
+            Text(text = hint, color = ChatroomUIKitTheme.colors.inputOnSurface)
         }
     }
 }
@@ -64,7 +59,7 @@ fun DefaultSearchBar(
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .background(
-                color = if (isSystemInDarkTheme()) neutralColor20 else neutralColor95,
+                color = ChatroomUIKitTheme.colors.inputSurface,
                 shape = RoundedCornerShape(size = 22.dp)
             )
             .height(44.dp)
@@ -77,7 +72,7 @@ fun DefaultSearchBar(
                 modifier = Modifier.size(22.dp),
                 contentDescription = "Search bar")
             Spacer(modifier = Modifier.width(8.dp))
-            Text(text = hint, color = if (isSystemInDarkTheme()) neutralColor40 else neutralColor60)
+            Text(text = hint, color = ChatroomUIKitTheme.colors.inputOnSurface)
         }
     }
 }
@@ -89,7 +84,7 @@ fun SearchBarPreview() {
         SearchBar(modifier = Modifier
             .fillMaxWidth()
             .clip(ChatroomUIKitTheme.shapes.medium)
-            .border(BorderStroke(1.dp, ChatroomUIKitTheme.colors.tabUnSelected))
+            .border(BorderStroke(1.dp, ChatroomUIKitTheme.colors.inputSurface))
             .height(50.dp), hint = "Search")
     }
 }
