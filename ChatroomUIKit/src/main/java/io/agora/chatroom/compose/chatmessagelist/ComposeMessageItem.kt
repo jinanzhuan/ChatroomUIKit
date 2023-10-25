@@ -99,7 +99,7 @@ fun ComposeMessageItem(
             }
         }
 
-        if (userId.isNotEmpty()){
+        if ( userId.isNotBlank() && userId.isNotEmpty()){
             userInfo = ChatroomUIKitClient.getInstance().getChatroomUser().getUserInfo(userId)
             userName = userInfo.nickname?.let {
                 it.ifEmpty { userInfo.userId }
@@ -274,7 +274,7 @@ fun DrawLabelImage(userInfo:UserEntity?) {
         modifier = Modifier
             .size(18.dp, 18.dp)
             .padding(start = 4.dp),
-        painter = if (labelUrl.isEmpty()) painterResource(id = R.drawable.icon_default_label) else painter,
+        painter = if (labelUrl.isNullOrBlank()) painterResource(id = R.drawable.icon_default_label) else painter,
         contentDescription = "Label"
     )
 }

@@ -8,9 +8,10 @@ import androidx.activity.ComponentActivity
 import androidx.core.view.WindowCompat
 import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.UIChatRoomViewTest
+import io.agora.chatroom.service.ChatroomDestroyedListener
 import io.agora.chatroom.uikit.R
 
-class UIChatroomActivity : ComponentActivity(){
+class UIChatroomActivity : ComponentActivity(), ChatroomDestroyedListener {
 
     private val roomView: UIChatRoomViewTest by lazy { findViewById(R.id.room_view) }
     private var service:UIChatroomService? = null
@@ -37,6 +38,7 @@ class UIChatroomActivity : ComponentActivity(){
         chatRoomInfo.let {
             service = UIChatroomService(it)
             // 注册监听
+            ChatroomUIKitClient.getInstance().subscribeRoomDestroyed(this)
         }
         roomView.bindService(service)
 
@@ -57,5 +59,9 @@ class UIChatroomActivity : ComponentActivity(){
                 putExtra(KEY_OWNER_ID, ownerId)
             }
         }
+    }
+
+    override fun onRoomDestroyed(roomId: String, roomName: String) {
+        finish()
     }
 }

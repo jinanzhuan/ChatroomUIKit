@@ -82,7 +82,7 @@ object ExpressionUtils {
         var isContains = false
         emojiList.forEach {
             val startIndex = key.indexOf(it.emojiText)
-            Log.e("apex","containsKey $startIndex  ${it.emojiText}")
+//            Log.e("apex","containsKey $startIndex  ${it.emojiText}")
             if (startIndex != -1){
                 isContains = true
             }
