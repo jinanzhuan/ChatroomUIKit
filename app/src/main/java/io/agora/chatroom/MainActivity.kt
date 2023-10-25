@@ -90,15 +90,12 @@ class MainActivity : ComponentActivity() {
                         }
                     })
 
-
-
                 }
             }
         }
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ShowDefaultComposeDrawer(viewModel:MenuViewModel){
     ComposeMenuBottomSheet(
@@ -112,7 +109,6 @@ fun ShowDefaultComposeDrawer(viewModel:MenuViewModel){
         }
     )
 }
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ShowComposeMenuDrawer(viewModel:MenuViewModel){
     ComposeMenuBottomSheet(
