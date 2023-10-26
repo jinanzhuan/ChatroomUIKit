@@ -59,17 +59,29 @@ class UIChatroomCacheManager{
         return memberMap[roomId] ?: emptyList()
     }
 
-    fun saveMuteList(roomId: String, muteList: List<String>) {
+    fun removeRoomMember(roomId: String, userId: String) {
+        val list = memberMap[roomId] ?: mutableListOf()
+        list.remove(userId)
+        memberMap[roomId] = list
+    }
+
+    fun saveRoomMuteList(roomId: String, muteList: List<String>) {
         val list = mutedMap[roomId] ?: mutableListOf()
         list.addAll(muteList)
         mutedMap[roomId] = muteList.toSet().toMutableList()
+    }
+
+    fun removeRoomMuteMember(roomId: String, userId: String) {
+        val list = mutedMap[roomId] ?: mutableListOf()
+        list.remove(userId)
+        mutedMap[roomId] = list
     }
 
     fun getRoomMuteList(roomId: String): List<String> {
         return mutedMap[roomId] ?: emptyList()
     }
 
-    fun clearUserCache() {
+    fun clearRoomUserCache() {
         memberMap.clear()
         mutedMap.clear()
     }

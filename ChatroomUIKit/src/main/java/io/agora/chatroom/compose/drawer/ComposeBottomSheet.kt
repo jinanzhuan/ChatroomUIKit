@@ -11,6 +11,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.contentColorFor
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -20,12 +21,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import io.agora.chatroom.model.UIComposeSheetItem
 import io.agora.chatroom.theme.ChatroomUIKitTheme
+import io.agora.chatroom.uikit.R
 import io.agora.chatroom.viewmodel.menu.MenuViewModel
 import io.agora.chatroom.viewmodel.menu.BottomSheetViewModel
 import kotlinx.coroutines.launch
@@ -45,7 +49,7 @@ fun <T> ComposeBottomSheet(
     contentColor: Color = contentColorFor(containerColor),
     tonalElevation: Dp = BottomSheetDefaults.Elevation,
     scrimColor: Color = BottomSheetDefaults.ScrimColor,
-    dragHandle: @Composable (() -> Unit)? = { BottomSheetDefaults.DragHandle() },
+    dragHandle: @Composable (() -> Unit)? = { DefaultDragHandle() },
     windowInsets: WindowInsets = BottomSheetDefaults.windowInsets,
 ) {
     if (viewModel.isEnable()) {
@@ -74,7 +78,7 @@ fun <T> ComposeBottomSheet(
                 modifier = modifier
             ) {
 
-                if (isShowTitle) {
+                if (isShowTitle && viewModel.getTitle.isNotEmpty()) {
                     Text(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -95,9 +99,12 @@ fun <T> ComposeBottomSheet(
                             .background(ChatroomUIKitTheme.colors.onBackground)
                     )
                     Box(modifier = Modifier
-                        .fillMaxWidth().height(56.dp).clickable {
+                        .fillMaxWidth()
+                        .height(56.dp)
+                        .clickable {
                             onCancelListener()
-                            viewModel.closeDrawer() },
+                            viewModel.closeDrawer()
+                        },
                         contentAlignment = Alignment.Center) {
                             Text(
                                 text = stringResource(id = viewModel.getCancelText),
@@ -142,7 +149,7 @@ fun ComposeMenuBottomSheet(
     contentColor: Color = contentColorFor(containerColor),
     tonalElevation: Dp = BottomSheetDefaults.Elevation,
     scrimColor: Color = BottomSheetDefaults.ScrimColor,
-    dragHandle: @Composable (() -> Unit)? = { BottomSheetDefaults.DragHandle() },
+    dragHandle: @Composable (() -> Unit)? = { DefaultDragHandle() },
     windowInsets: WindowInsets = BottomSheetDefaults.windowInsets,
 ) {
     ComposeBottomSheet(
@@ -160,6 +167,32 @@ fun ComposeMenuBottomSheet(
         dragHandle = dragHandle,
         windowInsets = windowInsets
     )
+}
+
+@Composable
+fun DefaultDragHandle(
+    modifier: Modifier = Modifier,
+    width: Dp = 36.dp,
+    height: Dp = 5.dp,
+    shape: Shape = ChatroomUIKitTheme.shapes.extraLarge,
+    color: Color = ChatroomUIKitTheme.colors.onBackgroundHighest,
+) {
+    val dragHandleDescription = stringResource(id = R.string.compose_description_bottom_sheet_drag_handle)
+    Surface(
+        modifier = modifier
+            .padding(top = 6.dp, bottom = 5.dp)
+            .semantics { contentDescription = dragHandleDescription },
+        color = color,
+        shape = shape
+    ) {
+        Box(
+            Modifier
+                .size(
+                    width = width,
+                    height = height
+                )
+        )
+    }
 }
 
 @Composable
@@ -198,7 +231,6 @@ fun DefaultDrawerContent(viewModel: MenuViewModel, onListItemClick: (Int, UIComp
                     .background(ChatroomUIKitTheme.colors.onBackground)
                     .clickable {
                         onListItemClick(index, item)
-                        viewModel.closeDrawer()
                     }
             )
         }
@@ -208,16 +240,18 @@ fun DefaultDrawerContent(viewModel: MenuViewModel, onListItemClick: (Int, UIComp
 @Preview(showBackground = true)
 @Composable
 fun JetpackComposeBottomSheet() {
-    ComposeBottomSheet(
-        viewModel = MenuViewModel(),
-        drawerContent = {
-            Text("Drawer Content")
-        },
-        screenContent = {
-            Text("Screen Content")
-        },
-        onDismissRequest = {
+    ChatroomUIKitTheme {
+        ComposeBottomSheet(
+            viewModel = MenuViewModel(),
+            drawerContent = {
+                Text("Drawer Content")
+            },
+            screenContent = {
+                Text("Screen Content")
+            },
+            onDismissRequest = {
 
-        }
-    )
+            }
+        )
+    }
 }

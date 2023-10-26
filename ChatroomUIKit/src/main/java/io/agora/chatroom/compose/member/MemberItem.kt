@@ -126,7 +126,7 @@ fun DefaultMemberItem(
                 style = ChatroomUIKitTheme.typography.titleMedium,
                 color = ChatroomUIKitTheme.colors.onBackground
             )
-            if (showRole && (ChatroomUIKitClient.getInstance().getContext().getCurrentRoomInfo().roomOwner?.userId == ChatClient.getInstance().currentUser)) {
+            if (showRole && (ChatroomUIKitClient.getInstance().getContext().getCurrentRoomInfo().roomOwner?.userId == user.userId)) {
                 Text(
                     text = stringResource(id = R.string.role_owner),
                     modifier = Modifier

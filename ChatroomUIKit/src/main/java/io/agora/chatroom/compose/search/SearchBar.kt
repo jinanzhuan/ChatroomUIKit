@@ -72,7 +72,11 @@ fun DefaultSearchBar(
                 modifier = Modifier.size(22.dp),
                 contentDescription = "Search bar")
             Spacer(modifier = Modifier.width(8.dp))
-            Text(text = hint, color = ChatroomUIKitTheme.colors.inputOnSurface)
+            Text(
+                text = hint,
+                color = ChatroomUIKitTheme.colors.inputHint,
+                style = ChatroomUIKitTheme.typography.bodyLarge
+            )
         }
     }
 }

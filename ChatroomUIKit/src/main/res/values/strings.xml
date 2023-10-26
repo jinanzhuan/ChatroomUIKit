@@ -31,6 +31,7 @@
     <string name="compose_empty_text"></string>
     
     <string name="compose_description_input_field">UI custom input field</string>
+    <string name="compose_description_bottom_sheet_drag_handle">Default drag handle</string>
 
     <string name="role_owner">Host</string>
     <string name="role_admin">Admin</string>
@@ -40,6 +41,8 @@
     <string name="menu_item_mute">Mute</string>
     <string name="menu_item_unmute">Unmute</string>
     <string name="menu_item_remove">Remove</string>
+
+    <string name="dialog_title_remove_user">Want to remove %1$s?</string>
 
     <!-- Gift  -->
     <string name="compose_gift_item_subtitle">Sent %1$s </string>
