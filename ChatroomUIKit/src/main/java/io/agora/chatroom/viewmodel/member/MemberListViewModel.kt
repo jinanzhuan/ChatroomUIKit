@@ -127,6 +127,7 @@ open class MemberListViewModel(
         onError: OnError = { _, _ ->}
     ) {
         service.getChatService().operateUser(roomId, userId, UserOperationType.MUTE, { chatroom ->
+            ChatroomUIKitClient.getInstance().getCacheManager().removeRoomMember(roomId, userId)
             onSuccess.invoke(ChatroomUIKitClient.getInstance().getChatroomUser().getUserInfo(userId))
         }, { code, error ->
             onError.invoke(code, error)
@@ -142,6 +143,7 @@ open class MemberListViewModel(
         onError: OnError = { _, _ ->}
     ) {
         service.getChatService().operateUser(roomId, userId, UserOperationType.UNMUTE, { chatroom ->
+            ChatroomUIKitClient.getInstance().getCacheManager().removeRoomMuteMember(roomId, userId)
             onSuccess.invoke(ChatroomUIKitClient.getInstance().getChatroomUser().getUserInfo(userId))
         }, { code, error ->
             onError.invoke(code, error)
@@ -157,6 +159,8 @@ open class MemberListViewModel(
         onError: OnError = { _, _ ->}
     ) {
         service.getChatService().operateUser(roomId, userId, UserOperationType.KICK, { chatroom ->
+            ChatroomUIKitClient.getInstance().getCacheManager().removeRoomMember(roomId, userId)
+            ChatroomUIKitClient.getInstance().getCacheManager().removeRoomMuteMember(roomId, userId)
             onSuccess.invoke(ChatroomUIKitClient.getInstance().getChatroomUser().getUserInfo(userId))
         }, { code, error ->
             onError.invoke(code, error)

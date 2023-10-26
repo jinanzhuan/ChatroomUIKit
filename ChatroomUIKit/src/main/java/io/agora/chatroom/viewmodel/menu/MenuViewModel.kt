@@ -32,11 +32,11 @@ class RoomMemberMenuViewModel (
         when(tab){
             context.getString(R.string.member_management_participant) -> {
                 memberMenuList.add(UIComposeSheetItem(0, context.getString(R.string.menu_item_mute)))
-                memberMenuList.add(UIComposeSheetItem(1, context.getString(R.string.menu_item_remove)))
+                memberMenuList.add(UIComposeSheetItem(1, context.getString(R.string.menu_item_remove), true))
             }
             context.getString(R.string.member_management_mute) -> {
                 memberMenuList.add(UIComposeSheetItem(0, context.getString(R.string.menu_item_unmute)))
-                memberMenuList.add(UIComposeSheetItem(1, context.getString(R.string.menu_item_remove)))
+                memberMenuList.add(UIComposeSheetItem(1, context.getString(R.string.menu_item_remove), true))
             }
         }
         clear()

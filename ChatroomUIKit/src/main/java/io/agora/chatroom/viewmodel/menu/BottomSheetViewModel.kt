@@ -4,6 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
+import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.uikit.R
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -55,6 +56,7 @@ open class BottomSheetViewModel<T> (
         get() = isShowCancel
 
     fun openDrawer(){
+        ChatroomUIKitClient.getInstance().getCacheManager().clearRoomUserCache()
         _show.value = true
         _enable.value = true
     }

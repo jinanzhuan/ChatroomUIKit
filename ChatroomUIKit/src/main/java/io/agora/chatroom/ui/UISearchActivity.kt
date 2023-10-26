@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -30,14 +31,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.agora.chatroom.ChatroomUIKitClient
+import io.agora.chatroom.compose.dialog.SimpleDialog
 import io.agora.chatroom.compose.drawer.ComposeMenuBottomSheet
 import io.agora.chatroom.compose.input.SearchInputFiled
 import io.agora.chatroom.compose.member.MembersPage
 import io.agora.chatroom.compose.member.MutedListPage
 import io.agora.chatroom.theme.ChatroomUIKitTheme
 import io.agora.chatroom.uikit.R
+import io.agora.chatroom.viewmodel.dialog.DialogViewModel
 import io.agora.chatroom.viewmodel.member.MemberListViewModel
 import io.agora.chatroom.viewmodel.member.MemberViewModelFactory
 import io.agora.chatroom.viewmodel.member.MutedListViewModel
@@ -50,7 +55,7 @@ class UISearchActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         roomId = intent.getStringExtra(KEY_ROOM_ID)
         title = intent.getStringExtra(KEY_TITLE)
         if (roomId.isNullOrEmpty() || title.isNullOrEmpty()) {
@@ -89,7 +94,8 @@ fun SearchScaffold(context: Activity, roomId: String, title: String) {
     var isEmpty by rememberSaveable { mutableStateOf(false) }
     val viewModel = viewModel(MemberListViewModel::class.java, factory = MemberViewModelFactory(context = LocalContext.current, roomId = roomId, service = service))
     val mutedViewModel = viewModel(MutedListViewModel::class.java, factory = MemberViewModelFactory(context = LocalContext.current, roomId = roomId, service = service))
-    val memberMenuViewModel = viewModel(RoomMemberMenuViewModel::class.java, factory = MenuViewModelFactory())
+    val memberMenuViewModel = viewModel(RoomMemberMenuViewModel::class.java, factory = MenuViewModelFactory(isShowTitle = false))
+    val dialogViewModel = DialogViewModel()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     Scaffold(
         topBar = {
@@ -140,6 +146,7 @@ fun SearchScaffold(context: Activity, roomId: String, title: String) {
             }
         } else {
             ComposeMenuBottomSheet(
+                modifier = Modifier.safeDrawingPadding(),
                 viewModel = memberMenuViewModel,
                 onListItemClick = { index,item ->
                     Log.e("apex"," default item: $index ${item.title}")
@@ -210,6 +217,34 @@ fun SearchScaffold(context: Activity, roomId: String, title: String) {
                     },
                 )
             }
+
+            SimpleDialog(
+                viewModel = dialogViewModel,
+                onConfirmClick = {
+                    val model = if (title == context.getString(R.string.member_management_participant)) {
+                        viewModel
+                    } else {
+                        mutedViewModel
+                    }
+                    model.removeUser(memberMenuViewModel.user.userId,
+                        onSuccess = {
+                            memberMenuViewModel.closeDrawer()
+                        },
+                        onError = {code, error ->
+                            memberMenuViewModel.closeDrawer()
+                        }
+                    )
+                    dialogViewModel.dismissDialog()
+                },
+                onCancelClick = {
+                    dialogViewModel.dismissDialog()
+                },
+                properties = DialogProperties(
+                    dismissOnClickOutside = false,
+                    dismissOnBackPress = false
+                )
+            )
+
         }
     }
 }
