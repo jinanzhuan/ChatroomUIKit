@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import io.agora.chatroom.compose.drawer.ComposeBottomSheet
+import io.agora.chatroom.compose.drawer.DefaultDragHandle
 import io.agora.chatroom.compose.drawer.GiftTabLayoutWithViewPager
 import io.agora.chatroom.service.GiftEntityProtocol
 import io.agora.chatroom.theme.ChatroomUIKitTheme
@@ -31,7 +32,7 @@ import io.agora.chatroom.viewmodel.gift.ComposeGiftSheetViewModel
     contentColor: Color = contentColorFor(containerColor),
     tonalElevation: Dp = BottomSheetDefaults.Elevation,
     scrimColor: Color = BottomSheetDefaults.ScrimColor,
-    dragHandle: @Composable (() -> Unit)? = { BottomSheetDefaults.DragHandle() },
+    dragHandle: @Composable (() -> Unit)? = { DefaultDragHandle() },
     windowInsets: WindowInsets = BottomSheetDefaults.windowInsets,
  ){
     ComposeBottomSheet(

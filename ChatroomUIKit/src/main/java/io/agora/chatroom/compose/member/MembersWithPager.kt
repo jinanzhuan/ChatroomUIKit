@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.agora.chatroom.compose.drawer.ComposeBottomSheet
+import io.agora.chatroom.compose.drawer.DefaultDragHandle
 import io.agora.chatroom.compose.search.DefaultSearchBar
 import io.agora.chatroom.compose.tabrow.PagerWithTabs
 import io.agora.chatroom.service.UserEntity
@@ -203,7 +204,7 @@ fun ComposeMembersBottomSheet(
     contentColor: Color = contentColorFor(containerColor),
     tonalElevation: Dp = BottomSheetDefaults.Elevation,
     scrimColor: Color = BottomSheetDefaults.ScrimColor,
-    dragHandle: @Composable (() -> Unit)? = { BottomSheetDefaults.DragHandle() },
+    dragHandle: @Composable (() -> Unit)? = { DefaultDragHandle() },
     windowInsets: WindowInsets = BottomSheetDefaults.windowInsets,
 ){
     ComposeBottomSheet(

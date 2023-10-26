@@ -35,7 +35,7 @@ data class MutedListViewModel(
     ) {
         loading()
         service.getChatService().fetchMuteList(roomId, 1, 100, { muteList ->
-            ChatroomUIKitClient.getInstance().getCacheManager().saveMuteList(roomId, muteList.map { it.key })
+            ChatroomUIKitClient.getInstance().getCacheManager().saveRoomMuteList(roomId, muteList.map { it.key })
             val result = muteList.map { item ->
                 ChatroomUIKitClient.getInstance().getCacheManager().getUserInfo(item.key)
             }

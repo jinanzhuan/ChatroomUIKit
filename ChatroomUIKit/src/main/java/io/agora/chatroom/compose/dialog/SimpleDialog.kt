@@ -21,34 +21,36 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
+import io.agora.chatroom.theme.ChatroomUIKitTheme
 import io.agora.chatroom.theme.ChatroomUIKitTheme.colors
 import io.agora.chatroom.theme.ChatroomUIKitTheme.typography
 import io.agora.chatroom.uikit.R
+import io.agora.chatroom.viewmodel.dialog.DialogViewModel
 
 
 @Composable
 fun SimpleDialog(
-    onDismissRequest: () -> Unit,
-    onConfirmClick: () -> Unit,
     modifier: Modifier = Modifier,
-    showCancel: Boolean = false,
-    onDismissClick: (() -> Unit)? = null,
-    icon: Painter? = null,
-    title: String? = null,
-    text: String? = null,
-    shape: Shape = AlertDialogDefaults.shape,
-    containerColor: Color = AlertDialogDefaults.containerColor,
+    viewModel: DialogViewModel,
+    onConfirmClick: () -> Unit,
+    onCancelClick: (() -> Unit)? = null,
+    shape: Shape = ChatroomUIKitTheme.shapes.large,
+    containerColor: Color = ChatroomUIKitTheme.colors.background,
     tonalElevation: Dp = AlertDialogDefaults.TonalElevation,
     properties: DialogProperties = DialogProperties()
 ) {
+    val showDialog = viewModel.isShowDialog
+    if (!showDialog) {
+        return
+    }
     BaseDialog(
-        onDismissRequest = onDismissRequest,
+        onDismissRequest = { viewModel.dismissDialog() },
         confirmButton = {
             Button(
                 modifier = Modifier
@@ -62,7 +64,7 @@ fun SimpleDialog(
             }
         },
         modifier = modifier,
-        dismissButton = if (showCancel){
+        dismissButton = if (viewModel.showCancel){
             {
                 OutlinedButton(
                     border = BorderStroke(
@@ -72,37 +74,37 @@ fun SimpleDialog(
                     modifier = Modifier
                         .padding(6.dp)
                         .sizeIn(minWidth = 80.dp, maxWidth = 150.dp),
-                    onClick = { onDismissClick?.invoke() }) {
+                    onClick = { onCancelClick?.invoke() }) {
                     Text(text = stringResource(id = R.string.cancel), color = colors.onBackground)
                 }
             }
         } else null,
-        icon = icon?.let {
+        icon = if (viewModel.icon != 0){
             {
                 Icon(
-                    painter = it,
+                    painter = painterResource(id = viewModel.icon),
                     contentDescription = null
                 )
             }
-        },
-        title = title?.let{
+        }else null,
+        title = if (viewModel.title.isNotBlank()){
             {
                 Text(
-                    text = it,
+                    text = viewModel.title,
                     style = typography.titleLarge,
                     color = colors.onBackground
                 )
             }
-        },
-        text = text?.let{
+        } else null,
+        text = if (viewModel.text.isNotBlank()){
             {
                 Text(
-                    text = it,
+                    text = viewModel.text,
                     style = typography.bodyLarge,
                     color = colors.onBackground
                 )
             }
-        },
+        } else null,
         shape = shape,
         containerColor = containerColor,
         tonalElevation = tonalElevation,

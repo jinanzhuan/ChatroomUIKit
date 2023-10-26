@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -33,6 +34,7 @@ import io.agora.CallBack
 import io.agora.chat.ChatClient
 import io.agora.chatroom.compose.chatbottombar.ComposeChatBottomBar
 import io.agora.chatroom.compose.chatmessagelist.ComposeChatMessageList
+import io.agora.chatroom.compose.dialog.SimpleDialog
 import io.agora.chatroom.compose.chatmessagelist.ComposeMessageItemState
 import io.agora.chatroom.compose.drawer.ComposeMenuBottomSheet
 import io.agora.chatroom.compose.gift.ComposeGiftBottomSheet
@@ -53,6 +55,7 @@ import io.agora.chatroom.ui.UIChatroomService
 import io.agora.chatroom.ui.UISearchActivity
 import io.agora.chatroom.uikit.R
 import io.agora.chatroom.uikit.databinding.ActivityUiChatroomTestBinding
+import io.agora.chatroom.viewmodel.dialog.DialogViewModel
 import io.agora.chatroom.viewmodel.gift.ComposeGiftListViewModel
 import io.agora.chatroom.viewmodel.gift.ComposeGiftSheetViewModel
 import io.agora.chatroom.viewmodel.member.MemberListViewModel
@@ -143,6 +146,7 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
 
             val membersBottomSheet = MembersBottomSheetViewModel(roomId = roomId, roomService = service, isAdmin = true)
             val memberListViewModel = viewModel(MemberListViewModel::class.java, factory = MemberViewModelFactory(context = LocalContext.current, roomId = roomId, service = service))
+            val dialogViewModel = DialogViewModel()
 
             val isShowInput by inputField
 
@@ -211,13 +215,8 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
                             membersBottomSheet.closeDrawer()
                         },
                         onSearchClick = { title ->
-                            Log.e("apex","ComposeMembersBottomSheet onSearchClick $title")
-                            //membersBottomSheet.closeDrawer()
                             launcherToSearch.launch(UISearchActivity.createIntent(context, roomId, title))
-                            //UISearchActivity.startActivity(context, roomId, title)
-                        },
-                        onItemClick = { tab, user ->
-                            Log.e("apex","ComposeMembersBottomSheet onItemClick $tab $user")}
+                        }
                     )
 
                     ComposeMenuBottomSheet(
@@ -248,14 +247,9 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
                                 }
                                 1 -> {
                                     if (item.title == context.getString(R.string.menu_item_remove)){
-                                        memberListViewModel.removeUser(memberMenuViewModel.user.userId,
-                                            onSuccess = {
-                                                memberMenuViewModel.closeDrawer()
-                                            },
-                                            onError = {code, error ->
-                                                memberMenuViewModel.closeDrawer()
-                                            }
-                                        )
+                                        dialogViewModel.title = context.getString(R.string.dialog_title_remove_user, memberMenuViewModel.user.nickname)
+                                        dialogViewModel.showCancel = true
+                                        dialogViewModel.showDialog()
                                     }
                                 }
                             }
@@ -263,6 +257,28 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
                         onDismissRequest = {
                             memberMenuViewModel.closeDrawer()
                         }
+                    )
+
+                    SimpleDialog(
+                        viewModel = dialogViewModel,
+                        onConfirmClick = {
+                            memberListViewModel.removeUser(memberMenuViewModel.user.userId,
+                                onSuccess = {
+                                    memberMenuViewModel.closeDrawer()
+                                },
+                                onError = {code, error ->
+                                    memberMenuViewModel.closeDrawer()
+                                }
+                            )
+                            dialogViewModel.dismissDialog()
+                        },
+                        onCancelClick = {
+                            dialogViewModel.dismissDialog()
+                        },
+                        properties = DialogProperties(
+                            dismissOnClickOutside = false,
+                            dismissOnBackPress = false
+                        )
                     )
 
                     ComposeGiftList(
