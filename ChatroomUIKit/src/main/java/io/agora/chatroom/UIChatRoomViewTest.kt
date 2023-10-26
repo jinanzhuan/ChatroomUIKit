@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,12 +33,17 @@ import io.agora.chatroom.service.ChatroomChangeListener
 import io.agora.chatroom.ui.UIChatroomService
 import io.agora.chatroom.compose.chatbottombar.ComposeChatBottomBar
 import io.agora.chatroom.compose.chatmessagelist.ComposeChatMessageList
+import io.agora.chatroom.compose.chatmessagelist.ComposeMessageItemState
 import io.agora.chatroom.compose.drawer.ComposeMenuBottomSheet
 import io.agora.chatroom.compose.gift.ComposeGiftBottomSheet
 import io.agora.chatroom.compose.gift.ComposeGiftItemState
 import io.agora.chatroom.compose.gift.ComposeGiftList
 import io.agora.chatroom.compose.member.ComposeMembersBottomSheet
+import io.agora.chatroom.compose.report.ComposeMessageReport
+import io.agora.chatroom.data.initialLongClickMenu
+import io.agora.chatroom.data.reportTagList
 import io.agora.chatroom.model.UIComposeSheetItem
+import io.agora.chatroom.model.report.UIReportEntity
 import io.agora.chatroom.service.GiftEntityProtocol
 import io.agora.chatroom.service.GiftReceiveListener
 import io.agora.chatroom.service.UserEntity
@@ -55,6 +61,7 @@ import io.agora.chatroom.viewmodel.member.MembersBottomSheetViewModel
 import io.agora.chatroom.viewmodel.menu.MenuViewModel
 import io.agora.chatroom.viewmodel.menu.MenuViewModelFactory
 import io.agora.chatroom.viewmodel.menu.RoomMemberMenuViewModel
+import io.agora.chatroom.viewmodel.report.ComposeReportViewModel
 
 class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListener {
     private val mRoomViewBinding = ActivityUiChatroomTestBinding.inflate(LayoutInflater.from(context))
@@ -71,6 +78,9 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
             RoomMemberMenuViewModel()
         }
     }
+    private var reportViewModel: ComposeReportViewModel = ComposeReportViewModel(reportTag = reportTagList)
+    private var msgItemMenuViewModel:MenuViewModel = MenuViewModel(menuList = initialLongClickMenu, isExpanded = true)
+    private var longClickIndex:Int = -1
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
@@ -157,6 +167,24 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
                             giftViewModel.closeDrawer()
                         }
                     )
+                    ShowComposeMenuDrawer(msgItemMenuViewModel,reportViewModel)
+                    ComposeMessageReport(
+                        modifier = Modifier.height((LocalConfiguration.current.screenHeightDp/2).dp),
+                        containerColor = ChatroomUIKitTheme.colors.background,
+                        viewModel = reportViewModel,
+                        onConfirmClick = {
+                            Log.e("apex","com $it")
+                            reportMessage(it)
+                            reportViewModel.closeDrawer()
+                        },
+                        onCancelClick = {
+                            Log.e("apex"," onCancelClick ")
+                            reportViewModel.closeDrawer()
+                        },
+                        onDismissRequest = {
+                            reportViewModel.closeDrawer()
+                        }
+                    )
 
                     ComposeMembersBottomSheet(
                         modifier = Modifier.height((LocalConfiguration.current.screenHeightDp/2).dp),
@@ -241,8 +269,13 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
                                 bottom.linkTo(bottomBar.top)
                             }
                             .size(296.dp, 164.dp),
-                        onLongItemClick = { index,message->
-                            Log.e("apex","onLongItemClick $index $message")
+                        onLongItemClick = { index,item->
+                            longClickIndex = index
+                            Log.e("apex","onLongItemClick $index $item")
+                            if (item is ComposeMessageItemState){
+                                reportViewModel.setReportMsgId(item.message.msgId)
+                                msgItemMenuViewModel.openDrawer()
+                            }
                         }
                     )
 
@@ -347,6 +380,43 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
                 Log.e("apex","joinChatroom  193314355740675 onError $errorCode $result")
             }
         )
+    }
+
+    @Composable
+    fun ShowComposeMenuDrawer(viewModel:MenuViewModel,reportViewModel:ComposeReportViewModel){
+        ComposeMenuBottomSheet(
+            viewModel = viewModel,
+            onListItemClick = { index,item ->
+                Log.e("apex"," default item: $index ${item.title}")
+                if (index == 1){
+                    removeMessage()
+                    viewModel.closeDrawer()
+                }else if (index == 3){
+                    reportViewModel.openDrawer()
+                }
+            },
+            onDismissRequest = {
+                viewModel.closeDrawer()
+                Log.e("apex"," onClick Cancel ")
+            }
+        )
+    }
+
+    private fun reportMessage(report:UIReportEntity){
+        val reportMsgId = reportViewModel.reportMsgId.value
+        service.getChatService().reportMessage(
+            reportMsgId,report.tag,report.reason,
+            onSuccess = {
+                Log.e("apex","reportMessage onSuccess $reportMsgId - $report.tag - $report.reason")
+            },
+            onError = { code, error ->
+                Log.e("apex","reportMessage onError $code $error")
+            }
+        )
+    }
+
+    private fun removeMessage(){
+        listViewModel.removeMessageByIndex(longClickIndex)
     }
 
 }

@@ -24,7 +24,16 @@ val testMenuList1 = listOf(
     UIComposeSheetItem(title = "Item 2"),
     UIComposeSheetItem(title = "Item 3"),
     UIComposeSheetItem(title = "Item 4")
+)
 
+val reportTagList = listOf(
+    "Unwelcome commercial content or spam",
+    "Pornographic or explicit content",
+    "Child abuse",
+    "Hate speech or graphic violence",
+    "Promote terrorism",
+    "Child abuse",
+    "Harassment or bullying",
 )
 
 fun parsingGift(context: Context): List<AUIGiftTabInfo> {

@@ -232,6 +232,8 @@ data class UIColors(
     val inputHint: Color,
     val tabUnSelected:Color,
     val barrageL20D10:Color,
+    val neutralL50D50:Color,
+    val neutralL70D40:Color,
     val neutralL98D98:Color,
     val primaryL95D20:Color,
     val primaryL80D80:Color,
@@ -266,6 +268,8 @@ data class UIColors(
             barrageL20D10 = barrageLightColor20,
             secondaryL80D70 = secondaryColor80,
             primaryL80D80 = primaryColor80,
+            neutralL50D50 = neutralColor50,
+            neutralL70D40 = neutralColor70,
         )
 
         @Composable
@@ -295,6 +299,8 @@ data class UIColors(
             barrageL20D10 = barrageDarkColor10,
             secondaryL80D70 = secondaryColor70,
             primaryL80D80 = primaryColor80,
+            neutralL50D50 = neutralColor50,
+            neutralL70D40 = neutralColor40,
         )
     }
 }

@@ -42,8 +42,14 @@ data class ComposeMessageListState(
     }
 
     fun removeMessage(msg: ComposeMessageListItemState){
-        if (_messages.contains(msg)  ){
+        if (_messages.size > 0 && _messages.contains(msg)){
             _messages.remove(msg)
+        }
+    }
+
+    fun removeMessageByIndex(index: Int){
+        if (_messages.size > 0){
+            _messages.removeAt(index)
         }
     }
 

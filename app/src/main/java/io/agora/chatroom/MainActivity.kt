@@ -24,13 +24,16 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.view.WindowCompat
 import io.agora.chatroom.ui.UIChatroomActivity
 import io.agora.chatroom.compose.drawer.ComposeBottomSheet
 import io.agora.chatroom.compose.drawer.ComposeMenuBottomSheet
 import io.agora.chatroom.compose.list.LazyColumnList
+import io.agora.chatroom.compose.report.ComposeMessageReport
 import io.agora.chatroom.data.initialLongClickMenu
 import io.agora.chatroom.data.testMenuList1
 import io.agora.chatroom.model.UIComposeSheetItem
@@ -40,6 +43,7 @@ import io.agora.chatroom.theme.neutralColor20
 import io.agora.chatroom.theme.neutralColor90
 import io.agora.chatroom.viewmodel.RequestListViewModel
 import io.agora.chatroom.viewmodel.menu.MenuViewModel
+import io.agora.chatroom.viewmodel.report.ComposeReportViewModel
 import io.agora.chatroom.viewmodel.tab.TabWithVpViewModel
 
 class MainActivity : ComponentActivity() {
@@ -47,9 +51,23 @@ class MainActivity : ComponentActivity() {
     private var viewModel2:MenuViewModel = MenuViewModel(menuList = testMenuList1, isExpanded = true )
     private val viewModel4 by lazy { TestItemViewModel() }
     var viewModel3:MenuViewModel = MenuViewModel()
+    private var viewModel5: ComposeReportViewModel = ComposeReportViewModel(
+        reportTag = mutableListOf(
+            "Unwelcome commercial content or spam",
+            "Pornographic or explicit content",
+            "Child abuse",
+            "Unwelcome commercial content or spam",
+            "Pornographic or explicit content",
+            "Child abuse",
+            "Unwelcome commercial content or spam",
+            "Pornographic or explicit content",
+            "Child abuse",
+        )
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
 
             ChatroomUIKitTheme {
@@ -58,9 +76,24 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    ShowComposeMenuDrawer(viewModel = viewModel1)
+                    ShowComposeMenuDrawer(viewModel = viewModel1,viewModel5 = viewModel5)
                     ShowDefaultComposeDrawer(viewModel = viewModel2)
                     testLazyColumn(viewModel = viewModel4)
+                    ComposeMessageReport(
+                        modifier = Modifier.height((LocalConfiguration.current.screenHeightDp/2).dp),
+                        containerColor = ChatroomUIKitTheme.colors.background,
+                        viewModel = viewModel5,
+                        onConfirmClick = {
+                            Log.e("apex","com $it")
+                        },
+                        onCancelClick = {
+                            Log.e("apex"," onCancelClick ")
+                            viewModel5.closeDrawer()
+                        },
+                        onDismissRequest = {
+                            viewModel5.closeDrawer()
+                        }
+                    )
 
                     Greeting(viewModel1,viewModel2,onItemClick = {
                         Log.e("apex","onItemClick $it")
@@ -110,11 +143,14 @@ fun ShowDefaultComposeDrawer(viewModel:MenuViewModel){
     )
 }
 @Composable
-fun ShowComposeMenuDrawer(viewModel:MenuViewModel){
+fun ShowComposeMenuDrawer(viewModel:MenuViewModel,viewModel5:ComposeReportViewModel){
     ComposeMenuBottomSheet(
         viewModel = viewModel,
         onListItemClick = { index,item ->
             Log.e("apex"," default item: $index ${item.title}")
+            if (index == 3){
+                viewModel5.openDrawer()
+            }
         },
         onDismissRequest = {
             viewModel.closeDrawer()
@@ -198,7 +234,7 @@ fun Greeting(viewModel1: MenuViewModel,viewModel2: MenuViewModel,onItemClick:(in
         Spacer(modifier = Modifier.height(8.dp))
         Button(onClick = {
             onItemClick(2)
-            viewModel2.openDrawer()
+//            viewModel2.openDrawer()
 
         }) {
             Text("CustomerDrawer")

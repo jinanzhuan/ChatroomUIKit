@@ -57,7 +57,9 @@ class ComposeChatListController(
         }
     }
 
-
+    fun removeMessageByIndex(index: Int){
+        messageState.removeMessageByIndex(index)
+    }
 
     fun removeMessage(msg: ComposeMessageListItemState){
         val conversationId:String = when (msg) {
