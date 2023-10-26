@@ -48,4 +48,8 @@
     <string name="compose_message_item_joined">Joined</string>
     <string name="compose_message_gift_sent">Sent </string>
 
+    <!-- report  -->
+    <string name="compose_message_report_cancel">Cancel</string>
+    <string name="compose_message_report">Report</string>
+
 </resources>
