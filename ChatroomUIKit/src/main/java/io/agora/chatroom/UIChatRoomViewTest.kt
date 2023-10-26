@@ -7,7 +7,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.widget.FrameLayout
 import androidx.activity.ComponentActivity
-import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
@@ -43,7 +42,6 @@ import io.agora.chatroom.compose.member.ComposeMembersBottomSheet
 import io.agora.chatroom.compose.report.ComposeMessageReport
 import io.agora.chatroom.data.initialLongClickMenu
 import io.agora.chatroom.data.reportTagList
-import io.agora.chatroom.model.UIComposeSheetItem
 import io.agora.chatroom.model.report.UIReportEntity
 import io.agora.chatroom.service.ChatMessage
 import io.agora.chatroom.service.ChatroomChangeListener
@@ -61,6 +59,7 @@ import io.agora.chatroom.viewmodel.member.MemberListViewModel
 import io.agora.chatroom.viewmodel.member.MemberViewModelFactory
 import io.agora.chatroom.viewmodel.member.MembersBottomSheetViewModel
 import io.agora.chatroom.viewmodel.member.MutedListViewModel
+import io.agora.chatroom.viewmodel.menu.MenuViewModel
 import io.agora.chatroom.viewmodel.menu.MenuViewModelFactory
 import io.agora.chatroom.viewmodel.menu.RoomMemberMenuViewModel
 import io.agora.chatroom.viewmodel.messages.MessageChatBarViewModel
@@ -91,7 +90,7 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
         }
     }
     private var reportViewModel: ComposeReportViewModel = ComposeReportViewModel(reportTag = reportTagList)
-    private var msgItemMenuViewModel:MenuViewModel = MenuViewModel(menuList = initialLongClickMenu, isExpanded = true)
+    private var msgItemMenuViewModel: MenuViewModel = MenuViewModel(menuList = initialLongClickMenu, isExpanded = true)
     private var longClickIndex:Int = -1
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)

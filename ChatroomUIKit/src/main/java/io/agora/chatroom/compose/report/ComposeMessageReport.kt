@@ -153,15 +153,18 @@ fun DefaultReportContent(
                         ) {
                             Text(
                                 text = item,
+                                style = ChatroomUIKitTheme.typography.headlineSmall.copy(
+                                    color = ChatroomUIKitTheme.colors.onBackground
+                                ) ,
                                 modifier = Modifier
                                     .weight(1.0f)
                             )
                             RadioButton(
                                 selected = selectedOption == index,
                                 colors = RadioButtonDefaults.colors(
-                                    selectedColor =
-                                    if (selectedOption == index) ChatroomUIKitTheme.colors.primary
-                                    else Color.Transparent),
+                                    unselectedColor = ChatroomUIKitTheme.colors.neutralL70D40,
+                                    selectedColor =ChatroomUIKitTheme.colors.primary)
+                                ,
                                 modifier = Modifier.size(30.dp),
                                 onClick = {
                                     selectedOption = index
