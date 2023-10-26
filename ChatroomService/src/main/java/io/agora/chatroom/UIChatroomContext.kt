@@ -29,6 +29,13 @@ class UIChatroomContext{
         mChatroomInfo = info
     }
 
+    fun isCurrentOwner():Boolean{
+        mChatroomInfo.roomOwner?.let {
+            return it.userId == ChatroomUIKitClient.getInstance().getCurrentUser().userId
+        }
+        return false
+    }
+
     fun getCurrentRoomInfo(): UIChatroomInfo{
         return mChatroomInfo
     }

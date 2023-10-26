@@ -177,7 +177,7 @@ open class MemberListViewModel(
             ChatroomUIKitClient.getInstance().getCacheManager().getRoomMuteList(roomId).let { list ->
                 val result = list.filter { userId ->
                     val user = ChatroomUIKitClient.getInstance().getCacheManager().getUserInfo(userId)
-                    user.nickname?.contains(keyword) ?: false || user.userId.contains(keyword)
+                    user.nickName?.contains(keyword) ?: false || user.userId.contains(keyword)
                 }.map { userId ->
                     ChatroomUIKitClient.getInstance().getCacheManager().getUserInfo(userId)
                 }
@@ -188,7 +188,7 @@ open class MemberListViewModel(
             ChatroomUIKitClient.getInstance().getCacheManager().getRoomMemberList(roomId).let { list ->
                 val result = list.filter { userId ->
                     val user = ChatroomUIKitClient.getInstance().getCacheManager().getUserInfo(userId)
-                    user.nickname?.contains(keyword) ?: false || user.userId.contains(keyword)
+                    user.nickName?.contains(keyword) ?: false || user.userId.contains(keyword)
                 }.map { userId ->
                     ChatroomUIKitClient.getInstance().getCacheManager().getUserInfo(userId)
                 }

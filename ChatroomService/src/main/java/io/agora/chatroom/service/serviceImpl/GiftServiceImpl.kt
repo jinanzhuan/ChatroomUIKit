@@ -1,5 +1,6 @@
 package io.agora.chatroom.service.serviceImpl
 
+import android.util.Log
 import io.agora.CallBack
 import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.model.UIConstant
@@ -37,9 +38,15 @@ class GiftServiceImpl: GiftService {
         val message = ChatMessage.createSendMessage(ChatMessageType.CUSTOM)
         val customBody = ChatCustomMessageBody(UIConstant.CHATROOM_UIKIT_GIFT)
         entity.sendUserId = ChatroomUIKitClient.getInstance().getCurrentUser().userId
+        val currentUser = ChatroomUIKitClient.getInstance().getCurrentUser()
+        val user = GsonTools.beanToString(currentUser)
         val gift = GsonTools.beanToString(entity)
-//        customBody.params[UIConstant.CHATROOM_UIKIT_GIFT_INFO] = gift
-        message.setAttribute(UIConstant.CHATROOM_UIKIT_GIFT_INFO, gift?.let { JSONObject(it) })
+        Log.e("apex","gift $gift")
+        val infoMap = mutableMapOf(UIConstant.CHATROOM_UIKIT_GIFT_INFO to gift)
+        customBody.params = infoMap
+        Log.e("apex","gift2 ${customBody.params}")
+
+        message.setAttribute(UIConstant.CHATROOM_UIKIT_USER_INFO, user?.let { JSONObject(it) })
         message.chatType = ChatType.ChatRoom
         message.body = customBody
         message.to = ChatroomUIKitClient.getInstance().getContext().getCurrentRoomInfo().roomId

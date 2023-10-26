@@ -1,5 +1,6 @@
 package io.agora.chatroom.compose.chatmessagelist
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -103,7 +104,7 @@ fun ComposeMessageItem(
 
         if ( userId.isNotBlank() && userId.isNotEmpty()){
             userInfo = ChatroomUIKitClient.getInstance().getChatroomUser().getUserInfo(userId)
-            userName = userInfo.nickname?.let {
+            userName = userInfo.nickName?.let {
                 it.ifEmpty { userInfo.userId }
             } ?: userInfo.userId
         }
@@ -281,9 +282,10 @@ fun DrawLabelImage(userInfo:UserEntity?) {
 }
 @Composable
 fun DrawAvatarImage(userInfo:UserEntity?){
+    Log.e("apex","DrawAvatarImage $userInfo ")
     var avatarUrl:String? = ""
     userInfo?.let {
-        avatarUrl = it.avatar
+        avatarUrl = it.avatarURL
     }
     val painter = rememberAsyncImagePainter(
         model = avatarUrl
