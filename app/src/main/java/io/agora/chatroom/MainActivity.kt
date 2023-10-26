@@ -113,7 +113,7 @@ class MainActivity : ComponentActivity() {
                                     UIChatroomActivity.createIntent(
                                         context = this,
                                         ownerId = "apex1",
-                                        roomId = "193314355740675",
+                                        roomId = "229551090237444",
                                     ))
                             }
                             4 -> {

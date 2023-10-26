@@ -13,6 +13,7 @@ typealias ChatCursorResult<T> = io.agora.chat.CursorResult<T>
 
 typealias ChatException = io.agora.exceptions.ChatException
 typealias ChatError =  io.agora.Error
+typealias ChatLog = io.agora.util.EMLog
 // java bean
 typealias Chatroom =  io.agora.chat.ChatRoom
 typealias ChatUserInfo = io.agora.chat.UserInfo

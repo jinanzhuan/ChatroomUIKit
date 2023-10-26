@@ -50,6 +50,7 @@ class UIChatroomCacheManager{
     }
 
     fun saveRoomMemberList(roomId: String, memberList: List<String>) {
+        Log.e("apex","saveRoomMemberList $memberList ")
         val list = memberMap[roomId] ?: mutableListOf()
         list.addAll(memberList)
         memberMap[roomId] = memberList.toSet().toMutableList()
@@ -66,6 +67,7 @@ class UIChatroomCacheManager{
     }
 
     fun saveRoomMuteList(roomId: String, muteList: List<String>) {
+        Log.e("apex","saveRoomMuteList $muteList ")
         val list = mutedMap[roomId] ?: mutableListOf()
         list.addAll(muteList)
         mutedMap[roomId] = muteList.toSet().toMutableList()

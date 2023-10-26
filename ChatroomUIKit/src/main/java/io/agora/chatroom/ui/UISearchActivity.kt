@@ -40,7 +40,9 @@ import io.agora.chatroom.compose.drawer.ComposeMenuBottomSheet
 import io.agora.chatroom.compose.input.SearchInputFiled
 import io.agora.chatroom.compose.member.MembersPage
 import io.agora.chatroom.compose.member.MutedListPage
+import io.agora.chatroom.service.ChatLog
 import io.agora.chatroom.theme.ChatroomUIKitTheme
+import io.agora.chatroom.ui.UISearchActivity.Companion.TAG
 import io.agora.chatroom.uikit.R
 import io.agora.chatroom.viewmodel.dialog.DialogViewModel
 import io.agora.chatroom.viewmodel.member.MemberListViewModel
@@ -73,6 +75,7 @@ class UISearchActivity : ComponentActivity() {
     companion object {
         private const val KEY_ROOM_ID = "roomId"
         private const val KEY_TITLE = "title"
+        const val TAG = "UISearchActivity"
 
         fun createIntent(
             context: Context,
@@ -160,6 +163,7 @@ fun SearchScaffold(context: Activity, roomId: String, title: String) {
                                     },
                                     onError = {code, error ->
                                         memberMenuViewModel.closeDrawer()
+                                        ChatLog.e(TAG, "muteUser error: $code $error")
                                     }
                                 )
                             }else if (item.title == context.getString(R.string.menu_item_unmute)){
@@ -170,21 +174,18 @@ fun SearchScaffold(context: Activity, roomId: String, title: String) {
                                     },
                                     onError = {code, error ->
                                         memberMenuViewModel.closeDrawer()
+                                        ChatLog.e(TAG, "unmuteUser error: $code $error")
                                     }
                                 )
                             }
                         }
                         1 -> {
                             if (item.title == context.getString(R.string.menu_item_remove)){
-                                mutedViewModel.removeUser(memberMenuViewModel.user.userId,
-                                    onSuccess = {
-                                        memberMenuViewModel.closeDrawer()
-                                        setOKResult(context)
-                                    },
-                                    onError = {code, error ->
-                                        memberMenuViewModel.closeDrawer()
-                                    }
+                                dialogViewModel.title = context.getString(R.string.dialog_title_remove_user,
+                                    memberMenuViewModel.user.let { if (it.nickname.isNullOrEmpty()) it.userId else it.nickname }
                                 )
+                                dialogViewModel.showCancel = true
+                                dialogViewModel.showDialog()
                             }
                         }
                     }
@@ -229,9 +230,11 @@ fun SearchScaffold(context: Activity, roomId: String, title: String) {
                     model.removeUser(memberMenuViewModel.user.userId,
                         onSuccess = {
                             memberMenuViewModel.closeDrawer()
+                            setOKResult(context)
                         },
                         onError = {code, error ->
                             memberMenuViewModel.closeDrawer()
+                            ChatLog.e(TAG, "removeUser error: $code $error")
                         }
                     )
                     dialogViewModel.dismissDialog()
