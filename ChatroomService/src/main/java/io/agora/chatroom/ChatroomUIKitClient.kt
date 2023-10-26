@@ -32,6 +32,7 @@ class ChatroomUIKitClient : MessageListener, ChatRoomChangeListener {
     private var eventListeners = mutableListOf<ChatroomChangeListener>()
     private var giftListeners = mutableListOf<GiftReceiveListener>()
     private lateinit var roomListener : ChatroomDestroyedListener
+    private val cacheManager: UIChatroomCacheManager = UIChatroomCacheManager()
 
     companion object {
         const val TAG = "ChatroomUIKitClient"
@@ -57,6 +58,10 @@ class ChatroomUIKitClient : MessageListener, ChatRoomChangeListener {
         return chatroomUser
     }
 
+    fun getCacheManager():UIChatroomCacheManager{
+        return cacheManager
+    }
+
     fun checkJoinedMsg(msg:ChatMessage):Boolean{
         val ext = msg.ext()
         return ext.containsKey(UIConstant.CHATROOM_UIKIT_USER_JOIN)
@@ -74,7 +79,7 @@ class ChatroomUIKitClient : MessageListener, ChatRoomChangeListener {
         chatOptions.appKey = appKey
         chatOptions.autoLogin = false
         ChatClient.getInstance().init(applicationContext,chatOptions)
-        UIChatroomCacheManager.getInstance().init(applicationContext)
+        cacheManager.init(applicationContext)
     }
 
     fun isLoginBefore():Boolean{

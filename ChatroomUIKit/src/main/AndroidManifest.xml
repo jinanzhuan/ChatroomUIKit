@@ -6,6 +6,7 @@
             android:name="io.agora.chatroom.ui.UIChatroomActivity"
             android:exported="false"
             />
+        <activity android:name="io.agora.chatroom.ui.UISearchActivity" android:exported="false"/>
 
     </application>
 </manifest>

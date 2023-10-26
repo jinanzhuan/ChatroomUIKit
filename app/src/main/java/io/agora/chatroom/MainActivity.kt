@@ -1,5 +1,6 @@
 package io.agora.chatroom
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -25,6 +26,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.focus.FocusDirection.Companion.In
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -41,6 +43,7 @@ import io.agora.chatroom.theme.BodyLarge
 import io.agora.chatroom.theme.ChatroomUIKitTheme
 import io.agora.chatroom.theme.neutralColor20
 import io.agora.chatroom.theme.neutralColor90
+import io.agora.chatroom.ui.UISearchActivity
 import io.agora.chatroom.viewmodel.RequestListViewModel
 import io.agora.chatroom.viewmodel.menu.MenuViewModel
 import io.agora.chatroom.viewmodel.report.ComposeReportViewModel
@@ -114,11 +117,12 @@ class MainActivity : ComponentActivity() {
                                     ))
                             }
                             4 -> {
-                                val list = mutableListOf<String>()
-                                for (index in 1..50) {
-                                    list.add("Item $index")
-                                }
-                                viewModel4.add(list)
+//                                val list = mutableListOf<String>()
+//                                for (index in 1..50) {
+//                                    list.add("Item $index")
+//                                }
+//                                viewModel4.add(list)
+                                startActivity(Intent(this, UISearchActivity::class.java))
                             }
                         }
                     })

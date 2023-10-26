@@ -1,12 +1,15 @@
 package io.agora.chatroom
 
 import android.content.Context
+import android.content.Intent
 import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
 import android.widget.FrameLayout
 import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,6 +19,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,9 +32,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.agora.CallBack
 import io.agora.chat.ChatClient
-import io.agora.chatroom.service.ChatMessage
-import io.agora.chatroom.service.ChatroomChangeListener
-import io.agora.chatroom.ui.UIChatroomService
 import io.agora.chatroom.compose.chatbottombar.ComposeChatBottomBar
 import io.agora.chatroom.compose.chatmessagelist.ComposeChatMessageList
 import io.agora.chatroom.compose.chatmessagelist.ComposeMessageItemState
@@ -44,35 +45,46 @@ import io.agora.chatroom.data.initialLongClickMenu
 import io.agora.chatroom.data.reportTagList
 import io.agora.chatroom.model.UIComposeSheetItem
 import io.agora.chatroom.model.report.UIReportEntity
+import io.agora.chatroom.service.ChatMessage
+import io.agora.chatroom.service.ChatroomChangeListener
 import io.agora.chatroom.service.GiftEntityProtocol
 import io.agora.chatroom.service.GiftReceiveListener
 import io.agora.chatroom.service.UserEntity
 import io.agora.chatroom.theme.ChatroomUIKitTheme
+import io.agora.chatroom.ui.UIChatroomService
+import io.agora.chatroom.ui.UISearchActivity
 import io.agora.chatroom.uikit.R
-import io.agora.chatroom.viewmodel.messages.MessageChatBarViewModel
-import io.agora.chatroom.viewmodel.messages.MessageListViewModel
-import io.agora.chatroom.viewmodel.messages.MessagesViewModelFactory
 import io.agora.chatroom.uikit.databinding.ActivityUiChatroomTestBinding
 import io.agora.chatroom.viewmodel.gift.ComposeGiftListViewModel
 import io.agora.chatroom.viewmodel.gift.ComposeGiftSheetViewModel
 import io.agora.chatroom.viewmodel.member.MemberListViewModel
 import io.agora.chatroom.viewmodel.member.MemberViewModelFactory
 import io.agora.chatroom.viewmodel.member.MembersBottomSheetViewModel
-import io.agora.chatroom.viewmodel.menu.MenuViewModel
+import io.agora.chatroom.viewmodel.member.MutedListViewModel
 import io.agora.chatroom.viewmodel.menu.MenuViewModelFactory
 import io.agora.chatroom.viewmodel.menu.RoomMemberMenuViewModel
+import io.agora.chatroom.viewmodel.messages.MessageChatBarViewModel
+import io.agora.chatroom.viewmodel.messages.MessageListViewModel
+import io.agora.chatroom.viewmodel.messages.MessagesViewModelFactory
 import io.agora.chatroom.viewmodel.report.ComposeReportViewModel
 
 class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListener {
     private val mRoomViewBinding = ActivityUiChatroomTestBinding.inflate(LayoutInflater.from(context))
     private val inputField: MutableState<Boolean> = mutableStateOf(false)
+    private val closeMemberSheet: MutableState<Boolean> = mutableStateOf(false)
     private lateinit var listViewModel:MessageListViewModel
     private lateinit var giftListViewModel:ComposeGiftListViewModel
     private lateinit var bottomBarViewModel:MessageChatBarViewModel
     private lateinit var giftViewModel:ComposeGiftSheetViewModel
     private lateinit var service:UIChatroomService
+    private val launcherToSearch: ActivityResultLauncher<Intent>   =
+        (context as ComponentActivity).registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult(), { result ->
+                closeMemberSheet.value = true
+            })
+
     private val memberMenuViewModel by lazy {
-        if (context is AppCompatActivity) {
+        if (context is ComponentActivity) {
             ViewModelProvider(context as ComponentActivity, MenuViewModelFactory())[RoomMemberMenuViewModel::class.java]
         } else {
             RoomMemberMenuViewModel()
@@ -143,6 +155,7 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
                         inputField.value = false
                     }
                 ) {
+                    val defaultBottomSheetHeight = LocalConfiguration.current.screenHeightDp/2
                     val (giftList, msgList, bottomBar) = createRefs()
                     ComposeGiftBottomSheet(
                         modifier = Modifier
@@ -187,7 +200,7 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
                     )
 
                     ComposeMembersBottomSheet(
-                        modifier = Modifier.height((LocalConfiguration.current.screenHeightDp/2).dp),
+                        modifier = Modifier.height(defaultBottomSheetHeight.dp),
                         viewModel = membersBottomSheet,
                         onDismissRequest = {
                             membersBottomSheet.closeDrawer()
@@ -200,7 +213,9 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
                         },
                         onSearchClick = { title ->
                             Log.e("apex","ComposeMembersBottomSheet onSearchClick $title")
-                            membersBottomSheet.closeDrawer()
+                            //membersBottomSheet.closeDrawer()
+                            launcherToSearch.launch(UISearchActivity.createIntent(context, roomId, title))
+                            //UISearchActivity.startActivity(context, roomId, title)
                         },
                         onItemClick = { tab, user ->
                             Log.e("apex","ComposeMembersBottomSheet onItemClick $tab $user")}
@@ -311,6 +326,12 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
                             inputField.value = true
                         }
                     )
+
+                    LaunchedEffect(closeMemberSheet.value) {
+                        if (closeMemberSheet.value){
+                            membersBottomSheet.closeDrawer()
+                        }
+                    }
                 }
             }
         }
@@ -375,6 +396,8 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
                         roomId,ChatroomUIKitClient.getInstance().getCurrentUser().userId
                     )
                 )
+                val viewModel = ViewModelProvider(context as ComponentActivity, MemberViewModelFactory(context = context, roomId = roomId, service = service))[MutedListViewModel::class.java]
+                viewModel.fetchMuteList { code, error ->  }
             }
             , onError = {errorCode,result->
                 Log.e("apex","joinChatroom  193314355740675 onError $errorCode $result")
