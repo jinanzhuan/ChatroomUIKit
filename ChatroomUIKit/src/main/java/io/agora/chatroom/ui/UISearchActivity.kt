@@ -253,6 +253,6 @@ fun SearchScaffold(context: Activity, roomId: String, title: String) {
 }
 
 fun setOKResult(context: Activity) {
-    context.finish()
     context.setResult(Activity.RESULT_OK)
+    context.finish()
 }

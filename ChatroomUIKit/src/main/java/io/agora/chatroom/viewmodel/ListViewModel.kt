@@ -7,7 +7,8 @@ import androidx.lifecycle.ViewModel
 sealed class RequestState {
     object Idle : RequestState()
     object Loading : RequestState()
-    data class Success<T>(val data: List<T>) : RequestState()
+    object LoadingMore : RequestState()
+    data class Success<T>(val data: List<T> = emptyList()) : RequestState()
 
     data class SuccessMore<T>(val data: List<T>) : RequestState()
 
@@ -97,6 +98,10 @@ open class RequestListViewModel<T>(
 
     fun loading(){
         _state.value = RequestState.Loading
+    }
+
+    fun loadMore() {
+        _state.value = RequestState.LoadingMore
     }
 
     fun refresh(){
