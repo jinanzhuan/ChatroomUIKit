@@ -28,8 +28,16 @@ open class MemberListViewModel(
         // clear cache data
         ChatroomUIKitClient.getInstance().getCacheManager().clearRoomUserCache()
         fetchRoomMembers(true, onSuccess = { list ->
-            add(list)
-            onSuccess.invoke(list)
+            val owner = ChatroomUIKitClient.getInstance().getContext().getCurrentRoomInfo().roomOwner?.userId ?: ""
+            val contains = list.map {
+                it.userId
+            }.contains(owner)
+            val newList = list.toMutableList()
+            if (!contains) {
+                newList.add(0, ChatroomUIKitClient.getInstance().getContext().getCurrentRoomInfo().roomOwner ?: UserEntity(owner))
+            }
+            add(newList)
+            onSuccess.invoke(newList)
         }, onError = { code, message ->
             onError.invoke(code, message)
         })
@@ -60,25 +68,29 @@ open class MemberListViewModel(
         service.getChatService().fetchMembers(roomId, cursor, pageSize, {cursorResult ->
             hasMore = (cursorResult.data.size == pageSize) && !cursorResult.cursor.isNullOrBlank()
             cursor = cursorResult.cursor
-            ChatroomUIKitClient.getInstance().getCacheManager().saveRoomMemberList(roomId, cursorResult.data)
-            val propertyList = cursorResult.data.filter { userId ->
+            val mutedList = ChatroomUIKitClient.getInstance().getCacheManager().getRoomMuteList(roomId)
+            val memberList = cursorResult.data.filter { userId ->
+                !mutedList.contains(userId)
+            }
+            ChatroomUIKitClient.getInstance().getCacheManager().saveRoomMemberList(roomId, memberList)
+            val propertyList = memberList.filter { userId ->
                 !ChatroomUIKitClient.getInstance().getCacheManager().inCache(userId)
             }
             if (fetchUserInfo && propertyList.isNotEmpty()) {
                 fetchUsersInfo(propertyList, { list ->
-                    val result = cursorResult.data.map { userId ->
+                    val result = memberList.map { userId ->
                         ChatroomUIKitClient.getInstance().getCacheManager().getUserInfo(userId)
                     }
                     onSuccess.invoke(result)
                 }, { code, error ->
-                    val result = cursorResult.data.map { userId ->
+                    val result = memberList.map { userId ->
                         ChatroomUIKitClient.getInstance().getCacheManager().getUserInfo(userId)
                     }
                     onSuccess.invoke(result)
                     ChatLog.e("fetchRoomMembers", "fetchUsersInfo error: $code, $error")
                 })
             } else {
-                val result = cursorResult.data.map { userId ->
+                val result = memberList.map { userId ->
                     ChatroomUIKitClient.getInstance().getCacheManager().getUserInfo(userId)
                 }
                 onSuccess.invoke(result)
@@ -151,6 +163,7 @@ open class MemberListViewModel(
     ) {
         service.getChatService().operateUser(roomId, userId, UserOperationType.MUTE, { chatroom ->
             ChatroomUIKitClient.getInstance().getCacheManager().removeRoomMember(roomId, userId)
+            ChatroomUIKitClient.getInstance().getCacheManager().saveRoomMuteList(roomId, listOf(userId))
             onSuccess.invoke(ChatroomUIKitClient.getInstance().getChatroomUser().getUserInfo(userId))
         }, { code, error ->
             onError.invoke(code, error)
@@ -167,6 +180,7 @@ open class MemberListViewModel(
     ) {
         service.getChatService().operateUser(roomId, userId, UserOperationType.UNMUTE, { chatroom ->
             ChatroomUIKitClient.getInstance().getCacheManager().removeRoomMuteMember(roomId, userId)
+            ChatroomUIKitClient.getInstance().getCacheManager().saveRoomMemberList(roomId, listOf(userId))
             onSuccess.invoke(ChatroomUIKitClient.getInstance().getChatroomUser().getUserInfo(userId))
         }, { code, error ->
             onError.invoke(code, error)
@@ -202,10 +216,17 @@ open class MemberListViewModel(
         }
         if (isMute) {
             ChatroomUIKitClient.getInstance().getCacheManager().getRoomMuteList(roomId).let { list ->
-                Log.e("apex", "searchUsers from mute: $list")
                 val result = list.filter { userId ->
                     val user = ChatroomUIKitClient.getInstance().getCacheManager().getUserInfo(userId)
-                    user.nickName?.contains(keyword) ?: false || user.userId.contains(keyword)
+                    if (user.nickName.isNullOrEmpty()) {
+                        user.userId.contains(keyword)
+                    } else {
+                        if (!user.nickName!!.contains(keyword)) {
+                            user.userId.contains(keyword)
+                        }else {
+                            true
+                        }
+                    }
                 }.map { userId ->
                     ChatroomUIKitClient.getInstance().getCacheManager().getUserInfo(userId)
                 }
@@ -214,10 +235,17 @@ open class MemberListViewModel(
             }
         } else {
             ChatroomUIKitClient.getInstance().getCacheManager().getRoomMemberList(roomId).let { list ->
-                Log.e("apex", "searchUsers from member: $list")
                 val result = list.filter { userId ->
                     val user = ChatroomUIKitClient.getInstance().getCacheManager().getUserInfo(userId)
-                    user.nickName?.contains(keyword) ?: false || user.userId.contains(keyword)
+                    if (user.nickName.isNullOrEmpty()) {
+                        user.userId.contains(keyword)
+                    } else {
+                        if (!user.nickName!!.contains(keyword)) {
+                            user.userId.contains(keyword)
+                        }else {
+                            true
+                        }
+                    }
                 }.map { userId ->
                     ChatroomUIKitClient.getInstance().getCacheManager().getUserInfo(userId)
                 }

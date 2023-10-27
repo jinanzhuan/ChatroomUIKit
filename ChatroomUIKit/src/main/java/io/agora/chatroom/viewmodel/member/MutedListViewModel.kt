@@ -17,6 +17,7 @@ data class MutedListViewModel(
      * Gets the mute list from cache.
      */
     fun getMuteList(onSuccess: OnValueSuccess<List<UserEntity>> = {}) {
+        clear()
         loading()
         val muteList = ChatroomUIKitClient.getInstance().getCacheManager().getRoomMuteList(roomId)
         muteList.map { userId ->

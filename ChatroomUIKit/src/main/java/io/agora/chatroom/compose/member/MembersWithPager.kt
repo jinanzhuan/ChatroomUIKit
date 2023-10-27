@@ -165,7 +165,7 @@ fun MutedListPage(
     onSearchClick: ((String) -> Unit)? = null
 ) {
     var request by rememberSaveable { mutableStateOf(autoRequest) }
-    if (autoRequest) {
+    if (request) {
         viewModel.getMuteList()
         request = false
     }

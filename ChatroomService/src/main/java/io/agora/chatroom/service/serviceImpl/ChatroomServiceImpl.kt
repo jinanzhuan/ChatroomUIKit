@@ -139,7 +139,7 @@ class ChatroomServiceImpl: ChatroomService {
                 chatroomManager.asyncRemoveChatRoomAdmin(roomId, userId, ValueCallbackImpl(onSuccess, onError))
             }
             UserOperationType.MUTE -> {
-                chatroomManager.asyncMuteChatRoomMembers(roomId, mutableListOf(userId), Long.MAX_VALUE, ValueCallbackImpl(onSuccess, onError))
+                chatroomManager.asyncMuteChatRoomMembers(roomId, mutableListOf(userId), -1, ValueCallbackImpl(onSuccess, onError))
             }
             UserOperationType.UNMUTE -> {
                 chatroomManager.asyncUnMuteChatRoomMembers(roomId, mutableListOf(userId), ValueCallbackImpl(onSuccess, onError))
