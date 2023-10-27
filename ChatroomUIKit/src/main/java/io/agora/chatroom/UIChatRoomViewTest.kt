@@ -74,7 +74,6 @@ import io.agora.chatroom.viewmodel.messages.MessageChatBarViewModel
 import io.agora.chatroom.viewmodel.messages.MessageListViewModel
 import io.agora.chatroom.viewmodel.messages.MessagesViewModelFactory
 import io.agora.chatroom.viewmodel.report.ComposeReportViewModel
-import io.agora.util.EMLog
 
 class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListener {
     private val mRoomViewBinding = ActivityUiChatroomTestBinding.inflate(LayoutInflater.from(context))
@@ -173,7 +172,10 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
 
             ChatroomUIKitClient.getInstance().getContext().setUseGiftsInList(true)
 
-            val membersBottomSheet = MembersBottomSheetViewModel(roomId = roomId, roomService = service, isAdmin = true)
+            val membersBottomSheet = MembersBottomSheetViewModel(
+                                        roomId = roomId,
+                                        roomService = service,
+                                        isAdmin = ChatroomUIKitClient.getInstance().getContext().getCurrentRoomInfo().roomOwner?.userId == ChatClient.getInstance().currentUser)
             val memberListViewModel = viewModel(MemberListViewModel::class.java, factory = MemberViewModelFactory(context = LocalContext.current, roomId = roomId, service = service))
             val dialogViewModel = DialogViewModel()
 

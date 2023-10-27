@@ -75,6 +75,7 @@ fun ImageAvatar(
 fun Avatar(
     imageUrl: String,
     modifier: Modifier = Modifier,
+    hideWhenLoadError: Boolean = false,
     shape: Shape = ChatroomUIKitTheme.shapes.avatar,
     placeholderPainter: Painter? = null,
     contentDescription: String? = null,
@@ -99,13 +100,15 @@ fun Avatar(
 
     when (painter.state) {
         is AsyncImagePainter.State.Error -> {
-            ImageAvatar(
-                modifier = modifier,
-                shape = shape,
-                painter = defaultPainter,
-                contentDescription = contentDescription,
-                onClick = onClick,
-            )
+            if (!hideWhenLoadError) {
+                ImageAvatar(
+                    modifier = modifier,
+                    shape = shape,
+                    painter = defaultPainter,
+                    contentDescription = contentDescription,
+                    onClick = onClick,
+                )
+            }
         }
 
         else -> {

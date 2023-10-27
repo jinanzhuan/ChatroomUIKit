@@ -35,7 +35,6 @@ class UIChatroomCacheManager{
     }
 
     fun getUserInfo(userId:String):UserEntity{
-        Log.e("apex","getUserInfo $userCache ")
         if (userCache.contains(userId)){
             return userCache[userId] ?: UserEntity(userId)
         }

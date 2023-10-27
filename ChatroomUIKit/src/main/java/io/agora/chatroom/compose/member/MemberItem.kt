@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -88,11 +89,11 @@ fun DefaultMemberItem(
     labelContent: @Composable ((UserEntity) -> Unit)? = { user ->
         user.identify?.let {
             if (it.isNotBlank()) {
-                Spacer(modifier = Modifier.width(12.dp))
                 Avatar(
                     imageUrl = it,
                     modifier = Modifier
-                        .size(26.dp),
+                        .size(width = 36.dp, height = 24.dp).padding(start = 12.dp),
+                    hideWhenLoadError = true,
                     shape = RoundedCornerShape(0.dp),
                     placeholderPainter = painterResource(id = R.drawable.icon_default_label)
                 )
