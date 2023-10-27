@@ -245,7 +245,7 @@ class ChatroomServiceImpl: ChatroomService {
         onSuccess: (ChatMessage) -> Unit,
         onError: OnError
     ) {
-        chatManager.translateMessage(message, (message?.body as ChatTextMessageBody).targetLanguages, ValueCallbackImpl<ChatMessage>(onSuccess, onError))
+        chatManager.translateMessage(message,ChatroomUIKitClient.getInstance().getTranslationLanguage(), ValueCallbackImpl<ChatMessage>(onSuccess, onError))
     }
 
     override fun reportMessage(

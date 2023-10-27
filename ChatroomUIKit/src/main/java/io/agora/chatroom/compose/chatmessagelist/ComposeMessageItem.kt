@@ -90,23 +90,15 @@ fun ComposeMessageItem(
             ),
     ){
         var userInfo:UserEntity? = null
-        var userId = ""
         var userName = ""
-        if (itemType == ComposeItemType.ITEM_GIFT){
-            gift?.let {
-                userId = it.sendUserId
+        val userId = message?.from
+        if (userId != null) {
+            if (  userId.isNotEmpty() && userId.isNotBlank()){
+                userInfo = ChatroomUIKitClient.getInstance().getChatroomUser().getUserInfo(userId)
+                userName = userInfo.nickName?.let {
+                    it.ifEmpty { userInfo.userId }
+                } ?: userInfo.userId
             }
-        }else{
-            message?.let {
-                userId = it.from
-            }
-        }
-
-        if ( userId.isNotBlank() && userId.isNotEmpty()){
-            userInfo = ChatroomUIKitClient.getInstance().getChatroomUser().getUserInfo(userId)
-            userName = userInfo.nickName?.let {
-                it.ifEmpty { userInfo.userId }
-            } ?: userInfo.userId
         }
 
         val dateSeparator = message?.msgTime?.let { convertMillisTo24HourFormat(it) }

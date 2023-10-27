@@ -42,6 +42,7 @@ import io.agora.chatroom.compose.gift.ComposeGiftItemState
 import io.agora.chatroom.compose.gift.ComposeGiftList
 import io.agora.chatroom.compose.member.ComposeMembersBottomSheet
 import io.agora.chatroom.compose.report.ComposeMessageReport
+import io.agora.chatroom.data.LanguageType
 import io.agora.chatroom.data.initialLongClickMenu
 import io.agora.chatroom.data.reportTagList
 import io.agora.chatroom.model.report.UIReportEntity
@@ -127,6 +128,9 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
 
             override fun onError(code: Int, error: String?) {
                 Log.e("apex","login onError $code  $error")
+                if (code == 200){
+                    joinChatroom(roomId)
+                }
             }
         })
 
@@ -249,7 +253,7 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
                                 }
                                 1 -> {
                                     if (item.title == context.getString(R.string.menu_item_remove)){
-                                        dialogViewModel.title = context.getString(R.string.dialog_title_remove_user, memberMenuViewModel.user.nickname)
+                                        dialogViewModel.title = context.getString(R.string.dialog_title_remove_user, memberMenuViewModel.user.nickName)
                                         dialogViewModel.showCancel = true
                                         dialogViewModel.showDialog()
                                     }
@@ -408,7 +412,6 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
             , onSuccess = {
 //                UIChatroomCacheManager.cacheManager.saveOwner(it.owner)
 //                UIChatroomCacheManager.cacheManager.saveAdminList(it.adminList)
-                Log.e("apex","joinChatroom  193314355740675 onSuccess admin: ${it.adminList} owner: ${it.owner}")
                 listViewModel.addJoinedMessageByIndex(
                     message = ChatroomUIKitClient.getInstance().insertJoinedMessage(
                         roomId,ChatroomUIKitClient.getInstance().getCurrentUser().userId
@@ -418,7 +421,7 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
                 viewModel.fetchMuteList { code, error ->  }
             }
             , onError = {errorCode,result->
-                Log.e("apex","joinChatroom  193314355740675 onError $errorCode $result")
+                Log.e("apex","joinChatroom  $roomId onError $errorCode $result")
             }
         )
     }

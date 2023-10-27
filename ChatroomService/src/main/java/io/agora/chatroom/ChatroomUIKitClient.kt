@@ -90,6 +90,10 @@ class ChatroomUIKitClient : MessageListener, ChatRoomChangeListener {
        return ChatClient.getInstance().isLoggedInBefore
     }
 
+    fun getTranslationLanguage():List<String>{
+        return currentRoomContext.getCommonConfig().languageList
+    }
+
     fun getCurrentUser():UserEntity{
         val currentUser = ChatClient.getInstance().currentUser
         return chatroomUser.getUserInfo(currentUser)
@@ -186,19 +190,23 @@ class ChatroomUIKitClient : MessageListener, ChatRoomChangeListener {
     }
 
     private fun parseGiftMsg(msg: ChatMessage): GiftEntityProtocol? {
+        var userEntity:UserInfoProtocol? = null
         if (msg.ext().containsKey(UIConstant.CHATROOM_UIKIT_USER_INFO)){
             val jsonObject = msg.getStringAttribute(UIConstant.CHATROOM_UIKIT_USER_INFO)
-            val userEntity = GsonTools.toBean(jsonObject.toString(), UserEntity::class.java)
+            userEntity = GsonTools.toBean(jsonObject.toString(), UserInfoProtocol::class.java)
             userEntity?.let {
-                chatroomUser.setUserInfo(msg.from, it)
+                chatroomUser.setUserInfo(msg.from, it.toUser())
             }
         }
         if (msg.body is CustomMessageBody){
             val customBody = msg.body as CustomMessageBody
-            Log.e("apex"," ${customBody.params}")
             if (customBody.params.containsKey(UIConstant.CHATROOM_UIKIT_GIFT_INFO)){
                 val gift = customBody.params[UIConstant.CHATROOM_UIKIT_GIFT_INFO]
-                return GsonTools.toBean(gift, GiftEntityProtocol::class.java)
+                val giftEntityProtocol = GsonTools.toBean(gift, GiftEntityProtocol::class.java)
+                userEntity?.let {
+                    giftEntityProtocol?.sendUser = it
+                }
+                return giftEntityProtocol
             }
         }
         return null

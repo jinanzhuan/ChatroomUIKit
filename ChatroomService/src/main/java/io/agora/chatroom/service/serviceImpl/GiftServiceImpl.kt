@@ -14,6 +14,7 @@ import io.agora.chatroom.service.GiftReceiveListener
 import io.agora.chatroom.service.GiftService
 import io.agora.chatroom.service.OnError
 import io.agora.chatroom.service.OnValueSuccess
+import io.agora.chatroom.service.transfer
 import io.agora.chatroom.utils.GsonTools
 import org.json.JSONObject
 
@@ -37,15 +38,11 @@ class GiftServiceImpl: GiftService {
     override fun sendGift(entity: GiftEntityProtocol, onSuccess: OnValueSuccess<ChatMessage>, onError: OnError) {
         val message = ChatMessage.createSendMessage(ChatMessageType.CUSTOM)
         val customBody = ChatCustomMessageBody(UIConstant.CHATROOM_UIKIT_GIFT)
-        entity.sendUserId = ChatroomUIKitClient.getInstance().getCurrentUser().userId
-        val currentUser = ChatroomUIKitClient.getInstance().getCurrentUser()
-        val user = GsonTools.beanToString(currentUser)
+        val userInfoProtocol = ChatroomUIKitClient.getInstance().getCurrentUser().transfer()
+        val user = GsonTools.beanToString(userInfoProtocol)
         val gift = GsonTools.beanToString(entity)
-        Log.e("apex","gift $gift")
         val infoMap = mutableMapOf(UIConstant.CHATROOM_UIKIT_GIFT_INFO to gift)
         customBody.params = infoMap
-        Log.e("apex","gift2 ${customBody.params}")
-
         message.setAttribute(UIConstant.CHATROOM_UIKIT_USER_INFO, user?.let { JSONObject(it) })
         message.chatType = ChatType.ChatRoom
         message.body = customBody
