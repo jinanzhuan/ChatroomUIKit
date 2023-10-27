@@ -51,3 +51,15 @@ fun parsingGift(context: Context): List<AUIGiftTabInfo> {
     val gson = Gson()
     return gson.fromJson(jsonString, Array<AUIGiftTabInfo>::class.java).toList()
 }
+
+enum class LanguageType(val code: String) {
+    Chinese("zh-Hans"),
+    Chinese_traditional("zh-Hant"),
+    English("en"),
+    Russian("ru"),
+    German("de"),
+    French("fr"),
+    Japanese("ja"),
+    Korean("ko"),
+    Auto("auto")
+}

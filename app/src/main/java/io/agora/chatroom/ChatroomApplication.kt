@@ -1,12 +1,21 @@
 package io.agora.chatroom
 
 import android.app.Application
+import io.agora.chatroom.commons.GlobalConfig
+import io.agora.chatroom.model.UICommonConfig
 import java.util.Random
 
 class ChatroomApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        //初始化配置信息
+
+        UICommonConfig(
+            context = applicationContext,
+            languageList = listOf(GlobalConfig.targetLanguage.code)
+        )
+
         ChatroomUIKitClient.getInstance().setUp(this,BuildConfig.CHATROOM_APP_KEY)
     }
 

@@ -73,6 +73,10 @@ class ChatroomUIKitClient : MessageListener, ChatRoomChangeListener {
         ChatClient.getInstance().chatroomManager().addChatRoomChangeListener(this)
     }
 
+    fun isCurrentRoomOwner():Boolean{
+        return currentRoomContext.isCurrentOwner()
+    }
+
     fun setUp(applicationContext: Context, appKey:String){
         currentRoomContext.setRoomContext(applicationContext)
         val chatOptions = ChatOptions()
@@ -84,6 +88,10 @@ class ChatroomUIKitClient : MessageListener, ChatRoomChangeListener {
 
     fun isLoginBefore():Boolean{
        return ChatClient.getInstance().isLoggedInBefore
+    }
+
+    fun getTranslationLanguage():List<String>{
+        return currentRoomContext.getCommonConfig().languageList
     }
 
     fun getCurrentUser():UserEntity{
@@ -182,12 +190,23 @@ class ChatroomUIKitClient : MessageListener, ChatRoomChangeListener {
     }
 
     private fun parseGiftMsg(msg: ChatMessage): GiftEntityProtocol? {
-        if (msg.ext().containsKey(UIConstant.CHATROOM_UIKIT_GIFT_INFO)){
-            return try {
-                val jsonObject = msg.getJSONObjectAttribute(UIConstant.CHATROOM_UIKIT_GIFT_INFO)
-                GsonTools.toBean(jsonObject.toString(), GiftEntityProtocol::class.java)
-            }catch (e:ChatException){
-                null
+        var userEntity:UserInfoProtocol? = null
+        if (msg.ext().containsKey(UIConstant.CHATROOM_UIKIT_USER_INFO)){
+            val jsonObject = msg.getStringAttribute(UIConstant.CHATROOM_UIKIT_USER_INFO)
+            userEntity = GsonTools.toBean(jsonObject.toString(), UserInfoProtocol::class.java)
+            userEntity?.let {
+                chatroomUser.setUserInfo(msg.from, it.toUser())
+            }
+        }
+        if (msg.body is CustomMessageBody){
+            val customBody = msg.body as CustomMessageBody
+            if (customBody.params.containsKey(UIConstant.CHATROOM_UIKIT_GIFT_INFO)){
+                val gift = customBody.params[UIConstant.CHATROOM_UIKIT_GIFT_INFO]
+                val giftEntityProtocol = GsonTools.toBean(gift, GiftEntityProtocol::class.java)
+                userEntity?.let {
+                    giftEntityProtocol?.sendUser = it
+                }
+                return giftEntityProtocol
             }
         }
         return null
@@ -197,7 +216,7 @@ class ChatroomUIKitClient : MessageListener, ChatRoomChangeListener {
         if (msg.ext().containsKey(UIConstant.CHATROOM_UIKIT_USER_INFO)){
             return try {
                 val jsonObject = msg.getStringAttribute(UIConstant.CHATROOM_UIKIT_USER_INFO)
-                GsonTools.toBean(jsonObject.toString(), UserInfoProtocol::class.java)
+                return GsonTools.toBean(jsonObject.toString(), UserInfoProtocol::class.java)
             }catch (e:ChatException){
                 null
             }

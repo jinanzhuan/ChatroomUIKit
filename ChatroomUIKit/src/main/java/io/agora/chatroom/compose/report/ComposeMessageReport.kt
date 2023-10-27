@@ -176,6 +176,7 @@ fun DefaultReportContent(
             }
 
             Row(
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .height(56.dp)
                     .constrainAs(bottomLayout) {

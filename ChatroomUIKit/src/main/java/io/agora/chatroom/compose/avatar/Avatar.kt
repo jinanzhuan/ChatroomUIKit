@@ -19,7 +19,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImagePainter
-import coil.compose.rememberAsyncImagePainter
 import io.agora.chatroom.compose.utils.rememberStreamImagePainter
 import io.agora.chatroom.model.UserInfoProtocol
 import io.agora.chatroom.theme.ChatroomUIKitTheme
@@ -38,7 +37,7 @@ fun UserAvatar(
     Box(modifier = modifier) {
         Avatar(
             modifier = Modifier.fillMaxSize(),
-            imageUrl = user.avatarUrl ?: "",
+            imageUrl = user.avatarURL ?: "",
             shape = shape,
             contentDescription = contentDescription,
             onClick = onClick,

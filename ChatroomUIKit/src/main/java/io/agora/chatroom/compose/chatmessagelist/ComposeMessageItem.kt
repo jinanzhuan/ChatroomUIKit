@@ -1,5 +1,6 @@
 package io.agora.chatroom.compose.chatmessagelist
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -89,23 +90,15 @@ fun ComposeMessageItem(
             ),
     ){
         var userInfo:UserEntity? = null
-        var userId = ""
         var userName = ""
-        if (itemType == ComposeItemType.ITEM_GIFT){
-            gift?.let {
-                userId = it.sendUserId
+        val userId = message?.from
+        if (userId != null) {
+            if (  userId.isNotEmpty() && userId.isNotBlank()){
+                userInfo = ChatroomUIKitClient.getInstance().getChatroomUser().getUserInfo(userId)
+                userName = userInfo.nickName?.let {
+                    it.ifEmpty { userInfo.userId }
+                } ?: userInfo.userId
             }
-        }else{
-            message?.let {
-                userId = it.from
-            }
-        }
-
-        if ( userId.isNotBlank() && userId.isNotEmpty()){
-            userInfo = ChatroomUIKitClient.getInstance().getChatroomUser().getUserInfo(userId)
-            userName = userInfo.nickname?.let {
-                it.ifEmpty { userInfo.userId }
-            } ?: userInfo.userId
         }
 
         val dateSeparator = message?.msgTime?.let { convertMillisTo24HourFormat(it) }
@@ -281,9 +274,10 @@ fun DrawLabelImage(userInfo:UserEntity?) {
 }
 @Composable
 fun DrawAvatarImage(userInfo:UserEntity?){
+    Log.e("apex","DrawAvatarImage $userInfo ")
     var avatarUrl:String? = ""
     userInfo?.let {
-        avatarUrl = it.avatar
+        avatarUrl = it.avatarURL
     }
     val painter = rememberAsyncImagePainter(
         model = avatarUrl

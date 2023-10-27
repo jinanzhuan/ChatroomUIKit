@@ -42,6 +42,7 @@ import io.agora.chatroom.compose.gift.ComposeGiftItemState
 import io.agora.chatroom.compose.gift.ComposeGiftList
 import io.agora.chatroom.compose.member.ComposeMembersBottomSheet
 import io.agora.chatroom.compose.report.ComposeMessageReport
+import io.agora.chatroom.data.LanguageType
 import io.agora.chatroom.data.initialLongClickMenu
 import io.agora.chatroom.data.reportTagList
 import io.agora.chatroom.model.report.UIReportEntity
@@ -103,6 +104,7 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
     private var reportViewModel: ComposeReportViewModel = ComposeReportViewModel(reportTag = reportTagList)
     private var msgItemMenuViewModel: MenuViewModel = MenuViewModel(menuList = initialLongClickMenu, isExpanded = true)
     private var longClickIndex:Int = -1
+    private lateinit var longClickMsg:ChatMessage
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
@@ -133,7 +135,7 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
                 override fun onSuccess() {
                     Log.e("apex","login onSuccess")
                     ChatroomUIKitClient.getInstance().getChatroomUser().setUserInfo(
-                        "apex1", UserEntity(userId = "apex1", nickname = "大威天龙")
+                        "apex1", UserEntity(userId = "apex1", nickName = "大威天龙")
                     )
                     joinChatroom(roomId,onSuccess = {
                         ChatLog.e("apex","joinChatroom onSuccess")
@@ -211,7 +213,7 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
                             giftViewModel.closeDrawer()
                         }
                     )
-                    ShowComposeMenuDrawer(msgItemMenuViewModel,reportViewModel)
+                    ShowComposeMenuDrawer(memberListViewModel,msgItemMenuViewModel,reportViewModel)
                     ComposeMessageReport(
                         modifier = Modifier.height((LocalConfiguration.current.screenHeightDp/2).dp),
                         containerColor = ChatroomUIKitTheme.colors.background,
@@ -275,7 +277,7 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
                                 }
                                 1 -> {
                                     if (item.title == context.getString(R.string.menu_item_remove)){
-                                        dialogViewModel.title = context.getString(R.string.dialog_title_remove_user, memberMenuViewModel.user.nickname)
+                                        dialogViewModel.title = context.getString(R.string.dialog_title_remove_user, memberMenuViewModel.user.nickName)
                                         dialogViewModel.showCancel = true
                                         dialogViewModel.showDialog()
                                     }
@@ -332,6 +334,7 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
                             Log.e("apex","onLongItemClick $index $item")
                             if (item is ComposeMessageItemState){
                                 reportViewModel.setReportMsgId(item.message.msgId)
+                                longClickMsg = item.message
                                 msgItemMenuViewModel.openDrawer()
                             }
                         }
@@ -435,7 +438,6 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
             , onSuccess = {
 //                UIChatroomCacheManager.cacheManager.saveOwner(it.owner)
 //                UIChatroomCacheManager.cacheManager.saveAdminList(it.adminList)
-                Log.e("apex","joinChatroom  193314355740675 onSuccess admin: ${it.adminList} owner: ${it.owner}")
                 listViewModel.addJoinedMessageByIndex(
                     message = ChatroomUIKitClient.getInstance().insertJoinedMessage(
                         roomId,ChatroomUIKitClient.getInstance().getCurrentUser().userId
@@ -453,20 +455,27 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
     }
 
     @Composable
-    fun ShowComposeMenuDrawer(viewModel:MenuViewModel,reportViewModel:ComposeReportViewModel){
+    fun ShowComposeMenuDrawer(
+        memberListViewModel: MemberListViewModel,
+        menuViewModel:MenuViewModel,
+        reportViewModel:ComposeReportViewModel
+    ){
         ComposeMenuBottomSheet(
-            viewModel = viewModel,
+            viewModel = menuViewModel,
             onListItemClick = { index,item ->
                 Log.e("apex"," default item: $index ${item.title}")
-                if (index == 1){
-                    removeMessage()
-                    viewModel.closeDrawer()
-                }else if (index == 3){
-                    reportViewModel.openDrawer()
+                when (index) {
+                    0 -> { translateMsg() }
+                    1 -> {
+                        removeMessage()
+                        menuViewModel.closeDrawer()
+                    }
+                    2 -> { muteMember(memberListViewModel) }
+                    3 -> { reportViewModel.openDrawer() }
                 }
             },
             onDismissRequest = {
-                viewModel.closeDrawer()
+                menuViewModel.closeDrawer()
                 Log.e("apex"," onClick Cancel ")
             }
         )
@@ -487,6 +496,36 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
 
     private fun removeMessage(){
         listViewModel.removeMessageByIndex(longClickIndex)
+    }
+
+    private fun muteMember(memberListViewModel:MemberListViewModel){
+        if (ChatroomUIKitClient.getInstance().isCurrentRoomOwner()){
+            memberListViewModel.muteUser(longClickMsg.from,
+                onSuccess = {
+                    Log.e("apex","muteMember onSuccess ${longClickMsg.from}")
+                },
+                onError = {code, error ->
+                    Log.e("apex","muteMember onError $code $error")
+                }
+            )
+        }else{
+            Log.e("apex","muteMember You don't have permission to operate the mute")
+        }
+    }
+
+    private fun translateMsg(){
+        longClickMsg.let {
+            service.getChatService().translateTextMessage(it,
+                onSuccess = {
+                    Log.e("apex","translateTextMessage onSuccess ")
+                    listViewModel.updateTextMessage(longClickIndex,longClickMsg)
+                },
+                onError = { code, error ->
+                    Log.e("apex","translateTextMessage onError $code $error ")
+                }
+            )
+        }
+
     }
 
 }

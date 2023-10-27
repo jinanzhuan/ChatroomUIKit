@@ -102,7 +102,7 @@ fun DefaultMemberItem(
     avatarContent: @Composable (UserEntity) -> Unit = { user ->
         Spacer(modifier = Modifier.width(12.dp))
         Avatar(
-            imageUrl = user.avatar ?: "",
+            imageUrl = user.avatarURL ?: "",
             shape = RoundedCornerShape(40.dp),
             modifier = Modifier
                 .size(40.dp)
@@ -118,7 +118,7 @@ fun DefaultMemberItem(
                 .fillMaxHeight()
         ) {
             Text(
-                text = user.nickname?.let {
+                text = user.nickName?.let {
                     it.ifBlank { user.userId }
                 } ?: user.userId ,
                 modifier = Modifier
@@ -190,8 +190,8 @@ fun MemberItemPreview() {
     ChatroomUIKitTheme {
         DefaultMemberItem(user = UserEntity(
             userId = "123",
-            nickname = "nickname",
-            avatar = "",
+            nickName = "nickname",
+            avatarURL = "",
             identify = ""
         ))
     }

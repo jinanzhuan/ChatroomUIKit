@@ -47,6 +47,10 @@ class MessageListViewModel(
         composeChatListController.removeMessageByIndex(index)
     }
 
+    fun updateTextMessage(index: Int,message: ChatMessage){
+        composeChatListController.updateTextMessage(index, message = message)
+    }
+
     fun clearMessage(){
         composeChatListController.clearMessage()
     }

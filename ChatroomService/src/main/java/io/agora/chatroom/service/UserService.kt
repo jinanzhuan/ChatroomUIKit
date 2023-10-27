@@ -26,11 +26,11 @@ interface UserStateChangeListener {
 
 data class UserEntity(
     val userId: String,
-    var nickname: String? = "",
-    val avatar: String? = "",
+    var nickName: String? = "",
+    val avatarURL: String? = "",
     val gender: Int? = 0,
     val identify: String? = "",
 )
 
 fun ChatUserInfo.transfer() = UserEntity(userId, nickname, avatarUrl, gender,ext )
-fun UserEntity.transfer(): UserInfoProtocol = UserInfoProtocol(userId, nickname, avatar, gender, identify)
+fun UserEntity.transfer(): UserInfoProtocol = UserInfoProtocol(userId, nickName, avatarURL, gender, identify)

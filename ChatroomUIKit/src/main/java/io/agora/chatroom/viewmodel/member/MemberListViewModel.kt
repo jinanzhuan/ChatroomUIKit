@@ -197,7 +197,7 @@ open class MemberListViewModel(
                 Log.e("apex", "searchUsers from mute: $list")
                 val result = list.filter { userId ->
                     val user = ChatroomUIKitClient.getInstance().getCacheManager().getUserInfo(userId)
-                    user.nickname?.contains(keyword) ?: false || user.userId.contains(keyword)
+                    user.nickName?.contains(keyword) ?: false || user.userId.contains(keyword)
                 }.map { userId ->
                     ChatroomUIKitClient.getInstance().getCacheManager().getUserInfo(userId)
                 }
@@ -209,7 +209,7 @@ open class MemberListViewModel(
                 Log.e("apex", "searchUsers from member: $list")
                 val result = list.filter { userId ->
                     val user = ChatroomUIKitClient.getInstance().getCacheManager().getUserInfo(userId)
-                    user.nickname?.contains(keyword) ?: false || user.userId.contains(keyword)
+                    user.nickName?.contains(keyword) ?: false || user.userId.contains(keyword)
                 }.map { userId ->
                     ChatroomUIKitClient.getInstance().getCacheManager().getUserInfo(userId)
                 }

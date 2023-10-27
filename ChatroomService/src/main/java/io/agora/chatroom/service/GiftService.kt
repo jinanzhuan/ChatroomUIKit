@@ -1,5 +1,7 @@
 package io.agora.chatroom.service
 
+import io.agora.chatroom.model.UserInfoProtocol
+
 interface GiftService : GiftMessageHandleService {
 
     fun bindGiftListener(listener: GiftReceiveListener)
@@ -16,5 +18,5 @@ data class GiftEntityProtocol(
     val giftIcon: String,
     val giftEffect: String,
 //    val selected: Boolean,
-    var sendUserId: String
+    var sendUser: UserInfoProtocol
 )

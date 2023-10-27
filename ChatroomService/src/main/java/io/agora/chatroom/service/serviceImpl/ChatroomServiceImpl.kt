@@ -1,5 +1,6 @@
 package io.agora.chatroom.service.serviceImpl
 
+import android.util.Log
 import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.model.UIConstant
 import io.agora.chatroom.service.CallbackImpl
@@ -210,11 +211,13 @@ class ChatroomServiceImpl: ChatroomService {
 
         val currentUser = ChatroomUIKitClient.getInstance().getCurrentUser()
         val userInfo = GsonTools.beanToString(currentUser)
+        Log.e("apex","sendMessage  $userInfo")
         val jsonObject = if (userInfo != null) {
             JSONObject(userInfo)
         }else{
             JSONObject()
         }
+        Log.e("apex","sendMessage  $jsonObject")
         message.setAttribute(UIConstant.CHATROOM_UIKIT_USER_INFO,jsonObject)
         message.setMessageStatusCallback(object : ChatCallback {
             override fun onSuccess() {
@@ -242,7 +245,7 @@ class ChatroomServiceImpl: ChatroomService {
         onSuccess: (ChatMessage) -> Unit,
         onError: OnError
     ) {
-        chatManager.translateMessage(message, (message?.body as ChatTextMessageBody).targetLanguages, ValueCallbackImpl<ChatMessage>(onSuccess, onError))
+        chatManager.translateMessage(message,ChatroomUIKitClient.getInstance().getTranslationLanguage(), ValueCallbackImpl<ChatMessage>(onSuccess, onError))
     }
 
     override fun reportMessage(

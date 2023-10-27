@@ -1,5 +1,6 @@
 package io.agora.chatroom.service.serviceImpl
 
+import android.util.Log
 import io.agora.CallBack
 import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.model.UIConstant
@@ -13,6 +14,7 @@ import io.agora.chatroom.service.GiftReceiveListener
 import io.agora.chatroom.service.GiftService
 import io.agora.chatroom.service.OnError
 import io.agora.chatroom.service.OnValueSuccess
+import io.agora.chatroom.service.transfer
 import io.agora.chatroom.utils.GsonTools
 import org.json.JSONObject
 
@@ -36,10 +38,12 @@ class GiftServiceImpl: GiftService {
     override fun sendGift(entity: GiftEntityProtocol, onSuccess: OnValueSuccess<ChatMessage>, onError: OnError) {
         val message = ChatMessage.createSendMessage(ChatMessageType.CUSTOM)
         val customBody = ChatCustomMessageBody(UIConstant.CHATROOM_UIKIT_GIFT)
-        entity.sendUserId = ChatroomUIKitClient.getInstance().getCurrentUser().userId
+        val userInfoProtocol = ChatroomUIKitClient.getInstance().getCurrentUser().transfer()
+        val user = GsonTools.beanToString(userInfoProtocol)
         val gift = GsonTools.beanToString(entity)
-//        customBody.params[UIConstant.CHATROOM_UIKIT_GIFT_INFO] = gift
-        message.setAttribute(UIConstant.CHATROOM_UIKIT_GIFT_INFO, gift?.let { JSONObject(it) })
+        val infoMap = mutableMapOf(UIConstant.CHATROOM_UIKIT_GIFT_INFO to gift)
+        customBody.params = infoMap
+        message.setAttribute(UIConstant.CHATROOM_UIKIT_USER_INFO, user?.let { JSONObject(it) })
         message.chatType = ChatType.ChatRoom
         message.body = customBody
         message.to = ChatroomUIKitClient.getInstance().getContext().getCurrentRoomInfo().roomId
