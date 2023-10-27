@@ -1,5 +1,6 @@
 package io.agora.chatroom.viewmodel.member
 
+import android.util.Log
 import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.service.OnError
 import io.agora.chatroom.service.OnValueSuccess

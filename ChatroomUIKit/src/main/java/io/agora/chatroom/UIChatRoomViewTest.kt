@@ -89,9 +89,7 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
         (context as ComponentActivity).registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                closeMemberSheet.value = true
-            }
+            closeMemberSheet.value = result.resultCode == Activity.RESULT_OK
         }
 
     private val memberMenuViewModel by lazy {
