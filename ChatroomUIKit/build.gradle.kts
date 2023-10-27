@@ -68,7 +68,6 @@ dependencies {
     implementation("androidx.activity:activity-ktx:1.7.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
-    implementation("io.coil-kt:coil-compose:2.2.1")
-    implementation("io.coil-kt:coil:2.2.1")
+    implementation("io.coil-kt:coil-compose:2.4.0")
     api(project(mapOf("path" to ":ChatroomService")))
 }
