@@ -24,11 +24,19 @@ open class MemberListViewModel(
         cursor = null
         hasMore = true
         clear()
-        fetchMoreRoomMembers(true, onSuccess, onError)
+        // clear cache data
+        ChatroomUIKitClient.getInstance().getCacheManager().clearRoomUserCache()
+        fetchMoreRoomMembers(true, isLoadMore = false, onSuccess = { list ->
+            add(list)
+            onSuccess.invoke(list)
+        }, onError = { code, message ->
+            onError.invoke(code, message)
+        })
     }
 
     fun fetchMoreRoomMembers(
         fetchUserInfo: Boolean = false,
+        isLoadMore: Boolean = true,
         onSuccess: OnValueSuccess<List<UserEntity>> = {},
         onError: OnError = { _, _ ->}
     ){
@@ -36,6 +44,7 @@ open class MemberListViewModel(
         service.getChatService().fetchMembers(roomId, cursor, pageSize, {cursorResult ->
             hasMore = cursorResult.data.size == pageSize
             cursor = cursorResult.cursor
+            Log.e("apex", "fetchMoreRoomMembers: ${cursorResult.data}")
             ChatroomUIKitClient.getInstance().getCacheManager().saveRoomMemberList(roomId, cursorResult.data)
             val propertyList = cursorResult.data.filter { userId ->
                 !ChatroomUIKitClient.getInstance().getCacheManager().inCache(userId)
@@ -45,20 +54,26 @@ open class MemberListViewModel(
                     val result = cursorResult.data.map { userId ->
                         ChatroomUIKitClient.getInstance().getCacheManager().getUserInfo(userId)
                     }
-                    add(result)
+                    if (isLoadMore) {
+                        addMore(result)
+                    }
                     onSuccess.invoke(result)
                 }, { code, error ->
                     val result = cursorResult.data.map { userId ->
                         ChatroomUIKitClient.getInstance().getCacheManager().getUserInfo(userId)
                     }
-                    add(result)
+                    if (isLoadMore) {
+                        addMore(result)
+                    }
                     onError.invoke(code, error)
                 })
             } else {
                 val result = cursorResult.data.map { userId ->
                     ChatroomUIKitClient.getInstance().getCacheManager().getUserInfo(userId)
                 }
-                add(result)
+                if (isLoadMore) {
+                    addMore(result)
+                }
                 onSuccess.invoke(result)
             }
         }, {code, error ->
@@ -179,6 +194,7 @@ open class MemberListViewModel(
         }
         if (isMute) {
             ChatroomUIKitClient.getInstance().getCacheManager().getRoomMuteList(roomId).let { list ->
+                Log.e("apex", "searchUsers from mute: $list")
                 val result = list.filter { userId ->
                     val user = ChatroomUIKitClient.getInstance().getCacheManager().getUserInfo(userId)
                     user.nickName?.contains(keyword) ?: false || user.userId.contains(keyword)
@@ -190,6 +206,7 @@ open class MemberListViewModel(
             }
         } else {
             ChatroomUIKitClient.getInstance().getCacheManager().getRoomMemberList(roomId).let { list ->
+                Log.e("apex", "searchUsers from member: $list")
                 val result = list.filter { userId ->
                     val user = ChatroomUIKitClient.getInstance().getCacheManager().getUserInfo(userId)
                     user.nickName?.contains(keyword) ?: false || user.userId.contains(keyword)

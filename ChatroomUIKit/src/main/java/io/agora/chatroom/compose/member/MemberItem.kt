@@ -17,7 +17,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Surface
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -61,7 +61,8 @@ fun MemberItem(
 
             Row(modifier = Modifier
                 .weight(1f)
-                .fillMaxWidth()) {
+                .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically) {
                 Box(modifier = Modifier.weight(1f)) {
                     nameContent(member)
                 }
@@ -142,13 +143,13 @@ fun DefaultMemberItem(
     onExtendClick: ((UserEntity) -> Unit)? = null,
     extendContent: @Composable ((UserEntity) -> Unit)? = {user ->
         if (ChatroomUIKitClient.getInstance().getContext().getCurrentRoomInfo().roomOwner?.userId == ChatClient.getInstance().currentUser) {
-            Surface(onClick = { onExtendClick?.invoke(user) }) {
+            IconButton(
+                onClick = { onExtendClick?.invoke(user) }) {
                 Icon(
                     painter = painterResource(id = R.drawable.icon_more),
-                    modifier = Modifier.fillMaxHeight().background(ChatroomUIKitTheme.colors.background),
-                    contentDescription = null)
+                    contentDescription = null
+                )
             }
-
             Spacer(modifier = Modifier.width(12.dp))
         }
     },

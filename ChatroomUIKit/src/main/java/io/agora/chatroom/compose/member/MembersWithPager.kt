@@ -10,6 +10,10 @@ import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
@@ -22,6 +26,7 @@ import io.agora.chatroom.compose.drawer.ComposeBottomSheet
 import io.agora.chatroom.compose.drawer.DefaultDragHandle
 import io.agora.chatroom.compose.search.DefaultSearchBar
 import io.agora.chatroom.compose.tabrow.PagerWithTabs
+import io.agora.chatroom.service.ChatLog
 import io.agora.chatroom.service.UserEntity
 import io.agora.chatroom.theme.ChatroomUIKitTheme
 import io.agora.chatroom.ui.UIChatroomService
@@ -100,9 +105,10 @@ fun MembersPage(
     onExtendClick: ((String, UserEntity) -> Unit)? = null,
     onSearchClick: ((String) -> Unit)? = null
 ) {
-    val state = viewModel.getState
-    if (autoRequest && state == RequestState.Idle) {
+    var request by rememberSaveable { mutableStateOf(autoRequest) }
+    if (request) {
         viewModel.fetchRoomMembers()
+        request = false
     }
     Column(modifier = modifier) {
         if (showSearch) {
@@ -146,9 +152,10 @@ fun MutedListPage(
     onExtendClick: ((String, UserEntity) -> Unit)? = null,
     onSearchClick: ((String) -> Unit)? = null
 ) {
-    val state = viewModel.getState
-    if (autoRequest && state == RequestState.Idle) {
+    var request by rememberSaveable { mutableStateOf(autoRequest) }
+    if (autoRequest) {
         viewModel.getMuteList()
+        request = false
     }
     Column(modifier = modifier) {
         if (showSearch) {

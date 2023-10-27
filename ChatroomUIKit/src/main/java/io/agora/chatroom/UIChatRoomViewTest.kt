@@ -1,5 +1,6 @@
 package io.agora.chatroom
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.util.AttributeSet
@@ -31,7 +32,6 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.agora.CallBack
-import io.agora.chat.ChatClient
 import io.agora.chatroom.compose.chatbottombar.ComposeChatBottomBar
 import io.agora.chatroom.compose.chatmessagelist.ComposeChatMessageList
 import io.agora.chatroom.compose.dialog.SimpleDialog
@@ -46,10 +46,14 @@ import io.agora.chatroom.data.LanguageType
 import io.agora.chatroom.data.initialLongClickMenu
 import io.agora.chatroom.data.reportTagList
 import io.agora.chatroom.model.report.UIReportEntity
+import io.agora.chatroom.service.ChatClient
+import io.agora.chatroom.service.ChatLog
 import io.agora.chatroom.service.ChatMessage
 import io.agora.chatroom.service.ChatroomChangeListener
 import io.agora.chatroom.service.GiftEntityProtocol
 import io.agora.chatroom.service.GiftReceiveListener
+import io.agora.chatroom.service.OnError
+import io.agora.chatroom.service.OnSuccess
 import io.agora.chatroom.service.UserEntity
 import io.agora.chatroom.theme.ChatroomUIKitTheme
 import io.agora.chatroom.ui.UIChatroomService
@@ -70,6 +74,7 @@ import io.agora.chatroom.viewmodel.messages.MessageChatBarViewModel
 import io.agora.chatroom.viewmodel.messages.MessageListViewModel
 import io.agora.chatroom.viewmodel.messages.MessagesViewModelFactory
 import io.agora.chatroom.viewmodel.report.ComposeReportViewModel
+import io.agora.util.EMLog
 
 class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListener {
     private val mRoomViewBinding = ActivityUiChatroomTestBinding.inflate(LayoutInflater.from(context))
@@ -84,7 +89,9 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
         (context as ComponentActivity).registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
-            closeMemberSheet.value = true
+            if (result.resultCode == Activity.RESULT_OK) {
+                closeMemberSheet.value = true
+            }
         }
 
     private val memberMenuViewModel by lazy {
@@ -116,24 +123,42 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
         service.getChatService().bindListener(this)
         service.getGiftService().bindGiftListener(this)
 
-        // 测试登录代码
-        ChatClient.getInstance().login("apex1","1",object : CallBack {
-            override fun onSuccess() {
-                Log.e("apex","login onSuccess")
-                ChatroomUIKitClient.getInstance().getChatroomUser().setUserInfo(
-                    "apex1", UserEntity(userId = "apex1", nickName = "大威天龙")
-                )
-                joinChatroom(roomId)
-            }
-
-            override fun onError(code: Int, error: String?) {
-                Log.e("apex","login onError $code  $error")
-                if (code == 200){
-                    joinChatroom(roomId)
+        if (ChatClient.getInstance().isLoggedInBefore && ChatClient.getInstance().options.autoLogin) {
+            joinChatroom(roomId, onSuccess = {
+                ChatLog.e("apex","joinChatroom onSuccess")
+            }, onError = { code, error ->
+                (context as Activity).finish()
+            })
+        } else {
+            // 测试登录代码
+            ChatClient.getInstance().login("apex1","1",object : CallBack {
+                override fun onSuccess() {
+                    Log.e("apex","login onSuccess")
+                    ChatroomUIKitClient.getInstance().getChatroomUser().setUserInfo(
+                        "apex1", UserEntity(userId = "apex1", nickName = "大威天龙")
+                    )
+                    joinChatroom(roomId,onSuccess = {
+                        ChatLog.e("apex","joinChatroom onSuccess")
+                    }, onError = { code, error ->
+                        (context as Activity).finish()
+                    })
                 }
-            }
-        })
 
+                override fun onError(code: Int, error: String?) {
+                    Log.e("apex","login onError $code  $error")
+                    (context as Activity).finish()
+                }
+            })
+        }
+
+        loadComponent(roomId, service)
+
+    }
+
+    private fun loadComponent(
+        roomId: String,
+        service: UIChatroomService
+    ) {
         mRoomViewBinding.composeChatroom.setContent {
 
             val factory = buildViewModelFactory(
@@ -168,8 +193,7 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
                     val (giftList, msgList, bottomBar) = createRefs()
                     ComposeGiftBottomSheet(
                         modifier = Modifier
-                            .height((LocalConfiguration.current.screenHeightDp/2).dp)
-                            ,
+                            .height((LocalConfiguration.current.screenHeightDp/2).dp),
                         viewModel = giftViewModel,
                         containerColor = ChatroomUIKitTheme.colors.background,
                         screenContent = {},
@@ -338,9 +362,11 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
                                 })
                         },
                         onMenuClick = {
+                            Log.e("apex","onMenuClick: tag: $it")
                             if (it == 0){
                                 giftViewModel.openDrawer()
-                                //membersBottomSheet.openDrawer()
+                            } else if (it == 1){
+                                membersBottomSheet.openDrawer()
                             }
                         },
                         onInputClick = {
@@ -407,7 +433,7 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
     }
 
 
-    fun joinChatroom(roomId:String){
+    fun joinChatroom(roomId:String, onSuccess: OnSuccess = {}, onError: OnError = {_, _ ->}){
         service.getChatService().joinChatroom(roomId,"apex1"
             , onSuccess = {
 //                UIChatroomCacheManager.cacheManager.saveOwner(it.owner)
@@ -419,9 +445,11 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
                 )
                 val viewModel = ViewModelProvider(context as ComponentActivity, MemberViewModelFactory(context = context, roomId = roomId, service = service))[MutedListViewModel::class.java]
                 viewModel.fetchMuteList { code, error ->  }
+                onSuccess.invoke()
             }
             , onError = {errorCode,result->
-                Log.e("apex","joinChatroom  $roomId onError $errorCode $result")
+                Log.e("apex","joinChatroom  193314355740675 onError $errorCode $result")
+                onError.invoke(errorCode,result)
             }
         )
     }
