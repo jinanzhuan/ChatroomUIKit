@@ -29,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.compose.avatar.Avatar
+import io.agora.chatroom.compose.image.AsyncImage
 import io.agora.chatroom.service.ChatClient
 import io.agora.chatroom.service.UserEntity
 import io.agora.chatroom.theme.ChatroomUIKitTheme
@@ -89,11 +90,10 @@ fun DefaultMemberItem(
     labelContent: @Composable ((UserEntity) -> Unit)? = { user ->
         user.identify?.let {
             if (it.isNotBlank()) {
-                Avatar(
+                AsyncImage(
                     imageUrl = it,
                     modifier = Modifier
                         .size(width = 36.dp, height = 24.dp).padding(start = 12.dp),
-                    hideWhenLoadError = true,
                     shape = RoundedCornerShape(0.dp),
                     placeholderPainter = painterResource(id = R.drawable.icon_default_label)
                 )
