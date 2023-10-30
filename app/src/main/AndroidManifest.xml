@@ -20,6 +20,8 @@
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.ChatroomUIKit">
+        </activity>
+        <activity android:name="io.agora.chatroom.RoomListActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
