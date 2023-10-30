@@ -95,8 +95,9 @@ class UISearchActivity : ComponentActivity() {
 fun SearchScaffold(context: Activity, roomId: String, title: String) {
     val service = UIChatroomService(ChatroomUIKitClient.getInstance().getContext().getCurrentRoomInfo())
     var isEmpty by rememberSaveable { mutableStateOf(false) }
-    val viewModel = viewModel(MemberListViewModel::class.java, factory = MemberViewModelFactory(context = LocalContext.current, roomId = roomId, service = service))
-    val mutedViewModel = viewModel(MutedListViewModel::class.java, factory = MemberViewModelFactory(context = LocalContext.current, roomId = roomId, service = service))
+    val isAdmin = ChatroomUIKitClient.getInstance().isCurrentRoomOwner()
+    val viewModel = viewModel(MemberListViewModel::class.java, factory = MemberViewModelFactory(roomId = roomId, service = service, isRoomAdmin = isAdmin))
+    val mutedViewModel = viewModel(MutedListViewModel::class.java, factory = MemberViewModelFactory(roomId = roomId, service = service, isRoomAdmin = isAdmin))
     val memberMenuViewModel = viewModel(RoomMemberMenuViewModel::class.java, factory = MenuViewModelFactory(isShowTitle = false))
     val dialogViewModel = DialogViewModel()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())

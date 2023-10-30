@@ -37,11 +37,13 @@ import io.agora.chatroom.compose.list.LazyColumnList
 import io.agora.chatroom.compose.report.ComposeMessageReport
 import io.agora.chatroom.data.initialLongClickMenu
 import io.agora.chatroom.data.testMenuList1
+import io.agora.chatroom.model.UIChatroomInfo
 import io.agora.chatroom.model.UIComposeSheetItem
 import io.agora.chatroom.theme.BodyLarge
 import io.agora.chatroom.theme.ChatroomUIKitTheme
 import io.agora.chatroom.theme.neutralColor20
 import io.agora.chatroom.theme.neutralColor90
+import io.agora.chatroom.ui.UIChatroomService
 import io.agora.chatroom.ui.UISearchActivity
 import io.agora.chatroom.viewmodel.RequestListViewModel
 import io.agora.chatroom.viewmodel.menu.MenuViewModel
@@ -64,7 +66,8 @@ class MainActivity : ComponentActivity() {
             "Unwelcome commercial content or spam",
             "Pornographic or explicit content",
             "Child abuse",
-        )
+        ),
+        service = UIChatroomService(UIChatroomInfo("", null))
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -166,10 +169,10 @@ fun ShowComposeMenuDrawer(viewModel:MenuViewModel,viewModel5:ComposeReportViewMo
 @Composable
 fun ShowCustomComposeDrawer(viewModel: MenuViewModel){
     val list = mutableListOf<UIComposeSheetItem>()
-    list.add(UIComposeSheetItem(title = "Item 1"))
-    list.add(UIComposeSheetItem(title = "Item 2"))
-    list.add(UIComposeSheetItem(title = "Item 3"))
-    list.add(UIComposeSheetItem(title = "Item 4"))
+    list.add(UIComposeSheetItem(id = 0, title = "Item 1"))
+    list.add(UIComposeSheetItem(id = 1, title = "Item 2"))
+    list.add(UIComposeSheetItem(id = 2, title = "Item 3"))
+    list.add(UIComposeSheetItem(id = 3, title = "Item 4"))
 
     ComposeBottomSheet(
         viewModel = viewModel,

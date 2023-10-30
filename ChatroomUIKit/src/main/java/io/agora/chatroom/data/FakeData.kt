@@ -4,26 +4,27 @@ import android.content.Context
 import com.google.gson.Gson
 import io.agora.chatroom.model.UIComposeSheetItem
 import io.agora.chatroom.model.gift.AUIGiftTabInfo
+import io.agora.chatroom.uikit.R
 import java.nio.charset.Charset
 
 val initialLongClickMenu = listOf(
-    UIComposeSheetItem(title = "Translate"),
-    UIComposeSheetItem(title = "Delete"),
-    UIComposeSheetItem(title = "Mute"),
-    UIComposeSheetItem(title = "Report", isError = true)
+    UIComposeSheetItem(id = R.id.action_menu_translate, title = "Translate"),
+    UIComposeSheetItem(id = R.id.action_menu_delete, title = "Delete"),
+    UIComposeSheetItem(id = R.id.action_menu_mute, title = "Mute"),
+    UIComposeSheetItem(id = R.id.action_menu_report, title = "Report", isError = true)
 )
 
 val testMenuList = listOf(
-    UIComposeSheetItem(title = "Item 1"),
-    UIComposeSheetItem(title = "Item 2"),
-    UIComposeSheetItem(title = "Item 3")
+    UIComposeSheetItem(id = 0, title = "Item 1"),
+    UIComposeSheetItem(id = 1, title = "Item 2"),
+    UIComposeSheetItem(id = 2, title = "Item 3")
 )
 
 val testMenuList1 = listOf(
-    UIComposeSheetItem(title = "Item 1"),
-    UIComposeSheetItem(title = "Item 2"),
-    UIComposeSheetItem(title = "Item 3"),
-    UIComposeSheetItem(title = "Item 4")
+    UIComposeSheetItem(id = 0, title = "Item 1"),
+    UIComposeSheetItem(id = 1, title = "Item 2"),
+    UIComposeSheetItem(id = 2, title = "Item 3"),
+    UIComposeSheetItem(id = 3, title = "Item 4")
 )
 
 val reportTagList = listOf(
