@@ -3,6 +3,7 @@ package io.agora.chatroom.ui
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.KeyEvent
 import android.widget.ImageView
 import androidx.activity.ComponentActivity
 import androidx.core.view.WindowCompat
@@ -44,6 +45,21 @@ class UIChatroomActivity : ComponentActivity(), ChatroomDestroyedListener {
 
     }
 
+    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_DOWN) {
+            // 处理虚拟返回键的按下事件
+            service?.getUserService()?.logout(
+                onSuccess = {
+                    ChatroomUIKitClient.getInstance().clear()
+                    finish()
+                },
+                onFailure = {code, error ->  }
+            )
+            return true
+        }
+        return super.onKeyDown(keyCode, event)
+    }
+
 
     companion object {
         private const val KEY_ROOM_ID = "roomId"
@@ -62,6 +78,7 @@ class UIChatroomActivity : ComponentActivity(), ChatroomDestroyedListener {
     }
 
     override fun onRoomDestroyed(roomId: String, roomName: String) {
+        ChatroomUIKitClient.getInstance().clear()
         finish()
     }
 }

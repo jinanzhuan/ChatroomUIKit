@@ -211,13 +211,11 @@ class ChatroomServiceImpl: ChatroomService {
 
         val currentUser = ChatroomUIKitClient.getInstance().getCurrentUser()
         val userInfo = GsonTools.beanToString(currentUser)
-        Log.e("apex","sendMessage  $userInfo")
         val jsonObject = if (userInfo != null) {
             JSONObject(userInfo)
         }else{
             JSONObject()
         }
-        Log.e("apex","sendMessage  $jsonObject")
         message.setAttribute(UIConstant.CHATROOM_UIKIT_USER_INFO,jsonObject)
         message.setMessageStatusCallback(object : ChatCallback {
             override fun onSuccess() {

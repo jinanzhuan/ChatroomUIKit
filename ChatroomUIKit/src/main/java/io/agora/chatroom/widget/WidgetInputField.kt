@@ -127,11 +127,11 @@ fun WidgetInputField(
 
     LaunchedEffect(viewModel.isShowKeyboard.value) {
         if (viewModel.isShowKeyboard.value){
-            delay(100)
+            delay(50)
             focus.requestFocus()
             keyboard?.show()
         }else{
-            delay(100)
+            delay(50)
             focusManager.clearFocus()
             keyboard?.hide()
         }
