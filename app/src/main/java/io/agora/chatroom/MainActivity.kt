@@ -282,4 +282,3 @@ class TestItemViewModel: RequestListViewModel<String>()
 
 class ViewPagerViewModel(list: List<String> = emptyList()): TabWithVpViewModel<String>(contentList = list)
 
-
