@@ -87,9 +87,7 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
         (context as ComponentActivity).registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                closeMemberSheet.value = true
-            }
+            closeMemberSheet.value = result.resultCode == Activity.RESULT_OK
         }
 
     private val memberMenuViewModel by lazy {
@@ -173,7 +171,10 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
 
             ChatroomUIKitClient.getInstance().getContext().setUseGiftsInList(true)
 
-            val membersBottomSheet = MembersBottomSheetViewModel(roomId = roomId, roomService = service, isAdmin = true)
+            val membersBottomSheet = MembersBottomSheetViewModel(
+                                        roomId = roomId,
+                                        roomService = service,
+                                        isAdmin = ChatroomUIKitClient.getInstance().getContext().getCurrentRoomInfo().roomOwner?.userId == ChatClient.getInstance().currentUser)
             val memberListViewModel = viewModel(MemberListViewModel::class.java, factory = MemberViewModelFactory(context = LocalContext.current, roomId = roomId, service = service))
             val dialogViewModel = DialogViewModel()
 
@@ -428,6 +429,29 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
         listViewModel.addJoinedMessageByIndex(
             message = ChatroomUIKitClient.getInstance().insertJoinedMessage(roomId,userId)
         )
+        ChatroomUIKitClient.getInstance().getCacheManager().saveRoomMemberList(roomId, arrayListOf(userId))
+    }
+
+    override fun onUserLeft(roomId: String, userId: String) {
+        super.onUserLeft(roomId, userId)
+        ChatroomUIKitClient.getInstance().getCacheManager().removeRoomMember(roomId, userId)
+    }
+
+    override fun onUserMuted(roomId: String, userId: String) {
+        super.onUserMuted(roomId, userId)
+        ChatroomUIKitClient.getInstance().getCacheManager().saveRoomMuteList(roomId, arrayListOf(userId))
+        ChatroomUIKitClient.getInstance().getCacheManager().removeRoomMember(roomId, userId)
+    }
+
+    override fun onUserUnmuted(roomId: String, userId: String) {
+        super.onUserUnmuted(roomId, userId)
+        ChatroomUIKitClient.getInstance().getCacheManager().removeRoomMuteMember(roomId, userId)
+        ChatroomUIKitClient.getInstance().getCacheManager().saveRoomMemberList(roomId, arrayListOf(userId))
+    }
+
+    override fun onUserBeKicked(roomId: String, userId: String) {
+        super.onUserBeKicked(roomId, userId)
+        ChatroomUIKitClient.getInstance().getCacheManager().removeRoomMember(roomId, userId)
     }
 
 

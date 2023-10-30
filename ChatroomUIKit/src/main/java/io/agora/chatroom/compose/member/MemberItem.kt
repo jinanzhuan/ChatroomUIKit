@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -28,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.compose.avatar.Avatar
+import io.agora.chatroom.compose.image.AsyncImage
 import io.agora.chatroom.service.ChatClient
 import io.agora.chatroom.service.UserEntity
 import io.agora.chatroom.theme.ChatroomUIKitTheme
@@ -88,11 +90,10 @@ fun DefaultMemberItem(
     labelContent: @Composable ((UserEntity) -> Unit)? = { user ->
         user.identify?.let {
             if (it.isNotBlank()) {
-                Spacer(modifier = Modifier.width(12.dp))
-                Avatar(
+                AsyncImage(
                     imageUrl = it,
                     modifier = Modifier
-                        .size(26.dp),
+                        .size(width = 36.dp, height = 24.dp).padding(start = 12.dp),
                     shape = RoundedCornerShape(0.dp),
                     placeholderPainter = painterResource(id = R.drawable.icon_default_label)
                 )

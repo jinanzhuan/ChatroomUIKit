@@ -1,6 +1,5 @@
 package io.agora.chatroom.compose.avatar
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -76,6 +75,7 @@ fun ImageAvatar(
 fun Avatar(
     imageUrl: String,
     modifier: Modifier = Modifier,
+    hideWhenLoadError: Boolean = false,
     shape: Shape = ChatroomUIKitTheme.shapes.avatar,
     placeholderPainter: Painter? = null,
     contentDescription: String? = null,
@@ -97,27 +97,18 @@ fun Avatar(
         data = imageUrl,
         placeholderPainter = defaultPainter,
     )
-    Log.e("apex","painter.state $imageUrl -  ${painter.state} ")
 
     when (painter.state) {
         is AsyncImagePainter.State.Error -> {
-            ImageAvatar(
-                modifier = modifier,
-                shape = shape,
-                painter = defaultPainter,
-                contentDescription = contentDescription,
-                onClick = onClick,
-            )
-        }
-
-        is AsyncImagePainter.State.Loading -> {
-            ImageAvatar(
-                modifier = modifier,
-                shape = shape,
-                painter = defaultPainter,
-                contentDescription = contentDescription,
-                onClick = onClick,
-            )
+            if (!hideWhenLoadError) {
+                ImageAvatar(
+                    modifier = modifier,
+                    shape = shape,
+                    painter = defaultPainter,
+                    contentDescription = contentDescription,
+                    onClick = onClick,
+                )
+            }
         }
 
         else -> {
@@ -150,7 +141,7 @@ private fun AvatarWithoutImageUrlPreview() {
 }
 
 @Composable
-private fun AvatarPreview(
+fun AvatarPreview(
     imageUrl: String,
     placeholderPainter: Painter? = null,
 ) {

@@ -1,5 +1,6 @@
 package io.agora.chatroom.viewmodel.member
 
+import android.util.Log
 import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.service.OnError
 import io.agora.chatroom.service.OnValueSuccess
@@ -16,6 +17,7 @@ data class MutedListViewModel(
      * Gets the mute list from cache.
      */
     fun getMuteList(onSuccess: OnValueSuccess<List<UserEntity>> = {}) {
+        clear()
         loading()
         val muteList = ChatroomUIKitClient.getInstance().getCacheManager().getRoomMuteList(roomId)
         muteList.map { userId ->

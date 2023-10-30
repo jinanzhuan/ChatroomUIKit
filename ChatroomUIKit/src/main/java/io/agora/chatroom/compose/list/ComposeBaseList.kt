@@ -114,14 +114,13 @@ fun LazyListState.toLazyColumnListState(): LazyColumnListState {
 fun <T> LazyColumnList(
     viewModel: ComposeBaseListViewModel<T>,
     modifier: Modifier = Modifier,
+    listState: LazyListState = rememberLazyListState(),
     reverseLayout: Boolean = false,
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
     contentPadding: PaddingValues = PaddingValues(0.dp),
     onScrollChange: (LazyColumnListState) -> Unit = {_ -> },
     itemContent: @Composable (Int, T) -> Unit
 ) {
-    // Remember our own LazyListState
-    val listState = rememberLazyListState()
     var contentPaddingSize by remember { mutableStateOf(IntSize(0, 0)) }
     val density = LocalDensity.current
 

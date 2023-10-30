@@ -9,7 +9,6 @@ import java.io.ByteArrayOutputStream
 import java.io.ObjectOutputStream
 import java.io.Serializable
 import android.util.Base64
-import android.util.Log
 import io.agora.chatroom.model.UIConstant
 import io.agora.chatroom.service.UserEntity
 import java.io.ByteArrayInputStream
@@ -35,7 +34,6 @@ class UIChatroomCacheManager{
     }
 
     fun getUserInfo(userId:String):UserEntity{
-        Log.e("apex","getUserInfo $userCache ")
         if (userCache.contains(userId)){
             return userCache[userId] ?: UserEntity(userId)
         }
@@ -50,10 +48,9 @@ class UIChatroomCacheManager{
     }
 
     fun saveRoomMemberList(roomId: String, memberList: List<String>) {
-        Log.e("apex","saveRoomMemberList $memberList ")
         val list = memberMap[roomId] ?: mutableListOf()
         list.addAll(memberList)
-        memberMap[roomId] = memberList.toSet().toMutableList()
+        memberMap[roomId] = list.toSet().toMutableList()
     }
 
     fun getRoomMemberList(roomId: String): List<String> {
@@ -67,10 +64,9 @@ class UIChatroomCacheManager{
     }
 
     fun saveRoomMuteList(roomId: String, muteList: List<String>) {
-        Log.e("apex","saveRoomMuteList $muteList ")
         val list = mutedMap[roomId] ?: mutableListOf()
         list.addAll(muteList)
-        mutedMap[roomId] = muteList.toSet().toMutableList()
+        mutedMap[roomId] = list.toSet().toMutableList()
     }
 
     fun removeRoomMuteMember(roomId: String, userId: String) {
@@ -85,7 +81,6 @@ class UIChatroomCacheManager{
 
     fun clearRoomUserCache() {
         memberMap.clear()
-        mutedMap.clear()
     }
 
     /**

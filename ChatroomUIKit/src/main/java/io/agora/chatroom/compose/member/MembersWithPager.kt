@@ -2,11 +2,16 @@ package io.agora.chatroom.compose.member
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomSheetDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
@@ -14,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
@@ -59,6 +65,9 @@ fun MembersWithPager(
         LocalContext.current, roomId, roomService))
     val mutedViewModel = viewModel(MutedListViewModel::class.java, factory = MemberViewModelFactory(
         LocalContext.current, roomId, roomService))
+
+    memberViewModel.enableLoadMore(true)
+    mutedViewModel.enableLoadMore(true)
 
     PagerWithTabs(
         viewModel = PagerViewModel(tabList = tabList),
@@ -136,6 +145,9 @@ fun MembersPage(
                 } else {
                     viewModel.fetchUsersInfo(listState.firstVisibleIndex, listState.lastVisibleIndex)
                 }
+            },
+            bottomContent = {
+                DefaultBottomLoadingAnimation()
             }
         )
     }
@@ -153,7 +165,7 @@ fun MutedListPage(
     onSearchClick: ((String) -> Unit)? = null
 ) {
     var request by rememberSaveable { mutableStateOf(autoRequest) }
-    if (autoRequest) {
+    if (request) {
         viewModel.getMuteList()
         request = false
     }
@@ -181,6 +193,9 @@ fun MutedListPage(
                 if (!listState.isScrollInProgress) {
                     viewModel.fetchUsersInfo(listState.firstVisibleIndex, listState.lastVisibleIndex)
                 }
+            },
+            bottomContent = {
+                DefaultBottomLoadingAnimation()
             }
         )
     }
@@ -198,7 +213,7 @@ fun ComposeMembersBottomSheet(
         MembersWithPager(
             roomId = viewModel.roomId,
             roomService = viewModel.roomService,
-            isAdmin = true,
+            isAdmin = viewModel.isAdmin,
             onItemClick = onItemClick,
             onExtendClick = onExtendClick,
             onSearchClick = onSearchClick
@@ -228,4 +243,18 @@ fun ComposeMembersBottomSheet(
         dragHandle = dragHandle,
         windowInsets = windowInsets
     )
+}
+
+@Composable
+fun DefaultBottomLoadingAnimation() {
+    Box(modifier = Modifier
+        .fillMaxWidth()
+        .height(40.dp), contentAlignment = Alignment.Center) {
+        CircularProgressIndicator(
+            modifier = Modifier.size(20.dp),
+            color = ChatroomUIKitTheme.colors.primary,
+            strokeWidth = 2.dp,
+            trackColor = ChatroomUIKitTheme.colors.background
+        )
+    }
 }
