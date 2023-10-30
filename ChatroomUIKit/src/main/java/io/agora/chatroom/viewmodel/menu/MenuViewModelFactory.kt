@@ -3,7 +3,6 @@ package io.agora.chatroom.viewmodel.menu
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import io.agora.chatroom.ChatroomUIKitClient
-import io.agora.chatroom.UIChatroomContext
 import io.agora.chatroom.model.UIComposeSheetItem
 
 class MenuViewModelFactory(
@@ -24,6 +23,13 @@ class MenuViewModelFactory(
                 isShowCancel = isShowCancel
             )
         },
+        MessageMenuViewModel::class.java to {
+            MessageMenuViewModel(
+                isShowTitle = isShowTitle,
+                isShowCancel = isShowCancel,
+                title = title
+            )
+        },
         RoomMemberMenuViewModel::class.java to {
             RoomMemberMenuViewModel(
                 isDarkTheme = isDarkTheme,
@@ -41,7 +47,7 @@ class MenuViewModelFactory(
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         val viewModel: ViewModel = factories[modelClass]?.invoke()
             ?: throw IllegalArgumentException(
-                "MessageListViewModelFactory can only create instances of " +
+                "MenuViewModelFactory can only create instances of " +
                         "the following classes: ${factories.keys.joinToString { it.simpleName }}"
             )
 

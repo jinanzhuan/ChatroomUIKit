@@ -27,9 +27,9 @@ class ComposeChatListController(
         }
     }
 
-    fun updateTextMessage(index: Int,message: ChatMessage){
+    fun updateTextMessage(message: ChatMessage){
         if (message.conversationId() == roomId){
-            messageState.updateMessage(index,ComposeMessageItemState(message))
+            messageState.updateMessage(ComposeMessageItemState(message))
         }
     }
 
@@ -57,18 +57,20 @@ class ComposeChatListController(
         }
     }
 
+    /**
+     * Returns the message with the given id.
+     * @param messageId The id of the message to return.
+     */
+    fun getMessage(messageId: String): ComposeMessageListItemState? {
+        return messageState.getMessage(messageId)
+    }
+
     fun removeMessageByIndex(index: Int){
         messageState.removeMessageByIndex(index)
     }
 
     fun removeMessage(msg: ComposeMessageListItemState){
-        val conversationId:String = when (msg) {
-            is JoinedMessageState -> msg.message.conversationId()
-            is GiftMessageState -> msg.message.conversationId()
-            is ComposeMessageItemState -> msg.message.conversationId()
-            else -> { "" }
-        }
-        if (conversationId == roomId){
+        if (msg.conversationId == roomId){
             messageState.removeMessage(msg)
         }
     }

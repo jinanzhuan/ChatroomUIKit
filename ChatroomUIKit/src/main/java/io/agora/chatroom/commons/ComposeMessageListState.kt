@@ -35,10 +35,22 @@ data class ComposeMessageListState(
         _messages.addAll(index,msgList)
     }
 
-    fun updateMessage(index: Int,newState: ComposeMessageListItemState){
-        if (index in 0 until _messages.size) {
-            _messages[index] = newState
+    fun updateMessage(newState: ComposeMessageListItemState){
+        _messages.replaceAll {
+            if (it.messageId == newState.messageId){
+                newState
+            }else{
+                it
+            }
         }
+    }
+
+    /**
+     * Returns the message with the given id.
+     * @param messageId The id of the message to return.
+     */
+    fun getMessage(messageId: String): ComposeMessageListItemState? {
+        return _messages.find { it.messageId == messageId }
     }
 
     fun removeMessage(msg: ComposeMessageListItemState){

@@ -18,6 +18,7 @@ import io.agora.chatroom.viewmodel.gift.ComposeGiftSheetViewModel
 
 class MessagesViewModelFactory(
     private val context: Context,
+    private val roomId: String,
     private val service: UIChatroomService,
     private val isDarkTheme: Boolean? = ChatroomUIKitClient.getInstance().getContext().getCurrentTheme(),
     private val showDateSeparators: Boolean = true,
@@ -53,6 +54,8 @@ class MessagesViewModelFactory(
                 showDateSeparators = showDateSeparators,
                 showLabel = showLabel,
                 showAvatar = showAvatar,
+                roomId = roomId,
+                chatService = service,
                 composeChatListController = ComposeChatListController(
                     roomId = service.getRoomInfo().roomId,
                     messageState = ComposeMessageListState(),
@@ -73,7 +76,7 @@ class MessagesViewModelFactory(
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         val viewModel: ViewModel = factories[modelClass]?.invoke()
             ?: throw IllegalArgumentException(
-                "MessageListViewModelFactory can only create instances of " +
+                "MessagesViewModelFactory can only create instances of " +
                         "the following classes: ${factories.keys.joinToString { it.simpleName }}"
             )
 

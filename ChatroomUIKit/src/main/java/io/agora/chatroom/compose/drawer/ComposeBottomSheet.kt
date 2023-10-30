@@ -198,7 +198,8 @@ fun DefaultDragHandle(
 @Composable
 fun DefaultDrawerContent(viewModel: MenuViewModel, onListItemClick: (Int, UIComposeSheetItem) -> Unit){
     val items = remember { mutableStateListOf<UIComposeSheetItem>() }
-    items.addAll(viewModel.list)
+    val sortedList = viewModel.list.sortedBy { it.index }
+    items.addAll(sortedList)
     LazyColumn(
         modifier = Modifier
             .padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
