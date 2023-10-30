@@ -10,6 +10,7 @@ typealias ChatOptions = io.agora.chat.ChatOptions
 typealias ChatCallback = io.agora.CallBack
 typealias ChatValueCallback<T> = io.agora.ValueCallBack<T>
 typealias ChatCursorResult<T> = io.agora.chat.CursorResult<T>
+typealias ChatPageResult<T> = io.agora.chat.PageResult<T>
 
 typealias ChatException = io.agora.exceptions.ChatException
 typealias ChatError =  io.agora.Error

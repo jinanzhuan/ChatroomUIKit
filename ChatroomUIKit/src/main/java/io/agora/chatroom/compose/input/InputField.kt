@@ -7,7 +7,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -39,6 +40,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import io.agora.chatroom.theme.BodyLarge
 import io.agora.chatroom.theme.ChatroomUIKitTheme
@@ -59,6 +61,7 @@ fun InputField(
     maxLines: Int = Int.MAX_VALUE,
     border: BorderStroke = BorderStroke(1.dp, ChatroomUIKitTheme.colors.inputSurface),
     innerPadding: PaddingValues = PaddingValues(horizontal = 8.dp, vertical = 5.dp),
+    visualTransformation: VisualTransformation = VisualTransformation.None,
     keyboardOptions: KeyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
     placeholder: @Composable (() -> Unit)? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
@@ -92,7 +95,6 @@ fun InputField(
 
     BasicTextField(
         modifier = modifier
-            .height(50.dp)
             .focusRequester(focus)
             .border(border = border, shape = LargeCorner)
             .clip(LargeCorner)
@@ -110,13 +112,14 @@ fun InputField(
         cursorBrush = SolidColor(ChatroomUIKitTheme.colors.primary),
         decorationBox = { innerTextField ->
             if (decorationBox == null) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxSize()) {
 
                     leadingIcon?.let { it.invoke() }
 
                     Box(
                         modifier = Modifier
-                            .weight(1f),
+                            .weight(1f)
+                            .fillMaxWidth(),
                         contentAlignment = Alignment.CenterStart
                     ) {
                         innerTextField()
@@ -133,6 +136,7 @@ fun InputField(
         maxLines = maxLines,
         singleLine = maxLines == 1,
         enabled = enabled,
+        visualTransformation= visualTransformation,
         keyboardOptions = keyboardOptions,
         keyboardActions = KeyboardActions(onDone = {
             focusManager.clearFocus()

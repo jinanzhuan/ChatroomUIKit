@@ -10,13 +10,19 @@ import android.widget.FrameLayout
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.agora.CallBack
 import io.agora.chatroom.compose.ComposeChatScreen
+import io.agora.chatroom.compose.LoadingIndicator
 import io.agora.chatroom.compose.gift.ComposeGiftItemState
 import io.agora.chatroom.service.ChatClient
 import io.agora.chatroom.service.ChatLog
@@ -39,10 +45,9 @@ import io.agora.chatroom.viewmodel.messages.MessageListViewModel
 
 class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListener {
     private val mRoomViewBinding = ActivityUiChatroomTestBinding.inflate(LayoutInflater.from(context))
-    private val inputField: MutableState<Boolean> = mutableStateOf(false)
     private val closeMemberSheet: MutableState<Boolean> = mutableStateOf(false)
+    private val isLoginRoom by lazy { mutableStateOf(true) }
     private lateinit var listViewModel:MessageListViewModel
-    private lateinit var giftListViewModel:ComposeGiftListViewModel
     private lateinit var service:UIChatroomService
     private val launcherToSearch: ActivityResultLauncher<Intent>   =
         (context as ComponentActivity).registerForActivityResult(
@@ -69,36 +74,24 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
         service.getChatService().bindListener(this)
         service.getGiftService().bindGiftListener(this)
 
-        if (ChatClient.getInstance().isLoggedInBefore && ChatClient.getInstance().options.autoLogin) {
-            joinChatroom(roomId, onSuccess = {
-                ChatLog.e("apex","joinChatroom onSuccess")
-            }, onError = { code, error ->
-                (context as Activity).finish()
-            })
-        } else {
-            // 测试登录代码
-            ChatClient.getInstance().login("apex1","1",object : CallBack {
-                override fun onSuccess() {
-                    Log.e("apex","login onSuccess")
-                    ChatroomUIKitClient.getInstance().getChatroomUser().setUserInfo(
-                        "apex1", UserEntity(userId = "apex1", nickName = "大威天龙")
-                    )
-                    joinChatroom(roomId,onSuccess = {
-                        ChatLog.e("apex","joinChatroom onSuccess")
-                    }, onError = { code, error ->
-                        (context as Activity).finish()
-                    })
-                }
-
-                override fun onError(code: Int, error: String?) {
-                    Log.e("apex","login onError $code  $error")
-                    (context as Activity).finish()
-                }
-            })
-        }
+        joinChatroom(roomId, onSuccess = {
+            isLoginRoom.value = false
+            ChatLog.e("apex","joinChatroom onSuccess")
+        }, onError = { code, error ->
+            Log.e("apex","joinChatroom onError $code $error")
+        })
 
         loadComponent(roomId, service)
 
+    }
+
+    @Composable
+    private fun loginToRoom() {
+        ChatroomUIKitTheme {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                LoadingIndicator()
+            }
+        }
     }
 
     private fun loadComponent(
@@ -108,23 +101,28 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
         mRoomViewBinding.composeChatroom.setContent {
 
             ChatroomUIKitTheme{
-                val membersBottomSheetViewModel = viewModel(MembersBottomSheetViewModel::class.java,
-                    factory = MemberViewModelFactory(roomId = roomId, service = service,
-                        isRoomAdmin = ChatroomUIKitClient.getInstance().getContext().getCurrentRoomInfo().roomOwner?.userId == ChatClient.getInstance().currentUser))
 
-                ComposeChatScreen(
-                    roomId = roomId,
-                    service = service,
-                    membersBottomSheetViewModel = membersBottomSheetViewModel,
-                    onMemberSheetSearchClick = {
-                        tab->
-                        launcherToSearch.launch(UISearchActivity.createIntent(context, roomId, tab))
-                    }
-                )
+                if (isLoginRoom.value) {
+                    loginToRoom()
+                } else {
+                    val membersBottomSheetViewModel = viewModel(MembersBottomSheetViewModel::class.java,
+                        factory = MemberViewModelFactory(roomId = roomId, service = service,
+                            isRoomAdmin = ChatroomUIKitClient.getInstance().getContext().getCurrentRoomInfo().roomOwner?.userId == ChatClient.getInstance().currentUser))
 
-                LaunchedEffect(closeMemberSheet.value) {
-                    if (closeMemberSheet.value){
-                        membersBottomSheetViewModel.closeDrawer()
+                    ComposeChatScreen(
+                        roomId = roomId,
+                        service = service,
+                        membersBottomSheetViewModel = membersBottomSheetViewModel,
+                        onMemberSheetSearchClick = {
+                                tab->
+                            launcherToSearch.launch(UISearchActivity.createIntent(context, roomId, tab))
+                        }
+                    )
+
+                    LaunchedEffect(closeMemberSheet.value) {
+                        if (closeMemberSheet.value){
+                            membersBottomSheetViewModel.closeDrawer()
+                        }
                     }
                 }
             }
@@ -399,10 +397,9 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
 
 
     fun joinChatroom(roomId:String, onSuccess: OnSuccess = {}, onError: OnError = {_, _ ->}){
-        service.getChatService().joinChatroom(roomId,"apex1"
+        Log.e("apex","joinChatroom roomId: $roomId userId: ${ChatClient.getInstance().currentUser}")
+        service.getChatService().joinChatroom(roomId, ChatClient.getInstance().currentUser
             , onSuccess = {
-//                UIChatroomCacheManager.cacheManager.saveOwner(it.owner)
-//                UIChatroomCacheManager.cacheManager.saveAdminList(it.adminList)
                 listViewModel.addJoinedMessageByIndex(
                     message = ChatroomUIKitClient.getInstance().insertJoinedMessage(
                         roomId,ChatroomUIKitClient.getInstance().getCurrentUser().userId
