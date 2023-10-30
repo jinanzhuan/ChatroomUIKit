@@ -212,6 +212,11 @@ class ChatroomUIKitClient : MessageListener, ChatRoomChangeListener {
         return null
     }
 
+    fun clear(){
+        eventListeners.clear()
+        giftListeners.clear()
+    }
+
     private fun parseJoinedMsg(msg: ChatMessage):UserInfoProtocol? {
         if (msg.ext().containsKey(UIConstant.CHATROOM_UIKIT_USER_INFO)){
             return try {
@@ -234,8 +239,7 @@ class ChatroomUIKitClient : MessageListener, ChatRoomChangeListener {
     }
 
     override fun onChatRoomDestroyed(roomId: String, roomName: String) {
-        eventListeners.clear()
-        giftListeners.clear()
+        clear()
         roomListener.onRoomDestroyed(roomId,roomName)
     }
 

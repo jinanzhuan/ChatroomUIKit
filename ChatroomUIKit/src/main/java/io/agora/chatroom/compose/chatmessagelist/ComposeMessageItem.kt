@@ -289,7 +289,7 @@ fun DrawAvatarImage(userInfo:UserEntity?){
             .clip(shape = CircleShape) // 将图片裁剪为圆形
     ) {
         Image(
-            modifier = Modifier,
+            modifier = Modifier.padding(2.dp),
             painter = if (avatarUrl?.isEmpty() == true)painterResource(id = R.drawable.icon_default_avatar) else painter,
             contentDescription = "Avatar"
         )

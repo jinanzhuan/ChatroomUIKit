@@ -1,6 +1,7 @@
 package io.agora.chatroom.viewmodel.messages
 
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import io.agora.chatroom.commons.ComposerChatBarController
@@ -16,7 +17,7 @@ class MessageChatBarViewModel(
     private val menuItemResource: List<UIChatBarMenuItem>,
 ) : ViewModel(){
 
-    private val _columns : MutableState<Int> = mutableStateOf(emojiColumns)
+    private val _columns : MutableState<Int> = mutableIntStateOf(emojiColumns)
     var eColumns = _columns
 
     private val _showEmoji : MutableState<Boolean> = mutableStateOf(false)

@@ -42,7 +42,6 @@ import io.agora.chatroom.compose.gift.ComposeGiftItemState
 import io.agora.chatroom.compose.gift.ComposeGiftList
 import io.agora.chatroom.compose.member.ComposeMembersBottomSheet
 import io.agora.chatroom.compose.report.ComposeMessageReport
-import io.agora.chatroom.data.LanguageType
 import io.agora.chatroom.data.initialLongClickMenu
 import io.agora.chatroom.data.reportTagList
 import io.agora.chatroom.model.report.UIReportEntity
@@ -193,7 +192,7 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
                     val (giftList, msgList, bottomBar) = createRefs()
                     ComposeGiftBottomSheet(
                         modifier = Modifier
-                            .height((LocalConfiguration.current.screenHeightDp/2).dp),
+                            .height(defaultBottomSheetHeight.dp),
                         viewModel = giftViewModel,
                         containerColor = ChatroomUIKitTheme.colors.background,
                         screenContent = {},
@@ -459,8 +458,6 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
     fun joinChatroom(roomId:String, onSuccess: OnSuccess = {}, onError: OnError = {_, _ ->}){
         service.getChatService().joinChatroom(roomId,"apex1"
             , onSuccess = {
-//                UIChatroomCacheManager.cacheManager.saveOwner(it.owner)
-//                UIChatroomCacheManager.cacheManager.saveAdminList(it.adminList)
                 listViewModel.addJoinedMessageByIndex(
                     message = ChatroomUIKitClient.getInstance().insertJoinedMessage(
                         roomId,ChatroomUIKitClient.getInstance().getCurrentUser().userId

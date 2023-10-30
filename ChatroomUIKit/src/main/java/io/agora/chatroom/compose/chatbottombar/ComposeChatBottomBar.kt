@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -32,9 +33,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Bottom
 import androidx.compose.ui.Modifier
@@ -237,12 +238,13 @@ fun ComposeChatBottomBar(
         snackbarHostState = snackbarHostState
     )
 
-    val kbHeight =  remember { mutableStateOf(0) }
+    val exH =  remember { mutableIntStateOf(0) }
+    val exHeight by exH
+
+    val kbHeight =  remember { mutableIntStateOf(0) }
     val keyboardHeight by kbHeight
 
     val navigationBarsHeight = WindowInsets.navigationBars.getBottom(Density(LocalContext.current))
-
-    val coroutineScope = rememberCoroutineScope()
 
     AndroidView(factory = { context ->
         ConstraintLayout(context).apply {
@@ -251,17 +253,18 @@ fun ComposeChatBottomBar(
                 getWindowVisibleDisplayFrame(rect)
                 val screenHeight = rootView.height
                 val keypadHeight = screenHeight - rect.bottom
-                Log.e("apex","screenHeight $screenHeight  - rect.bottom : ${rect.bottom} keypadHeight: $keypadHeight")
                 if (keypadHeight > screenHeight * 0.15) { // A threshold to filter the visibility of the keypad
-                    kbHeight.value = keypadHeight
+                    kbHeight.intValue = keypadHeight
+                }else{
+                    viewModel.hideKeyBoard()
                 }
             }
         }
     })
-    Log.e("apex"," $keyboardHeight")
+    Log.e("apex","keyboardHeight  $keyboardHeight")
     Log.e("apex","navigationBars:  ${WindowInsets.navigationBars.getBottom(Density(LocalContext.current))}")
 
-    val opHeight = DisplayUtils.pxToDp(keyboardHeight - navigationBarsHeight).toInt()
+    exH.intValue = DisplayUtils.pxToDp(keyboardHeight - navigationBarsHeight).toInt()
 
     Box(modifier = modifier.navigationBarsPadding()) {
         if (showInput){
@@ -288,7 +291,6 @@ fun ComposeChatBottomBar(
 
                     emojiContent(composerMessageState,object : (Boolean) -> Unit{
                         override fun invoke(isShowEmoji: Boolean) {
-                            Log.e("apex","isShowEmoji: $isShowEmoji")
                             if (isShowEmoji){
                                 viewModel.hideKeyBoard()
                                 viewModel.showEmoji()
@@ -305,22 +307,18 @@ fun ComposeChatBottomBar(
                 if (viewModel.isShowEmoji.value){
                     DefaultComposerEmoji(
                         isDarkTheme = isDarkTheme,
-                        maxH = opHeight,
+                        maxH = exHeight,
                         emojis = emojiList,
                         viewModel = viewModel
                     )
                 }
 
-                Log.e("apex","aaa $opHeight")
-//                coroutineScope.launch {
-//                    delay(1000) // 延迟1秒
-//                    // 执行需要延迟的操作
-//                }
-
                 Row(
                     Modifier
+                        .imePadding()
+                        .background(Color.Yellow)
                         .fillMaxWidth()
-                        .height(if (viewModel.isShowKeyboard.value) 269.dp else 0.dp)
+                        .wrapContentHeight()
                         .background(ChatroomUIKitTheme.colors.background),
                     verticalAlignment = Bottom
                 ) {
@@ -555,9 +553,6 @@ internal fun DefaultMessageComposerEmojiContent(
                 contentDescription = stringResource(id = R.string.stream_compose_send_message),
                 tint = ChatroomUIKitTheme.colors.onBackground
             )
-//            LaunchedEffect(resource) {
-//                Log.e("apex","LaunchedEffect:  ${resource}")
-//            }
         },
         onClick = {
             isShowEmoji = !isShowEmoji
