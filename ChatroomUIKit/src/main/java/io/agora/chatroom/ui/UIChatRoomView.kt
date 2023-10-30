@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
+import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.binder.UIChatListBinder
 import io.agora.chatroom.binder.UIChatRoomBinder
 import io.agora.chatroom.viewmodel.messages.MessagesViewModelFactory
@@ -76,6 +77,7 @@ class UIChatRoomView : FrameLayout{
     ): MessagesViewModelFactory {
         return MessagesViewModelFactory(
             context = context,
+            roomId = ChatroomUIKitClient.getInstance().getContext().getCurrentRoomInfo().roomId,
             service = service,
             showDateSeparators = showDateSeparators,
             showLabel = showLabel,

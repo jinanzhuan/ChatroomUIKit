@@ -61,10 +61,8 @@ fun MembersWithPager(
     if (isAdmin) {
         tabList += TabInfo(stringResource(id = R.string.member_management_mute))
     }
-    val memberViewModel = viewModel(MemberListViewModel::class.java, factory = MemberViewModelFactory(
-        LocalContext.current, roomId, roomService))
-    val mutedViewModel = viewModel(MutedListViewModel::class.java, factory = MemberViewModelFactory(
-        LocalContext.current, roomId, roomService))
+    val memberViewModel = viewModel(MemberListViewModel::class.java, factory = MemberViewModelFactory(roomId, roomService, isRoomAdmin = isAdmin))
+    val mutedViewModel = viewModel(MutedListViewModel::class.java, factory = MemberViewModelFactory(roomId, roomService, isRoomAdmin = isAdmin))
 
     memberViewModel.enableLoadMore(true)
     mutedViewModel.enableLoadMore(true)

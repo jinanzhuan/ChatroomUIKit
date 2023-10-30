@@ -1,25 +1,36 @@
 package io.agora.chatroom.viewmodel.member
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import io.agora.chatroom.ui.UIChatroomService
 
 class MemberViewModelFactory(
-    private val context: Context,
     private val roomId: String,
     private val service: UIChatroomService,
+    private val isRoomAdmin: Boolean,
+    private val pageSize: Int = 10
 ): ViewModelProvider.Factory {
 
     private val factories: Map<Class<*>, () -> ViewModel> = mapOf(
         MemberListViewModel::class.java to {
             MemberListViewModel(
-                roomId, service
+                roomId = roomId,
+                service = service,
+                pageSize = pageSize
             )
         },
         MutedListViewModel::class.java to {
             MutedListViewModel(
-                roomId, service
+                roomId = roomId,
+                service = service,
+                pageSize = pageSize
+            )
+        },
+        MembersBottomSheetViewModel::class.java to {
+            MembersBottomSheetViewModel(
+                roomId = roomId,
+                roomService = service,
+                isAdmin = isRoomAdmin
             )
         }
     )
