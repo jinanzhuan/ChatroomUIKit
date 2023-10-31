@@ -81,7 +81,7 @@ class ChatroomUIKitClient : MessageListener, ChatRoomChangeListener {
         currentRoomContext.setRoomContext(applicationContext)
         val chatOptions = ChatOptions()
         chatOptions.appKey = appKey
-        chatOptions.autoLogin = false
+        chatOptions.autoLogin = true
         ChatClient.getInstance().init(applicationContext,chatOptions)
         cacheManager.init(applicationContext)
     }

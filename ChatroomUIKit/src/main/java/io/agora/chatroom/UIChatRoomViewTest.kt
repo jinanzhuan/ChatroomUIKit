@@ -42,13 +42,19 @@ import io.agora.chatroom.viewmodel.member.MemberViewModelFactory
 import io.agora.chatroom.viewmodel.member.MembersBottomSheetViewModel
 import io.agora.chatroom.viewmodel.member.MutedListViewModel
 import io.agora.chatroom.viewmodel.messages.MessageListViewModel
+import io.agora.chatroom.viewmodel.messages.MessagesViewModelFactory
 
 class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListener {
     private val mRoomViewBinding = ActivityUiChatroomTestBinding.inflate(LayoutInflater.from(context))
     private val closeMemberSheet: MutableState<Boolean> = mutableStateOf(false)
-    private val isLoginRoom by lazy { mutableStateOf(true) }
-    private lateinit var listViewModel:MessageListViewModel
     private lateinit var service:UIChatroomService
+    private lateinit var roomId:String
+    private val isLoginRoom by lazy { mutableStateOf(true) }
+    private val listViewModel by lazy {
+        ViewModelProvider(context as ComponentActivity,
+            factory = MessagesViewModelFactory(context = context, roomId = roomId, service = service))[MessageListViewModel::class.java]
+    }
+
     private val launcherToSearch: ActivityResultLauncher<Intent>   =
         (context as ComponentActivity).registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
@@ -69,7 +75,7 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
     fun bindService(service: UIChatroomService?){
         if (service == null) return
         this.service = service
-        val roomId = service.getRoomInfo().roomId
+        roomId = service.getRoomInfo().roomId
 
         service.getChatService().bindListener(this)
         service.getGiftService().bindGiftListener(this)
@@ -399,7 +405,8 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
     fun joinChatroom(roomId:String, onSuccess: OnSuccess = {}, onError: OnError = {_, _ ->}){
         Log.e("apex","joinChatroom roomId: $roomId userId: ${ChatClient.getInstance().currentUser}")
         service.getChatService().joinChatroom(roomId, ChatClient.getInstance().currentUser
-            , onSuccess = {
+            , onSuccess = { chatroom->
+                Log.e("apex","joinChatroom  $roomId onSuccess")
                 listViewModel.addJoinedMessageByIndex(
                     message = ChatroomUIKitClient.getInstance().insertJoinedMessage(
                         roomId,ChatroomUIKitClient.getInstance().getCurrentUser().userId
@@ -410,7 +417,7 @@ class UIChatRoomViewTest : FrameLayout, ChatroomChangeListener, GiftReceiveListe
                 onSuccess.invoke()
             }
             , onError = {errorCode,result->
-                Log.e("apex","joinChatroom  193314355740675 onError $errorCode $result")
+                Log.e("apex","joinChatroom  $roomId onError $errorCode $result")
                 onError.invoke(errorCode,result)
             }
         )
