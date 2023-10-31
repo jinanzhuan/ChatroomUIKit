@@ -34,11 +34,13 @@ import io.agora.chatroom.ui.UIChatroomActivity
 import io.agora.chatroom.compose.drawer.ComposeBottomSheet
 import io.agora.chatroom.compose.drawer.ComposeMenuBottomSheet
 import io.agora.chatroom.compose.list.LazyColumnList
+import io.agora.chatroom.compose.marquee.MainScreen
 import io.agora.chatroom.compose.report.ComposeMessageReport
 import io.agora.chatroom.data.initialLongClickMenu
 import io.agora.chatroom.data.testMenuList1
 import io.agora.chatroom.model.UIChatroomInfo
 import io.agora.chatroom.model.UIComposeSheetItem
+import io.agora.chatroom.model.marquee.UINotification
 import io.agora.chatroom.theme.BodyLarge
 import io.agora.chatroom.theme.ChatroomUIKitTheme
 import io.agora.chatroom.theme.neutralColor20
@@ -84,6 +86,12 @@ class MainActivity : ComponentActivity() {
                     ShowComposeMenuDrawer(viewModel = viewModel1,viewModel5 = viewModel5)
                     ShowDefaultComposeDrawer(viewModel = viewModel2)
                     testLazyColumn(viewModel = viewModel4)
+                    MainScreen(
+                        UINotification(content = mutableListOf(
+                            "Compose has finally added support for Marquee! It's soo easy to implement!",
+                            "Notification 1 Notification 1 Notification 1 Notification 1",
+                            "Compose has finally added support for Marquee! It's soo easy to implement!",
+                    )))
                     ComposeMessageReport(
                         modifier = Modifier.height((LocalConfiguration.current.screenHeightDp/2).dp),
                         containerColor = ChatroomUIKitTheme.colors.background,
