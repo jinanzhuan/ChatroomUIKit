@@ -64,7 +64,7 @@ class ChatroomServiceImpl: ChatroomService {
             onError(ChatError.INVALID_PARAM, "")
             return
         }
-        chatroomManager.leaveChatRoom(roomId)
+        chatroomManager.leaveChatRoom(roomId, CallbackImpl(onSuccess, onError))
     }
 
     override fun fetchMembers(
