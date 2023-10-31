@@ -17,7 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import io.agora.chatroom.compose.LoadingIndicator
+import io.agora.chatroom.compose.indicator.LoadingIndicator
 import io.agora.chatroom.theme.ChatroomUIKitTheme
 import io.agora.chatroom.viewmodel.messages.MessageListViewModel
 import io.agora.chatroom.uikit.R

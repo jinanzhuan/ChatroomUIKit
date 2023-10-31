@@ -119,6 +119,7 @@ fun <T> LazyColumnList(
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
     contentPadding: PaddingValues = PaddingValues(0.dp),
     onScrollChange: (LazyColumnListState) -> Unit = {_ -> },
+    bottomContent: @Composable (() -> Unit)? = null,
     itemContent: @Composable (Int, T) -> Unit
 ) {
     var contentPaddingSize by remember { mutableStateOf(IntSize(0, 0)) }
@@ -148,6 +149,12 @@ fun <T> LazyColumnList(
             itemsIndexed(viewModel.items) { index, item ->
                 Box{
                     itemContent(index, item)
+                }
+            }
+
+            bottomContent?.let { bottom ->
+                item {
+                    bottom.invoke()
                 }
             }
         }

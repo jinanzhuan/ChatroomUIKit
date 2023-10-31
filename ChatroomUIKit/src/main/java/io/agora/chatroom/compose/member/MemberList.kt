@@ -1,27 +1,25 @@
 package io.agora.chatroom.compose.member
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.agora.chatroom.ChatroomUIKitClient
+import io.agora.chatroom.compose.indicator.LoadingIndicator
 import io.agora.chatroom.compose.list.LazyColumnList
 import io.agora.chatroom.compose.list.LazyColumnListState
 import io.agora.chatroom.service.UserEntity
+import io.agora.chatroom.uikit.R
 import io.agora.chatroom.viewmodel.LoadMoreState
 import io.agora.chatroom.viewmodel.RefreshState
 import io.agora.chatroom.viewmodel.RequestState
 import io.agora.chatroom.viewmodel.member.MemberListViewModel
-import kotlinx.coroutines.launch
 
 @Composable
 fun MemberList(
@@ -45,10 +43,7 @@ fun MemberList(
         )
     }
 ) {
-    var canScroll by rememberSaveable { mutableStateOf(false) }
-    var targetPosition by rememberSaveable { mutableStateOf(0) }
     val state = viewModel.getState
-    val scope = rememberCoroutineScope()
     if (viewModel.isEnableRefresh) {
         headerContent?.let { header ->
             header.invoke()
@@ -60,13 +55,16 @@ fun MemberList(
         listState = listState,
         contentPadding = contentPadding,
         onScrollChange = onScrollChange,
+        bottomContent = bottomContent?.let { bottom ->
+            {
+                bottom.invoke()
+            }
+        } ?:{
+            if (viewModel.isEnableLoadMore && viewModel.getLoadMoreState is LoadMoreState.Loading) {
+                DefaultBottomLoadingAnimation()
+            }
+        },
         itemContent = itemContent)
-
-    if (viewModel.isEnableLoadMore) {
-        bottomContent?.let { bottom ->
-            bottom.invoke()
-        }
-    }
 
     LaunchedEffect(state) {
         when (state) {
@@ -90,15 +88,6 @@ fun MemberList(
 
             is RequestState.SuccessMore<*> -> {
                 if (viewModel.isEnableLoadMore && viewModel.getLoadMoreState is LoadMoreState.Loading) {
-                    if (viewModel.items.isNotEmpty()) {
-                        if (viewModel.getLoadMoreState is LoadMoreState.Loading) {
-                            val lastIndex = (viewModel.getLoadMoreState as LoadMoreState.Loading).lastIndex
-                            if (viewModel.items.size - 1 > lastIndex) {
-                                targetPosition = listState.firstVisibleItemIndex + 1
-                                canScroll = true
-                            }
-                        }
-                    }
                     viewModel.changeLoadMoreState(LoadMoreState.Success)
                 }
             }
@@ -117,18 +106,14 @@ fun MemberList(
             }
         }
     }
+}
 
-    LaunchedEffect(listState) {
-        snapshotFlow { listState.isScrollInProgress }
-            .collect { isScrollInProgress ->
-                if(!isScrollInProgress) {
-                    if (canScroll) {
-                        scope.launch {
-                            listState.animateScrollToItem(targetPosition)
-                        }
-                        canScroll = false
-                    }
-                }
-            }
-    }
+@Composable
+fun DefaultBottomLoadingAnimation() {
+    LoadingIndicator(
+        modifier = Modifier
+        .fillMaxWidth()
+        .height(40.dp),
+        loadingContent = stringResource(id = R.string.loading_more)
+    )
 }
