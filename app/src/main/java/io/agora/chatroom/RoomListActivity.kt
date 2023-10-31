@@ -19,11 +19,19 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.MailOutline
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -35,11 +43,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.agora.chatroom.compose.input.InputField
 import io.agora.chatroom.compose.list.LazyColumnList
 import io.agora.chatroom.service.ChatCallback
 import io.agora.chatroom.service.ChatClient
+import io.agora.chatroom.service.ChatConnectionListener
 import io.agora.chatroom.service.ChatPageResult
 import io.agora.chatroom.service.ChatValueCallback
 import io.agora.chatroom.service.Chatroom
@@ -71,45 +81,120 @@ class RoomListActivity: ComponentActivity() {
 
             }
         }
+
+        initListener()
     }
 
+    private fun initListener() {
+        ChatClient.getInstance().addConnectionListener(object : ChatConnectionListener{
+            override fun onConnected() {
+
+            }
+
+            override fun onDisconnected(errorCode: Int) {
+
+            }
+
+            override fun onLogout(errorCode: Int, info: String?) {
+                super.onLogout(errorCode, info)
+                ChatClient.getInstance().logout(true, object : ChatCallback {
+                    override fun onSuccess() {
+                        hideLogin.value = false
+                        (application as ChatroomApplication).getUserActivityLifecycleCallbacks().finishAll()
+                    }
+
+                    override fun onError(error: Int, errorMsg: String) {
+                        Log.d("Chatroom", "logout failed $error $errorMsg")
+                    }
+                })
+            }
+
+        })
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun showRoomList() {
         chatRoomListViewModel.fetchPublicRoom()
-        LazyColumnList(
-            modifier = Modifier.fillMaxSize(),
-            viewModel = chatRoomListViewModel,
-            onScrollChange = { listState ->
-                if (listState.isScrollInProgress && !listState.canScrollForward) {
-                    chatRoomListViewModel.fetchMorePublicRoom()
-                }
-            },
-            contentPadding = PaddingValues(10.dp),
+        val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+        Scaffold(
+            topBar = {
+                CenterAlignedTopAppBar(
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = ChatroomUIKitTheme.colors.primary,
+                        titleContentColor = ChatroomUIKitTheme.colors.onPrimary,
+                    ),
+                    title = {
+                        Text(
+                            "Room List",
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    },
+                    actions = {
+                        IconButton(onClick = { logout() }) {
+                            Icon(
+                                imageVector = Icons.Filled.Menu,
+                                contentDescription = "Localized description"
+                            )
+                        }
+                    },
+                    scrollBehavior = scrollBehavior,
+                )
+            }
+        ) {
+            LazyColumnList(
+                modifier = Modifier.fillMaxSize().padding(it),
+                viewModel = chatRoomListViewModel,
+                onScrollChange = { listState ->
+                    if (listState.isScrollInProgress && !listState.canScrollForward) {
+                        chatRoomListViewModel.fetchMorePublicRoom()
+                    }
+                },
+                contentPadding = PaddingValues(10.dp),
             ) { index, item ->
 
-            Surface(
-                modifier = Modifier.padding(vertical = 10.dp).clickable{
-                                                                       skipToTarget(item)
-                },
-                shape = RoundedCornerShape(10.dp)
-            ) {
-                Column(modifier = Modifier
-                    .fillMaxWidth()
-                    .background(ChatroomUIKitTheme.colors.background)
-                    .height(50.dp)
-                    .padding(horizontal = 20.dp), horizontalAlignment = Alignment.Start) {
-                    Text(text = item.name)
-                    Text(text = item.id)
+                Surface(
+                    modifier = Modifier
+                        .padding(vertical = 10.dp)
+                        .clickable {
+                            skipToTarget(item)
+                        },
+                    shape = RoundedCornerShape(10.dp)
+                ) {
+                    Column(
+                        modifier = Modifier
+                        .fillMaxWidth()
+                        .background(ChatroomUIKitTheme.colors.background)
+                        .height(50.dp)
+                        .padding(horizontal = 20.dp),
+                        horizontalAlignment = Alignment.Start,
+                        verticalArrangement = Arrangement.Center) {
+                        Text(text = item.name, style = ChatroomUIKitTheme.typography.bodyLarge)
+                        Text(text = item.id, style = ChatroomUIKitTheme.typography.bodyMedium)
+                    }
                 }
+
+            }
+        }
+    }
+
+    private fun logout() {
+        ChatClient.getInstance().logout(true, object : ChatCallback {
+            override fun onSuccess() {
+                hideLogin.value = false
+                (application as ChatroomApplication).getUserActivityLifecycleCallbacks().finishAll()
             }
 
-        }
+            override fun onError(error: Int, errorMsg: String) {
+                Log.d("Chatroom", "logout failed $error $errorMsg")
+            }
+        })
     }
 
     private fun skipToTarget(
         chatroom: Chatroom
     ) {
-        Log.e("skipToTarget", "skipToTarget: id: ${chatroom.id} owner: ${chatroom.owner}")
         startActivity(UIChatroomActivity.createIntent(context = this,
             roomId = chatroom.id,
             ownerId = chatroom.owner)
@@ -224,7 +309,7 @@ class RoomListViewModel(
     }
 
     fun fetchMorePublicRoom(onValueSuccess: OnValueSuccess<ChatPageResult<Chatroom>> = {}, onError: OnError = { _, _ ->}) {
-        if (hasMore.value) {
+        if (!hasMore.value) {
             onValueSuccess.invoke(ChatPageResult())
             return
         }

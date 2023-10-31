@@ -47,13 +47,14 @@ class UIChatroomActivity : ComponentActivity(), ChatroomDestroyedListener {
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_DOWN) {
-            // 处理虚拟返回键的按下事件
-            service?.getUserService()?.logout(
+            finish()
+            service?.getChatService()?.leaveChatroom(
+                roomId = ChatroomUIKitClient.getInstance().getContext().getCurrentRoomInfo().roomId,
+                userId = ChatroomUIKitClient.getInstance().getCurrentUser().userId,
                 onSuccess = {
-                    ChatroomUIKitClient.getInstance().clear()
-                    finish()
+                    //
                 },
-                onFailure = {code, error ->  }
+                onError = {code, error ->  }
             )
             return true
         }

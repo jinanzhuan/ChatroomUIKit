@@ -14,8 +14,9 @@ import io.agora.chatroom.viewmodel.RequestListViewModel
 open class MemberListViewModel(
     private val roomId: String,
     private val service: UIChatroomService,
-    private val pageSize: Int = 10
-): RequestListViewModel<UserEntity>() {
+    private val pageSize: Int = 10,
+    private val atLeastShowingTime: Long = 1000L
+): RequestListViewModel<UserEntity>(atLeastShowingTime = atLeastShowingTime) {
     private var cursor: String? = null
     private var hasMore: Boolean = true
     fun fetchRoomMembers(

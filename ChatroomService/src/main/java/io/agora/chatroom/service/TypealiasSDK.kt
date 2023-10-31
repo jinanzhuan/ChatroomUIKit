@@ -25,3 +25,6 @@ typealias ChatType = io.agora.chat.ChatMessage.ChatType
 typealias ChatMessageType = io.agora.chat.ChatMessage.Type
 typealias ChatTextMessageBody = io.agora.chat.TextMessageBody
 typealias ChatCustomMessageBody = io.agora.chat.CustomMessageBody
+
+// Listeners
+typealias ChatConnectionListener = io.agora.ConnectionListener

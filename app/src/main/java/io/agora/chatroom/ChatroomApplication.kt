@@ -7,6 +7,8 @@ import java.util.Random
 
 class ChatroomApplication : Application() {
 
+    private val activityLifecycleCallbacks by lazy { UserActivityLifecycleCallbacks() }
+
     override fun onCreate() {
         super.onCreate()
         //初始化配置信息
@@ -17,6 +19,12 @@ class ChatroomApplication : Application() {
         )
 
         ChatroomUIKitClient.getInstance().setUp(this,BuildConfig.CHATROOM_APP_KEY)
+
+        registerActivityLifecycleCallbacks(activityLifecycleCallbacks)
+    }
+
+    fun getUserActivityLifecycleCallbacks(): UserActivityLifecycleCallbacks {
+        return activityLifecycleCallbacks
     }
 
     private fun randomAvatar(): String {

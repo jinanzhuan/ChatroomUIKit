@@ -54,7 +54,7 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("com.google.code.gson:gson:2.9.0")
 
-    implementation("androidx.compose.material3:material3:1.2.0-alpha10")
+    api("androidx.compose.material3:material3:1.2.0-alpha10")
 
     implementation("androidx.fragment:fragment-ktx:1.4.0")
     implementation("androidx.compose.foundation:foundation-layout")
