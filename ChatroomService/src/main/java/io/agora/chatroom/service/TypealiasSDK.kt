@@ -28,3 +28,5 @@ typealias ChatCustomMessageBody = io.agora.chat.CustomMessageBody
 
 // Listeners
 typealias ChatConnectionListener = io.agora.ConnectionListener
+typealias ChatMessageListener = io.agora.MessageListener
+typealias ChatRoomChangeListener = io.agora.ChatRoomChangeListener
