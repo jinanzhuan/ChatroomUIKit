@@ -1,5 +1,6 @@
 package io.agora.chatroom.viewmodel.messages
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.service.ChatMessage
@@ -74,6 +75,29 @@ class MessageListViewModel(
     override fun onUserJoined(roomId: String, userId: String) {
         super.onUserJoined(roomId, userId)
         addJoinedMessageByIndex(message =ChatroomUIKitClient.getInstance().insertJoinedMessage(roomId,userId))
+        ChatroomUIKitClient.getInstance().getCacheManager().saveRoomMemberList(roomId, arrayListOf(userId))
+    }
+
+    override fun onUserLeft(roomId: String, userId: String) {
+        super.onUserLeft(roomId, userId)
+        ChatroomUIKitClient.getInstance().getCacheManager().removeRoomMember(roomId, userId)
+    }
+
+    override fun onUserMuted(roomId: String, userId: String) {
+        super.onUserMuted(roomId, userId)
+        ChatroomUIKitClient.getInstance().getCacheManager().saveRoomMuteList(roomId, arrayListOf(userId))
+        ChatroomUIKitClient.getInstance().getCacheManager().removeRoomMember(roomId, userId)
+    }
+
+    override fun onUserUnmuted(roomId: String, userId: String) {
+        super.onUserUnmuted(roomId, userId)
+        ChatroomUIKitClient.getInstance().getCacheManager().removeRoomMuteMember(roomId, userId)
+        ChatroomUIKitClient.getInstance().getCacheManager().saveRoomMemberList(roomId, arrayListOf(userId))
+    }
+
+    override fun onUserBeKicked(roomId: String, userId: String) {
+        super.onUserBeKicked(roomId, userId)
+        ChatroomUIKitClient.getInstance().getCacheManager().removeRoomMember(roomId, userId)
     }
 
     /**

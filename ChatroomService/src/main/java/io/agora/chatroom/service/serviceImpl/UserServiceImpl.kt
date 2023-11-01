@@ -1,5 +1,6 @@
 package io.agora.chatroom.service.serviceImpl
 
+import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.model.UserInfoProtocol
 import io.agora.chatroom.model.transfer
 import io.agora.chatroom.service.CallbackImpl
@@ -18,11 +19,17 @@ class UserServiceImpl: UserService {
     private val listeners = mutableListOf<UserStateChangeListener>()
     private val userInfoManager by lazy { ChatClient.getInstance().userInfoManager() }
     override fun bindUserStateChangeListener(listener: UserStateChangeListener) {
-        if (listeners.contains(listener)) listeners.add(listener)
+        if (listeners.contains(listener)) {
+            listeners.add(listener)
+            ChatroomUIKitClient.getInstance().updateChatroomUserStateChangeListener(listeners)
+        }
     }
 
     override fun unbindUserStateChangeListener(listener: UserStateChangeListener) {
-        if (listeners.contains(listener)) listeners.remove(listener)
+        if (listeners.contains(listener)) {
+            listeners.remove(listener)
+            ChatroomUIKitClient.getInstance().updateChatroomUserStateChangeListener(listeners)
+        }
     }
 
     override fun getUserInfo(userId: String,
