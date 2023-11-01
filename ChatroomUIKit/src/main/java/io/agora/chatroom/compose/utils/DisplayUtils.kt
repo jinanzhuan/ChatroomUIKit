@@ -10,4 +10,9 @@ object DisplayUtils {
         val density = Resources.getSystem().displayMetrics.density
         return px / density
     }
+
+    fun dpToPx(dp: Int): Int {
+        val displayMetrics = Resources.getSystem().displayMetrics
+        return (dp * displayMetrics.density).toInt()
+    }
 }

@@ -1,13 +1,18 @@
 package io.agora.chatroom.compose.marquee
 
 import android.graphics.Paint
+import android.graphics.Rect
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -16,21 +21,34 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import io.agora.chatroom.model.marquee.UINotification
+import io.agora.chatroom.theme.ChatroomUIKitTheme
+import io.agora.chatroom.uikit.R
+import io.agora.chatroom.viewmodel.marquee.MarqueeTextViewModel
 import kotlinx.coroutines.delay
 
 @Composable
 fun MainScreen(
-    notification: UINotification,
+    modifier: Modifier = Modifier,
+    viewModel: MarqueeTextViewModel,
+    marqueeBg: Color = ChatroomUIKitTheme.colors.primary,
+    leftIcon: Painter = painterResource(id = R.drawable.icon_notification),
+    lIconModifier: Modifier =Modifier.size(16.dp).padding(2.dp)
 ) {
-    if (notification.content.size <= 0) return
+    val content = viewModel.marqueeTextList
+    val duration = viewModel.duration
+    val durationMillis = viewModel.durationMillis
 
-    val text = remember { mutableStateOf( if (notification.content.size > 0) notification.content[0] else "") }
+    if (content.isEmpty()) return
+
+    val text = remember { mutableStateOf( if (content.isNotEmpty()) content[0] else "") }
 
     val offsetX = remember { mutableFloatStateOf(0f) }
 
@@ -38,32 +56,50 @@ fun MainScreen(
 
     val animateValue = remember { Animatable(initValue) }
 
-    Box(
-        modifier = Modifier.padding(top = 100.dp)
-    ) {
-        // 创建一个画布
-        Canvas(modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
+    Box{
+        Row(
+            modifier = modifier
+                .background(
+                    color = marqueeBg,
+                    ChatroomUIKitTheme.shapes.medium
+                )
+                .fillMaxWidth()
+                .height(20.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            offsetX.floatValue = size.width * animateValue.value
-            drawContext.canvas.nativeCanvas.drawText(
-                text.value,
-                offsetX.floatValue,
-                drawContext.size.height / 2 ,
-                Paint().apply {
-                    textAlign = Paint.Align.LEFT
-                    textSize = 40f
-                    color = Color.Black.toArgb()
-                }
+            Image(
+                modifier = lIconModifier,
+                painter = leftIcon,
+                contentDescription = "notification"
             )
+
+            Canvas(modifier = Modifier
+                .weight(1f)
+                .padding(end = 10.dp)
+                .height(20.dp)) {
+
+                offsetX.floatValue = size.width * animateValue.value
+                drawContext.canvas.nativeCanvas.apply {
+                    clipRect(Rect(0, 0, size.width.toInt(), size.height.toInt()))
+                    drawText(
+                        text.value,
+                        offsetX.floatValue,
+                        size.height / 2  + 10,
+                        Paint().apply {
+                            textAlign = Paint.Align.LEFT
+                            textSize = 30f
+                            color = Color.White.toArgb()
+                        }
+                    )
+                }
+            }
         }
     }
 
     LaunchedEffect(initValue) {
         animateValue.animateTo(
-            targetValue = 0f, // 目标位置
-            animationSpec = tween(durationMillis = 3000) // 动画持续时间
+            targetValue = 0f,
+            animationSpec = tween(durationMillis = durationMillis)
         ) {
             if (this.value == 0.0f) {
                 initValue = this.value
@@ -71,10 +107,10 @@ fun MainScreen(
         }
 
         if (!animateValue.isRunning) {
-            if (notification.content.size > 0) {
-                notification.content.removeAt(0)
-                delay(3000)
-                text.value = if (notification.content.size > 0) notification.content[0] else ""
+            if (content.isNotEmpty()) {
+                viewModel.removeMarqueeText(0)
+                delay(duration)
+                text.value = if (content.isNotEmpty()) content[0] else ""
                 initValue = 1f
                 animateValue.snapTo(initValue)
             } else {
