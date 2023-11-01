@@ -1,10 +1,12 @@
 package io.agora.chatroom.service.serviceImpl
 
+import io.agora.chatroom.ChatroomResultEvent
 import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.model.UserInfoProtocol
 import io.agora.chatroom.model.transfer
 import io.agora.chatroom.service.CallbackImpl
 import io.agora.chatroom.service.ChatClient
+import io.agora.chatroom.service.ChatError
 import io.agora.chatroom.service.ChatUserInfo
 import io.agora.chatroom.service.ChatValueCallback
 import io.agora.chatroom.service.OnError
@@ -50,10 +52,12 @@ class UserServiceImpl: UserService {
                     it.value.transfer().transfer()
                 } ?: listOf()
                 onSuccess.invoke(userEntities)
+                ChatroomUIKitClient.getInstance().callbackEvent(ChatroomResultEvent.MEMBERS_INFO, ChatError.EM_NO_ERROR, "")
             }
 
             override fun onError(error: Int, errorMsg: String?) {
                 onError.invoke(error, errorMsg)
+                ChatroomUIKitClient.getInstance().callbackEvent(ChatroomResultEvent.MEMBERS_INFO, error, errorMsg)
             }
         })
     }
@@ -66,10 +70,12 @@ class UserServiceImpl: UserService {
         userInfoManager.updateOwnInfo(userEntity.transfer(), object :ChatValueCallback<String> {
             override fun onSuccess(value: String?) {
                 onSuccess.invoke()
+                ChatroomUIKitClient.getInstance().callbackEvent(ChatroomResultEvent.MEMBERS_INFO, ChatError.EM_NO_ERROR, "")
             }
 
             override fun onError(error: Int, errorMsg: String?) {
                 onError.invoke(error, errorMsg)
+                ChatroomUIKitClient.getInstance().callbackEvent(ChatroomResultEvent.MEMBERS_INFO, error, errorMsg)
             }
         })
     }
@@ -81,7 +87,6 @@ class UserServiceImpl: UserService {
     override fun login(
         user: UserInfoProtocol,
         token: String,
-        userProperties: Boolean,//放options里面
         onSuccess: OnSuccess,
         onError: OnError
     ) {

@@ -17,13 +17,23 @@ import io.agora.chatroom.service.ChatMessageType
 import io.agora.chatroom.service.ChatOptions
 import io.agora.chatroom.service.ChatRoomChangeListener
 import io.agora.chatroom.service.ChatType
+import io.agora.chatroom.service.Chatroom
 import io.agora.chatroom.service.ChatroomChangeListener
 import io.agora.chatroom.service.ChatroomDestroyedListener
+import io.agora.chatroom.service.ChatroomService
 import io.agora.chatroom.service.GiftEntityProtocol
 import io.agora.chatroom.service.GiftReceiveListener
+import io.agora.chatroom.service.GiftService
+import io.agora.chatroom.service.OnError
+import io.agora.chatroom.service.OnSuccess
+import io.agora.chatroom.service.OnValueSuccess
 import io.agora.chatroom.service.UserEntity
+import io.agora.chatroom.service.UserService
 import io.agora.chatroom.service.UserStateChangeListener
 import io.agora.chatroom.service.cache.UIChatroomCacheManager
+import io.agora.chatroom.service.serviceImpl.ChatroomServiceImpl
+import io.agora.chatroom.service.serviceImpl.GiftServiceImpl
+import io.agora.chatroom.service.serviceImpl.UserServiceImpl
 import io.agora.chatroom.utils.GsonTools
 import org.json.JSONObject
 
@@ -33,11 +43,15 @@ class ChatroomUIKitClient {
     private var eventListeners = mutableListOf<ChatroomChangeListener>()
     private var giftListeners = mutableListOf<GiftReceiveListener>()
     private var userStateChangeListeners = mutableListOf<UserStateChangeListener>()
+    private val roomEventResultListener: MutableList<ChatroomResultListener> by lazy { mutableListOf() }
     private lateinit var roomListener : ChatroomDestroyedListener
     private val cacheManager: UIChatroomCacheManager = UIChatroomCacheManager()
     private val messageListener by lazy { InnerChatMessageListener() }
     private val chatroomChangeListener by lazy { InnerChatroomChangeListener() }
     private val userStateChangeListener by lazy { InnerUserStateChangeListener() }
+    private val userService: UserService by lazy { UserServiceImpl() }
+    private val chatroomService: ChatroomService by lazy { ChatroomServiceImpl() }
+    private val giftService: GiftService by lazy { GiftServiceImpl() }
 
     companion object {
         const val TAG = "ChatroomUIKitClient"
@@ -58,23 +72,98 @@ class ChatroomUIKitClient {
     /**
      * Init the chatroom ui kit
      */
-    fun setUp(applicationContext: Context, appKey:String){
+    fun setUp(applicationContext: Context, appKey:String, options: ChatroomUIKitOptions = ChatroomUIKitOptions()){
         currentRoomContext.setRoomContext(applicationContext)
         val chatOptions = ChatOptions()
         chatOptions.appKey = appKey
-        chatOptions.autoLogin = true
+        chatOptions.autoLogin = options.chatOptions.autoLogin
         ChatClient.getInstance().init(applicationContext,chatOptions)
+        ChatClient.getInstance().setDebugMode(options.chatOptions.enableDebug)
         cacheManager.init(applicationContext)
         registerConnectListener()
     }
 
     /**
+     * Login the chat SDK
+     * @param userId The user id
+     * @param token The user token
+     * @param onSuccess The callback to indicate the user login successfully
+     * @param onError The callback to indicate the user login failed
+     */
+    fun login(userId: String, token: String, onSuccess: OnSuccess, onError: OnError) {
+        if (!ChatClient.getInstance().isSdkInited) {
+            onError.invoke(ChatError.GENERAL_ERROR,"SDK not initialized")
+            return
+        }
+        userService.login(userId, token, onSuccess, onError)
+    }
+
+    /**
+     * Login the chat SDK
+     * @param user The user info
+     * @param token The user token
+     * @param onSuccess The callback to indicate the user login successfully
+     * @param onError The callback to indicate the user login failed
+     */
+    fun login(user: UserInfoProtocol, token: String, onSuccess: OnSuccess, onError: OnError) {
+        if (!ChatClient.getInstance().isSdkInited) {
+            onError.invoke(ChatError.GENERAL_ERROR,"SDK not initialized")
+            return
+        }
+        userService.login(user, token, onSuccess, onError)
+    }
+
+    /**
+     * Join a chatroom.
+     * @param roomId The id of the chatroom.
+     * @param ownerId The id of the chatroom owner.
+     * @param onSuccess The callback to indicate the user joined the chatroom successfully.
+     * @param onError The callback to indicate the user failed to join the chatroom.
+     */
+    fun joinChatroom(roomId: String, ownerId: String, onSuccess: OnValueSuccess<Chatroom> = {}, onError: OnError = { _, _ ->}) {
+        if (!ChatClient.getInstance().isSdkInited) {
+            onError.invoke(ChatError.GENERAL_ERROR,"SDK not initialized")
+            return
+        }
+        initRoom(roomId, ownerId)
+        chatroomService.joinChatroom(roomId, ownerId, onSuccess, onError)
+    }
+
+    /**
      * Init the chatroom before joining it
      */
-    fun initRoom(roomId:String,ownerId:String){
+    private fun initRoom(roomId:String, ownerId:String){
         currentRoomContext.setCurrentRoomInfo(UIChatroomInfo(roomId,chatroomUser.getUserInfo(ownerId)))
         registerMessageListener()
         registerChatroomChangeListener()
+    }
+
+    /**
+     * Register a room result listener.
+     */
+    fun registerRoomResultListener(listener: ChatroomResultListener){
+        if (!roomEventResultListener.contains(listener)) {
+            roomEventResultListener.add(listener)
+        }
+    }
+
+    /**
+     * Unregister a room result listener.
+     */
+    fun unregisterRoomResultListener(listener: ChatroomResultListener){
+        if (roomEventResultListener.contains(listener)) {
+            roomEventResultListener.remove(listener)
+        }
+    }
+
+    @JvmName("%callbackEvent")
+    internal fun callbackEvent(event: ChatroomResultEvent, errorCode: Int, errorMessage: String?) {
+        if (roomEventResultListener.isEmpty()) {
+            return
+        }
+        roomEventResultListener.forEach {
+            it.onEventResult(event, errorCode, errorMessage)
+        }
     }
 
     fun getContext():UIChatroomContext{
@@ -98,6 +187,9 @@ class ChatroomUIKitClient {
         return currentRoomContext.isCurrentOwner()
     }
 
+    /**
+     * Check if the user has logged into the SDK before
+     */
     fun isLoginBefore():Boolean{
        return ChatClient.getInstance().isSdkInited && ChatClient.getInstance().isLoggedInBefore
     }
