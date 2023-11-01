@@ -14,6 +14,12 @@ val initialLongClickMenu = listOf(
     UIComposeSheetItem(id = R.id.action_menu_report, title = "Report", isError = true)
 )
 
+val testMarqueeList = mutableListOf(
+    "Compose has finally added support for Marquee! It's soo easy to implement!",
+    "Notification 1 Notification 1 Notification 1 Notification 1",
+    "Notification 2 Notification 2 Notification 2 Notification 2",
+)
+
 val testMenuList = listOf(
     UIComposeSheetItem(id = 0, title = "Item 1"),
     UIComposeSheetItem(id = 1, title = "Item 2"),

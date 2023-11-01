@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Button
@@ -24,19 +25,21 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
-import io.agora.chatroom.ui.UIChatroomActivity
 import io.agora.chatroom.compose.drawer.ComposeBottomSheet
 import io.agora.chatroom.compose.drawer.ComposeMenuBottomSheet
 import io.agora.chatroom.compose.list.LazyColumnList
 import io.agora.chatroom.compose.marquee.MainScreen
 import io.agora.chatroom.compose.report.ComposeMessageReport
 import io.agora.chatroom.data.initialLongClickMenu
+import io.agora.chatroom.data.testMarqueeList
 import io.agora.chatroom.data.testMenuList1
 import io.agora.chatroom.model.UIChatroomInfo
 import io.agora.chatroom.model.UIComposeSheetItem
@@ -45,9 +48,11 @@ import io.agora.chatroom.theme.BodyLarge
 import io.agora.chatroom.theme.ChatroomUIKitTheme
 import io.agora.chatroom.theme.neutralColor20
 import io.agora.chatroom.theme.neutralColor90
+import io.agora.chatroom.ui.UIChatroomActivity
 import io.agora.chatroom.ui.UIChatroomService
 import io.agora.chatroom.ui.UISearchActivity
 import io.agora.chatroom.viewmodel.RequestListViewModel
+import io.agora.chatroom.viewmodel.marquee.MarqueeTextViewModel
 import io.agora.chatroom.viewmodel.menu.MenuViewModel
 import io.agora.chatroom.viewmodel.report.ComposeReportViewModel
 import io.agora.chatroom.viewmodel.tab.TabWithVpViewModel
@@ -57,6 +62,7 @@ class MainActivity : ComponentActivity() {
     private var viewModel2:MenuViewModel = MenuViewModel(menuList = testMenuList1, isExpanded = true )
     private val viewModel4 by lazy { TestItemViewModel() }
     var viewModel3:MenuViewModel = MenuViewModel()
+    private val marqueeViewModel = MarqueeTextViewModel(content = testMarqueeList)
     private var viewModel5: ComposeReportViewModel = ComposeReportViewModel(
         reportTag = mutableListOf(
             "Unwelcome commercial content or spam",
@@ -79,19 +85,12 @@ class MainActivity : ComponentActivity() {
 
             ChatroomUIKitTheme {
                 // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
+                Surface(modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colors.background)) {
                     ShowComposeMenuDrawer(viewModel = viewModel1,viewModel5 = viewModel5)
                     ShowDefaultComposeDrawer(viewModel = viewModel2)
                     testLazyColumn(viewModel = viewModel4)
-                    MainScreen(
-                        UINotification(content = mutableListOf(
-                            "Compose has finally added support for Marquee! It's soo easy to implement!",
-                            "Notification 1 Notification 1 Notification 1 Notification 1",
-                            "Compose has finally added support for Marquee! It's soo easy to implement!",
-                    )))
                     ComposeMessageReport(
                         modifier = Modifier.height((LocalConfiguration.current.screenHeightDp/2).dp),
                         containerColor = ChatroomUIKitTheme.colors.background,
@@ -108,6 +107,13 @@ class MainActivity : ComponentActivity() {
                         }
                     )
 
+                    MainScreen(
+                        modifier = Modifier
+                            .padding(top = 300.dp, start = 12.dp, end = 12.dp)
+                            .statusBarsPadding(),
+                        marqueeViewModel
+                    )
+
                     Greeting(viewModel1,viewModel2,onItemClick = {
                         Log.e("apex","onItemClick $it")
                         when (it) {
@@ -118,13 +124,14 @@ class MainActivity : ComponentActivity() {
                                 viewModel2.openDrawer()
                             }
                             3 -> {
-                                viewModel3.openDrawer()
-                                this.startActivity(
-                                    UIChatroomActivity.createIntent(
-                                        context = this,
-                                        ownerId = "apex1",
-                                        roomId = "229551090237444",
-                                    ))
+                                marqueeViewModel.addMarqueeText("Notification 3 Notification 3 Notification 3 Notification 3")
+//                                viewModel3.openDrawer()
+//                                startActivity(
+//                                    UIChatroomActivity.createIntent(
+//                                        context = this@MainActivity,
+//                                        ownerId = "apex1",
+//                                        roomId = "229551090237444",
+//                                    ))
                             }
                             4 -> {
 //                                val list = mutableListOf<String>()
@@ -132,7 +139,7 @@ class MainActivity : ComponentActivity() {
 //                                    list.add("Item $index")
 //                                }
 //                                viewModel4.add(list)
-                                startActivity(Intent(this, UISearchActivity::class.java))
+                                startActivity(Intent(this@MainActivity, UISearchActivity::class.java))
                             }
                         }
                     })
