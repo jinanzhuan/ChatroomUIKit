@@ -83,7 +83,7 @@ fun ComposeChatScreen(
         factory = defaultMessageListViewModelFactory(LocalContext.current, roomId, service)),
     giftListViewModel: ComposeGiftListViewModel = ComposeGiftListViewModel(service = service),
     reportViewModel: ComposeReportViewModel = viewModel(ComposeReportViewModel::class.java,
-        factory = defaultReportViewModelFactory(service)),
+        factory = defaultReportViewModelFactory(LocalContext.current, service)),
     membersBottomSheetViewModel: MembersBottomSheetViewModel = viewModel(MembersBottomSheetViewModel::class.java,
         factory = defaultMembersViewModelFactory(roomId, service, ChatroomUIKitClient.getInstance().isCurrentRoomOwner())),
     memberListViewModel: MemberListViewModel = viewModel(MemberListViewModel::class.java,
@@ -371,9 +371,10 @@ fun defaultMembersViewModelFactory(
 }
 
 fun defaultReportViewModelFactory(
+    context: Context,
     service: UIChatroomService
 ): ReportViewModelFactory {
-    return ReportViewModelFactory(service = service)
+    return ReportViewModelFactory(context = context, service = service)
 }
 
 

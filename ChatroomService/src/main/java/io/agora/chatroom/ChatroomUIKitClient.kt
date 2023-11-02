@@ -156,7 +156,6 @@ class ChatroomUIKitClient {
         }
     }
 
-    @JvmName("%callbackEvent")
     internal fun callbackEvent(event: ChatroomResultEvent, errorCode: Int, errorMessage: String?) {
         if (roomEventResultListener.isEmpty()) {
             return
