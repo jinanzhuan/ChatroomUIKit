@@ -1,11 +1,12 @@
 package io.agora.chatroom.service.serviceImpl
 
-import android.util.Log
 import io.agora.CallBack
+import io.agora.chatroom.ChatroomResultEvent
 import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.model.UIConstant
 import io.agora.chatroom.service.ChatClient
 import io.agora.chatroom.service.ChatCustomMessageBody
+import io.agora.chatroom.service.ChatError
 import io.agora.chatroom.service.ChatMessage
 import io.agora.chatroom.service.ChatMessageType
 import io.agora.chatroom.service.ChatType
@@ -50,10 +51,12 @@ class GiftServiceImpl: GiftService {
         message.setMessageStatusCallback(object : CallBack{
             override fun onSuccess() {
                 onSuccess.invoke(message)
+                ChatroomUIKitClient.getInstance().callbackEvent(ChatroomResultEvent.MESSAGE, ChatError.EM_NO_ERROR, "")
             }
 
             override fun onError(code: Int, error: String?) {
                 onError.invoke(code,error)
+                ChatroomUIKitClient.getInstance().callbackEvent(ChatroomResultEvent.MESSAGE, code, error)
             }
         })
         chatManager.sendMessage(message)

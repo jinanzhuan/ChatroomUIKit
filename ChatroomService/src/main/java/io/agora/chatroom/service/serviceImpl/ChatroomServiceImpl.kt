@@ -1,15 +1,16 @@
 package io.agora.chatroom.service.serviceImpl
 
-import android.util.Log
+import io.agora.chatroom.ChatroomResultEvent
 import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.model.UIConstant
 import io.agora.chatroom.service.CallbackImpl
 import io.agora.chatroom.service.ChatCallback
 import io.agora.chatroom.service.ChatClient
 import io.agora.chatroom.service.ChatCursorResult
+import io.agora.chatroom.service.ChatCustomMessageBody
 import io.agora.chatroom.service.ChatError
 import io.agora.chatroom.service.ChatMessage
-import io.agora.chatroom.service.ChatTextMessageBody
+import io.agora.chatroom.service.ChatMessageType
 import io.agora.chatroom.service.ChatType
 import io.agora.chatroom.service.Chatroom
 import io.agora.chatroom.service.ChatroomChangeListener
@@ -51,7 +52,7 @@ class ChatroomServiceImpl: ChatroomService {
             onError(ChatError.INVALID_PARAM, "")
             return
         }
-        chatroomManager.joinChatRoom(roomId, ValueCallbackImpl(onSuccess, onError))
+        chatroomManager.joinChatRoom(roomId, ValueCallbackImpl(onSuccess, onError, event = ChatroomResultEvent.JOIN_ROOM))
     }
 
     override fun leaveChatroom(
@@ -64,7 +65,7 @@ class ChatroomServiceImpl: ChatroomService {
             onError(ChatError.INVALID_PARAM, "")
             return
         }
-        chatroomManager.leaveChatRoom(roomId, CallbackImpl(onSuccess, onError))
+        chatroomManager.leaveChatRoom(roomId, CallbackImpl(onSuccess, onError, event = ChatroomResultEvent.LEAVE_ROOM))
     }
 
     override fun fetchMembers(
@@ -78,7 +79,7 @@ class ChatroomServiceImpl: ChatroomService {
             onError(ChatError.INVALID_PARAM, "")
             return
         }
-        chatroomManager.asyncFetchChatRoomMembers(roomId, cursor, pageSize, ValueCallbackImpl(onSuccess, onError))
+        chatroomManager.asyncFetchChatRoomMembers(roomId, cursor, pageSize, ValueCallbackImpl(onSuccess, onError, event = ChatroomResultEvent.FETCH_MEMBERS))
     }
 
     override fun fetchMuteList(
@@ -92,7 +93,7 @@ class ChatroomServiceImpl: ChatroomService {
             onError(ChatError.INVALID_PARAM, "")
             return
         }
-        chatroomManager.asyncFetchChatRoomMuteList(roomId, pageNum, pageSize, ValueCallbackImpl(onSuccess, onError))
+        chatroomManager.asyncFetchChatRoomMuteList(roomId, pageNum, pageSize, ValueCallbackImpl(onSuccess, onError, event = ChatroomResultEvent.FETCH_MUTES))
     }
 
     override fun getAnnouncement(
@@ -104,7 +105,7 @@ class ChatroomServiceImpl: ChatroomService {
             onError(ChatError.INVALID_PARAM, "")
             return
         }
-        chatroomManager.asyncFetchChatRoomAnnouncement(roomId, ValueCallbackImpl<String>(onSuccess, onError))
+        chatroomManager.asyncFetchChatRoomAnnouncement(roomId, ValueCallbackImpl<String>(onSuccess, onError, event = ChatroomResultEvent.ANNOUNCEMENT))
     }
 
     override fun updateAnnouncement(
@@ -117,7 +118,7 @@ class ChatroomServiceImpl: ChatroomService {
             onError(ChatError.INVALID_PARAM, "")
             return
         }
-        chatroomManager.asyncUpdateChatRoomAnnouncement(roomId, announcement, CallbackImpl(onSuccess, onError))
+        chatroomManager.asyncUpdateChatRoomAnnouncement(roomId, announcement, CallbackImpl(onSuccess, onError, event = ChatroomResultEvent.ANNOUNCEMENT))
     }
 
     override fun operateUser(
@@ -133,16 +134,16 @@ class ChatroomServiceImpl: ChatroomService {
         }
         when(operation) {
             UserOperationType.ADD_ADMIN  -> {
-                chatroomManager.asyncAddChatRoomAdmin(roomId, userId, ValueCallbackImpl(onSuccess, onError))
+                chatroomManager.asyncAddChatRoomAdmin(roomId, userId, ValueCallbackImpl(onSuccess, onError, event = ChatroomResultEvent.ADMIN))
             }
             UserOperationType.REMOVE_ADMIN -> {
-                chatroomManager.asyncRemoveChatRoomAdmin(roomId, userId, ValueCallbackImpl(onSuccess, onError))
+                chatroomManager.asyncRemoveChatRoomAdmin(roomId, userId, ValueCallbackImpl(onSuccess, onError, event = ChatroomResultEvent.ADMIN))
             }
             UserOperationType.MUTE -> {
-                chatroomManager.asyncMuteChatRoomMembers(roomId, mutableListOf(userId), -1, ValueCallbackImpl(onSuccess, onError))
+                chatroomManager.asyncMuteChatRoomMembers(roomId, mutableListOf(userId), -1, ValueCallbackImpl(onSuccess, onError, event = ChatroomResultEvent.MUTE_MEMBER))
             }
             UserOperationType.UNMUTE -> {
-                chatroomManager.asyncUnMuteChatRoomMembers(roomId, mutableListOf(userId), ValueCallbackImpl(onSuccess, onError))
+                chatroomManager.asyncUnMuteChatRoomMembers(roomId, mutableListOf(userId), ValueCallbackImpl(onSuccess, onError, event = ChatroomResultEvent.UNMUTE_MEMBER))
             }
             UserOperationType.BLOCK -> {
                 chatroomManager.asyncBlockChatroomMembers(roomId, mutableListOf(userId), ValueCallbackImpl(onSuccess, onError))
@@ -151,7 +152,7 @@ class ChatroomServiceImpl: ChatroomService {
                 chatroomManager.asyncUnBlockChatRoomMembers(roomId, mutableListOf(userId), ValueCallbackImpl(onSuccess, onError))
             }
             UserOperationType.KICK -> {
-                chatroomManager.asyncRemoveChatRoomMembers(roomId, mutableListOf(userId), ValueCallbackImpl(onSuccess, onError))
+                chatroomManager.asyncRemoveChatRoomMembers(roomId, mutableListOf(userId), ValueCallbackImpl(onSuccess, onError, event = ChatroomResultEvent.KICK_MEMBER))
             }
         }
     }
@@ -167,7 +168,6 @@ class ChatroomServiceImpl: ChatroomService {
             return
         }
         val textSendMessage = ChatMessage.createTextSendMessage(message, roomId)
-        textSendMessage?.chatType = ChatType.ChatRoom
         sendMessage(textSendMessage, onSuccess, onError) {}
     }
 
@@ -182,6 +182,9 @@ class ChatroomServiceImpl: ChatroomService {
             onError(ChatError.INVALID_PARAM, "")
             return
         }
+        val textSendMessage = ChatMessage.createTextSendMessage(message, roomId)
+        textSendMessage?. setReceiverList(targetUserIds)
+        sendMessage(textSendMessage, onSuccess, onError)
     }
 
     override fun sendTargetCustomMessage(
@@ -196,6 +199,12 @@ class ChatroomServiceImpl: ChatroomService {
             onError(ChatError.INVALID_PARAM, "")
             return
         }
+        val customMessage = ChatMessage.createSendMessage(ChatMessageType.CUSTOM)
+        val customBody = ChatCustomMessageBody(event)
+        customBody.params = ext
+        customMessage.body = customBody
+        customMessage.setReceiverList(targetUserIds)
+        sendMessage(customMessage, onSuccess, onError)
     }
 
     override fun sendMessage(
@@ -217,6 +226,7 @@ class ChatroomServiceImpl: ChatroomService {
             JSONObject()
         }
         message.setAttribute(UIConstant.CHATROOM_UIKIT_USER_INFO,jsonObject)
+        message.chatType = ChatType.ChatRoom
         message.setMessageStatusCallback(object : ChatCallback {
             override fun onSuccess() {
                 onSuccess(message)
@@ -225,10 +235,12 @@ class ChatroomServiceImpl: ChatroomService {
                         it.onRefreshMessage(message)
                     }
                 }
+                ChatroomUIKitClient.getInstance().callbackEvent(ChatroomResultEvent.MESSAGE, ChatError.EM_NO_ERROR, "")
             }
 
             override fun onError(code: Int, error: String?) {
                 onError(code, error)
+                ChatroomUIKitClient.getInstance().callbackEvent(ChatroomResultEvent.MESSAGE, code, error)
             }
 
             override fun onProgress(progress: Int, status: String?) {
@@ -243,7 +255,9 @@ class ChatroomServiceImpl: ChatroomService {
         onSuccess: (ChatMessage) -> Unit,
         onError: OnError
     ) {
-        chatManager.translateMessage(message,ChatroomUIKitClient.getInstance().getTranslationLanguage(), ValueCallbackImpl<ChatMessage>(onSuccess, onError))
+        chatManager.translateMessage(message,
+            ChatroomUIKitClient.getInstance().getTranslationLanguage(),
+            ValueCallbackImpl<ChatMessage>(onSuccess, onError, event = ChatroomResultEvent.TRANSLATE))
     }
 
     override fun reportMessage(
@@ -257,6 +271,7 @@ class ChatroomServiceImpl: ChatroomService {
             onError(ChatError.INVALID_PARAM, "")
             return
         }
-        chatManager.asyncReportMessage(messageId, tag, reason, CallbackImpl(onSuccess, onError))
+        chatManager.asyncReportMessage(messageId, tag, reason,
+            CallbackImpl(onSuccess, onError, event = ChatroomResultEvent.REPORT))
     }
 }

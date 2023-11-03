@@ -1,11 +1,13 @@
 package io.agora.chatroom.viewmodel.report
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import io.agora.chatroom.data.reportTagList
 import io.agora.chatroom.ui.UIChatroomService
+import io.agora.chatroom.uikit.R
 
 class ReportViewModelFactory(
+    private val context: Context,
     private val service: UIChatroomService
 ): ViewModelProvider.Factory {
     /**
@@ -14,7 +16,7 @@ class ReportViewModelFactory(
     private val factories: Map<Class<*>, () -> ViewModel> = mapOf(
         ComposeReportViewModel::class.java to {
             ComposeReportViewModel(
-                reportTag = reportTagList,
+                reportTag = context.resources.getStringArray(R.array.report_tag).toList(),
                 service = service
             )
         }

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="report_tag">
+        <item>Unwelcome commercial content or spam</item>
+        <item>Pornographic or explicit content</item>
+        <item>Child abuse</item>
+        <item>Hate speech or graphic violence</item>
+        <item>Promote terrorism</item>
+        <item>Child abuse</item>
+        <item>Harassment or bullying</item>
+    </string-array>
+</resources>
