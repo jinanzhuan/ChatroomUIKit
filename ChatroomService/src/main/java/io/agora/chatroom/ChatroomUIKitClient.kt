@@ -2,7 +2,9 @@ package io.agora.chatroom
 
 import android.content.Context
 import android.text.TextUtils
+import android.util.Log
 import io.agora.chatroom.model.UIChatroomInfo
+import io.agora.chatroom.model.UICommonConfig
 import io.agora.chatroom.model.UIConstant
 import io.agora.chatroom.model.UserInfoProtocol
 import io.agora.chatroom.model.toUser
@@ -34,6 +36,7 @@ import io.agora.chatroom.service.cache.UIChatroomCacheManager
 import io.agora.chatroom.service.serviceImpl.ChatroomServiceImpl
 import io.agora.chatroom.service.serviceImpl.GiftServiceImpl
 import io.agora.chatroom.service.serviceImpl.UserServiceImpl
+import io.agora.chatroom.service.transfer
 import io.agora.chatroom.utils.GsonTools
 import org.json.JSONObject
 
@@ -44,7 +47,6 @@ class ChatroomUIKitClient {
     private var giftListeners = mutableListOf<GiftReceiveListener>()
     private var userStateChangeListeners = mutableListOf<UserStateChangeListener>()
     private val roomEventResultListener: MutableList<ChatroomResultListener> by lazy { mutableListOf() }
-    private lateinit var roomListener : ChatroomDestroyedListener
     private val cacheManager: UIChatroomCacheManager = UIChatroomCacheManager()
     private val messageListener by lazy { InnerChatMessageListener() }
     private val chatroomChangeListener by lazy { InnerChatroomChangeListener() }
@@ -72,8 +74,14 @@ class ChatroomUIKitClient {
     /**
      * Init the chatroom ui kit
      */
-    fun setUp(applicationContext: Context, appKey:String, options: ChatroomUIKitOptions = ChatroomUIKitOptions()){
+    fun setUp(
+        applicationContext: Context,
+        appKey:String,
+        options: ChatroomUIKitOptions = ChatroomUIKitOptions(),
+        config: UICommonConfig = UICommonConfig()
+    ){
         currentRoomContext.setRoomContext(applicationContext)
+        currentRoomContext.setCommonConfig(config)
         val chatOptions = ChatOptions()
         chatOptions.appKey = appKey
         chatOptions.autoLogin = options.chatOptions.autoLogin
@@ -115,25 +123,26 @@ class ChatroomUIKitClient {
 
     /**
      * Join a chatroom.
-     * @param roomId The id of the chatroom.
-     * @param ownerId The id of the chatroom owner.
+     * @param roomInfo The id of the chatroom info.
      * @param onSuccess The callback to indicate the user joined the chatroom successfully.
      * @param onError The callback to indicate the user failed to join the chatroom.
      */
-    fun joinChatroom(roomId: String, ownerId: String, onSuccess: OnValueSuccess<Chatroom> = {}, onError: OnError = { _, _ ->}) {
+    fun joinChatroom(roomInfo:UIChatroomInfo, onSuccess: OnValueSuccess<Chatroom> = {}, onError: OnError = { _, _ ->}) {
         if (!ChatClient.getInstance().isSdkInited) {
             onError.invoke(ChatError.GENERAL_ERROR,"SDK not initialized")
             return
         }
-        initRoom(roomId, ownerId)
-        chatroomService.joinChatroom(roomId, ownerId, onSuccess, onError)
+        initRoom(roomInfo)
+        roomInfo.roomOwner?.userId?.let {
+            chatroomService.joinChatroom(roomInfo.roomId, it, onSuccess, onError)
+        }
     }
 
     /**
      * Init the chatroom before joining it
      */
-    private fun initRoom(roomId:String, ownerId:String){
-        currentRoomContext.setCurrentRoomInfo(UIChatroomInfo(roomId,chatroomUser.getUserInfo(ownerId)))
+    private fun initRoom(roomInfo:UIChatroomInfo,){
+        currentRoomContext.setCurrentRoomInfo(roomInfo)
         registerMessageListener()
         registerChatroomChangeListener()
     }
@@ -154,6 +163,14 @@ class ChatroomUIKitClient {
         if (roomEventResultListener.contains(listener)) {
             roomEventResultListener.remove(listener)
         }
+    }
+
+    fun parseUserInfo(message: ChatMessage):UserInfoProtocol?{
+        if (message.ext().containsKey(UIConstant.CHATROOM_UIKIT_USER_INFO)) {
+            val jsonObject = message.getStringAttribute(UIConstant.CHATROOM_UIKIT_USER_INFO)
+            return GsonTools.toBean(jsonObject.toString(), UserInfoProtocol::class.java)
+        }
+        return null
     }
 
     internal fun callbackEvent(event: ChatroomResultEvent, errorCode: Int, errorMessage: String?) {
@@ -182,8 +199,8 @@ class ChatroomUIKitClient {
         return ext.containsKey(UIConstant.CHATROOM_UIKIT_USER_JOIN)
     }
 
-    fun isCurrentRoomOwner():Boolean{
-        return currentRoomContext.isCurrentOwner()
+    fun isCurrentRoomOwner(ownerId:String? = ""):Boolean{
+        return currentRoomContext.isCurrentOwner(ownerId)
     }
 
     /**
@@ -220,9 +237,22 @@ class ChatroomUIKitClient {
         return joinedMessage
     }
 
-    fun subscribeRoomDestroyed(listener:ChatroomDestroyedListener){
-        this.roomListener = listener
+    fun sendJoinedMessage(){
+        val joinedUserInfo = getCurrentUser()
+        val roomId = getContext().getCurrentRoomInfo().roomId
+        val joinedMsg = ChatMessage.createSendMessage(ChatMessageType.CUSTOM)
+        joinedMsg.to = roomId
+        val customMessageBody = ChatCustomMessageBody(UIConstant.CHATROOM_UIKIT_USER_JOIN)
+        joinedMsg.addBody(customMessageBody)
+        val jsonString = GsonTools.beanToString(joinedUserInfo)
+        joinedMsg.setAttribute(UIConstant.CHATROOM_UIKIT_USER_INFO, jsonString?.let { JSONObject(it) })
+        chatroomService.sendMessage(
+            joinedMsg, onSuccess = {},
+            onError = {code, error ->
+                Log.e("apex","sendJoinedMessage onError $code $error")
+            })
     }
+
 
     fun clear(){
         eventListeners.clear()
@@ -260,7 +290,7 @@ class ChatroomUIKitClient {
     private inner class InnerChatroomChangeListener: ChatRoomChangeListener {
         override fun onChatRoomDestroyed(roomId: String, roomName: String) {
             clear()
-            roomListener.onRoomDestroyed(roomId,roomName)
+//            roomListener.onRoomDestroyed(roomId,roomName)
         }
 
         override fun onMemberJoined(roomId: String?, participant: String?) {}
@@ -492,13 +522,9 @@ class ChatroomUIKitClient {
         }
 
         private fun parseGiftMsg(msg: ChatMessage): GiftEntityProtocol? {
-            var userEntity:UserInfoProtocol? = null
-            if (msg.ext().containsKey(UIConstant.CHATROOM_UIKIT_USER_INFO)){
-                val jsonObject = msg.getStringAttribute(UIConstant.CHATROOM_UIKIT_USER_INFO)
-                userEntity = GsonTools.toBean(jsonObject.toString(), UserInfoProtocol::class.java)
-                userEntity?.let {
-                    chatroomUser.setUserInfo(msg.from, it.toUser())
-                }
+            val userEntity = parseUserInfo(msg)?.toUser()
+            userEntity?.let {
+                chatroomUser.setUserInfo(msg.from, it)
             }
             if (msg.body is ChatCustomMessageBody){
                 val customBody = msg.body as ChatCustomMessageBody
@@ -506,7 +532,7 @@ class ChatroomUIKitClient {
                     val gift = customBody.params[UIConstant.CHATROOM_UIKIT_GIFT_INFO]
                     val giftEntityProtocol = GsonTools.toBean(gift, GiftEntityProtocol::class.java)
                     userEntity?.let {
-                        giftEntityProtocol?.sendUser = it
+                        giftEntityProtocol?.sendUser = it.transfer()
                     }
                     return giftEntityProtocol
                 }

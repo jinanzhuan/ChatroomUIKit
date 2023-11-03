@@ -1,7 +1,9 @@
 package io.agora.chatroom.compose
 
 import android.content.Context
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,9 +12,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -33,6 +38,7 @@ import io.agora.chatroom.compose.report.ComposeMessageReport
 import io.agora.chatroom.model.UIComposeSheetItem
 import io.agora.chatroom.service.ChatLog
 import io.agora.chatroom.service.ChatMessage
+import io.agora.chatroom.service.transfer
 import io.agora.chatroom.theme.ChatroomUIKitTheme
 import io.agora.chatroom.ui.UIChatroomService
 import io.agora.chatroom.uikit.R
@@ -81,7 +87,8 @@ fun ComposeChatScreen(
         factory = defaultMenuViewModelFactory()),
     giftBottomSheetViewModel: ComposeGiftSheetViewModel = viewModel(ComposeGiftSheetViewModel::class.java,
         factory = defaultMessageListViewModelFactory(LocalContext.current, roomId, service)),
-    giftListViewModel: ComposeGiftListViewModel = ComposeGiftListViewModel(service = service),
+    giftListViewModel: ComposeGiftListViewModel = viewModel(ComposeGiftListViewModel::class.java,
+        factory = defaultMessageListViewModelFactory(LocalContext.current, roomId, service)),
     reportViewModel: ComposeReportViewModel = viewModel(ComposeReportViewModel::class.java,
         factory = defaultReportViewModelFactory(LocalContext.current, service)),
     membersBottomSheetViewModel: MembersBottomSheetViewModel = viewModel(MembersBottomSheetViewModel::class.java,
@@ -96,9 +103,6 @@ fun ComposeChatScreen(
     messageListViewModel.registerChatroomChangeListener()
     messageListViewModel.registerChatroomGiftListener()
     giftListViewModel.registerGiftListener()
-    giftListViewModel.openAutoClear()
-    giftListViewModel.setAutoClearTime(3000L)
-    ChatroomUIKitClient.getInstance().getContext().setUseGiftsInList(true)
 
     val context = LocalContext.current
 
@@ -110,7 +114,11 @@ fun ComposeChatScreen(
 
         ConstraintLayout(modifier = Modifier
             .fillMaxSize()
-            .clickable {
+            .background(Color.Transparent)
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() },
+            ){
                 isShowInput.value = false
             }
         ) {
@@ -126,7 +134,12 @@ fun ComposeChatScreen(
                     messageListViewModel.sendGift(it, onSuccess = {
                             message ->
                             run {
-                                giftListViewModel.addDateToIndex(data = ComposeGiftItemState(it))
+                                it.sendUser = ChatroomUIKitClient.getInstance().getCurrentUser().transfer()
+                                if (ChatroomUIKitClient.getInstance().getContext().getUseGiftsInMsg()){
+                                    messageListViewModel.addGiftMessageByIndex(message = message, gift = it)
+                                }else{
+                                    giftListViewModel.addDateToIndex(data = ComposeGiftItemState(it))
+                                }
                             }
                         }, onError = {_, _ ->}
                     )
@@ -306,7 +319,7 @@ fun ShowComposeMenuDrawer(
     ComposeMenuBottomSheet(
         viewModel = menuViewModel,
         onListItemClick = { index, menu ->
-            onMessageMenuClick?.let { it.invoke(index, menu) }
+            onMessageMenuClick?.invoke(index, menu)
                 ?: run {
                     ChatLog.d("apex", " default item: $index ${menu.title}")
                     when (menu.id) {
@@ -349,6 +362,14 @@ fun defaultMessageListViewModelFactory(
     service: UIChatroomService
 ): MessagesViewModelFactory {
     return MessagesViewModelFactory(context, roomId = roomId, service = service)
+}
+
+fun defaultMuteListViewModelFactory(
+    roomId:String,
+    service: UIChatroomService,
+    isRoomAdmin: Boolean,
+):MemberViewModelFactory{
+    return MemberViewModelFactory(roomId,service,isRoomAdmin)
 }
 
 fun defaultMenuViewModelFactory(

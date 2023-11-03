@@ -13,12 +13,20 @@ class ChatroomApplication : Application() {
         super.onCreate()
         //初始化配置信息
 
-        UICommonConfig(
-            context = applicationContext,
-            languageList = listOf(GlobalConfig.targetLanguage.code)
+        val uiCommonConfig = UICommonConfig(
+            languageList = listOf(GlobalConfig.targetLanguage.code),
+            isOpenAutoClearGiftList = true,
+            autoClearTime = 3000L,
         )
 
-        ChatroomUIKitClient.getInstance().setUp(this,BuildConfig.CHATROOM_APP_KEY)
+        ChatroomUIKitClient.getInstance().setUp(
+            applicationContext = this,
+            config = uiCommonConfig,
+            appKey = BuildConfig.CHATROOM_APP_KEY
+        )
+
+        ChatroomUIKitClient.getInstance().getContext().setUseGiftsInList(false)
+
 
         registerActivityLifecycleCallbacks(activityLifecycleCallbacks)
     }
