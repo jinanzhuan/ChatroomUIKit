@@ -14,6 +14,7 @@ import io.agora.chatroom.model.UICapabilities
 import io.agora.chatroom.model.UIChatBarMenuItem
 import io.agora.chatroom.model.gift.AUIGiftTabInfo
 import io.agora.chatroom.uikit.R
+import io.agora.chatroom.viewmodel.UIRoomViewModel
 import io.agora.chatroom.viewmodel.gift.ComposeGiftSheetViewModel
 
 class MessagesViewModelFactory(
@@ -68,6 +69,14 @@ class MessagesViewModelFactory(
                 giftTabInfo = giftTabInfo
             )
         },
+
+        UIRoomViewModel::class.java to {
+            UIRoomViewModel(
+                service = service,
+                isDarkTheme = isDarkTheme,
+            )
+        },
+
     )
 
     /**

@@ -29,11 +29,11 @@ class UIChatroomActivity : ComponentActivity(), ChatroomDestroyedListener {
 
         val isDarkTheme = ChatroomUIKitClient.getInstance().getContext().getCurrentTheme()
 
-        if (isDarkTheme){
-            roomBg.setImageResource(R.drawable.icon_chatroom_bg_dark)
-        }else{
-            roomBg.setImageResource(R.drawable.icon_chatroom_bg_light)
-        }
+//        if (isDarkTheme){
+//            roomBg.setImageResource(R.drawable.icon_chatroom_bg_dark)
+//        }else{
+//            roomBg.setImageResource(R.drawable.icon_chatroom_bg_light)
+//        }
 
         val chatRoomInfo = ChatroomUIKitClient.getInstance().getContext().getCurrentRoomInfo()
         chatRoomInfo.let {
