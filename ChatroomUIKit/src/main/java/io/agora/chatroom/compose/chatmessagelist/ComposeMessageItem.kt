@@ -79,7 +79,7 @@ fun ComposeMessageItem(
 
     Row (
         modifier = Modifier
-            .padding(start = 16.dp, top = 4.dp, bottom = 4.dp, end = 16.dp)
+            .padding(start = 16.dp, top = 2.dp, bottom = 2.dp, end = 16.dp)
             .combinedClickable(
                 onLongClick = { onLongItemClick(itemIndex, messageItem) }
             ) {
