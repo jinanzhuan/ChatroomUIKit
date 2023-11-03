@@ -18,9 +18,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.compose.avatar.ImageAvatar
 import io.agora.chatroom.compose.list.ComposeBaseList
@@ -122,7 +128,7 @@ fun ComposeGiftItem(
             )
         }else{
             ImageAvatar(
-                modifier = Modifier.size(36.dp, 36.dp),
+                modifier = Modifier.size(36.dp, 36.dp).padding(start = 4.dp),
                 painter = userPainter,
                 contentDescription = "userAvatar"
             )
@@ -162,20 +168,22 @@ fun ComposeGiftItem(
             contentDescription = "gifts"
         )
 
-//        val assetManager = LocalContext.current.assets
-//        val fontPath = "RobotoNumbersVF.ttf"
-//        val font = Font(fontPath,assetManager )
-//        val fontFamily = FontFamily(font)
+        val titleSmall = TextStyle(
+            fontFamily = FontFamily(Font("RobotoNumbersVF.ttf", assetManager = LocalContext.current.assets)),
+            fontWeight = FontWeight.Normal,
+            lineHeight = 20.sp,
+            fontSize = 14.sp,
+            color = Color.White,
+            letterSpacing = 0.01.sp,
+        )
 
         Text(
             modifier = Modifier
                 .wrapContentWidth()
                 .wrapContentHeight()
                 .padding(start = 6.dp, end = 6.dp),
-            text = "X1",
-            style = ChatroomUIKitTheme.typography.titleSmall.copy(
-                color = Color.White,
-            )
+            text = "x" + gift.giftCount,
+            style = titleSmall
         )
 
     }
