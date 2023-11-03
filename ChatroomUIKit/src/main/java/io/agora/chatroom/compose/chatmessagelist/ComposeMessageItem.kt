@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.foundation.text.appendInlineContent
 import androidx.compose.material3.Text
@@ -32,6 +33,8 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import io.agora.chat.TextMessageBody
 import io.agora.chatroom.ChatroomUIKitClient
+import io.agora.chatroom.compose.avatar.Avatar
+import io.agora.chatroom.compose.avatar.ImageAvatar
 import io.agora.chatroom.compose.utils.ExpressionUtils
 import io.agora.chatroom.model.emoji.UIRegexEntity
 import io.agora.chatroom.service.GiftEntityProtocol
@@ -265,11 +268,10 @@ fun DrawLabelImage(userInfo:UserEntity?) {
     val painter = rememberAsyncImagePainter(
         model = labelUrl
     )
-    Image(
-        modifier = Modifier
-            .fillMaxSize(),
+    ImageAvatar(
         painter = if (labelUrl.isEmpty()) painterResource(id = R.drawable.icon_default_label) else painter,
-        contentDescription = "Label"
+        modifier = Modifier.fillMaxSize(),
+        shape = RoundedCornerShape(0.dp),
     )
 }
 @Composable
@@ -288,10 +290,9 @@ fun DrawAvatarImage(userInfo:UserEntity?){
             .fillMaxSize() // 设置图片的大小
             .clip(shape = CircleShape) // 将图片裁剪为圆形
     ) {
-        Image(
+        ImageAvatar(
             modifier = Modifier.padding(2.dp),
             painter = if (avatarUrl?.isEmpty() == true)painterResource(id = R.drawable.icon_default_avatar) else painter,
-            contentDescription = "Avatar"
         )
     }
 }
@@ -304,10 +305,10 @@ fun DrawGiftImage(gift:GiftEntityProtocol?){
     val painter = rememberAsyncImagePainter(
         model = giftUrl
     )
-    Image(
+    ImageAvatar(
         modifier = Modifier.size(20.dp,20.dp),
         painter = if (giftUrl.isEmpty())painterResource(id = R.drawable.icon_bottom_bar_gift) else painter,
-        contentDescription = "Gift"
+        shape = RoundedCornerShape(0.dp)
     )
 }
 

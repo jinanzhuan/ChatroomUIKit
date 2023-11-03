@@ -13,14 +13,11 @@ class UIRoomViewModel(
     private val isDarkTheme:Boolean?,
 ) : ViewModel(), ChatroomChangeListener {
 
+    private val _isShowLoading : MutableState<Boolean> = mutableStateOf(true)
+    var isShowLoading = _isShowLoading
+
     private val _closeMemberSheet : MutableState<Boolean> = mutableStateOf(false)
     var closeMemberSheet = _closeMemberSheet
-
-    private val _isShowSearch : MutableState<Boolean> = mutableStateOf(false)
-    var isShowSearch = _isShowSearch
-
-    private val _searchKey : MutableState<String> = mutableStateOf("")
-    var searchKey = _searchKey
 
     val getTheme: Boolean
         get() = isDarkTheme == true

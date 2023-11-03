@@ -1,10 +1,7 @@
 package io.agora.chatroom.model
 
-import android.content.Context
-
 data class UICommonConfig(
-    val context: Context,
     val languageList:List<String> = mutableListOf(),
-
-
+    val isOpenAutoClearGiftList:Boolean = false,
+    val autoClearTime:Long = 3000L,
 )

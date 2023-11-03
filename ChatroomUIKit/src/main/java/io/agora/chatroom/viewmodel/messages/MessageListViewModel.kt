@@ -1,6 +1,5 @@
 package io.agora.chatroom.viewmodel.messages
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.service.ChatMessage
@@ -29,13 +28,16 @@ class MessageListViewModel(
      */
     fun registerChatroomChangeListener() {
         chatService.getChatService().bindListener(this)
+        chatService.getGiftService().bindGiftListener(this)
     }
+
 
     /**
      * Unregister chatroom change listener
      */
     private fun unRegisterChatroomChangeListener() {
         chatService.getChatService().unbindListener(this)
+        chatService.getGiftService().unbindGiftListener(this)
     }
 
     /**
@@ -66,38 +68,13 @@ class MessageListViewModel(
     override fun onGiftReceived(roomId: String, gift: GiftEntityProtocol?, message: ChatMessage) {
         super.onGiftReceived(roomId, gift, message)
         if (ChatroomUIKitClient.getInstance().getContext().getUseGiftsInMsg()){
-            gift?.let {
-                addGiftMessageByIndex(message = message, gift = it)
+            gift?.let { giftEntity ->
+                ChatroomUIKitClient.getInstance().parseUserInfo(message)?.let{
+                    giftEntity.sendUser = it
+                }
+                addGiftMessageByIndex(message = message, gift = giftEntity)
             }
         }
-    }
-
-    override fun onUserJoined(roomId: String, userId: String) {
-        super.onUserJoined(roomId, userId)
-        addJoinedMessageByIndex(message =ChatroomUIKitClient.getInstance().insertJoinedMessage(roomId,userId))
-        ChatroomUIKitClient.getInstance().getCacheManager().saveRoomMemberList(roomId, arrayListOf(userId))
-    }
-
-    override fun onUserLeft(roomId: String, userId: String) {
-        super.onUserLeft(roomId, userId)
-        ChatroomUIKitClient.getInstance().getCacheManager().removeRoomMember(roomId, userId)
-    }
-
-    override fun onUserMuted(roomId: String, userId: String) {
-        super.onUserMuted(roomId, userId)
-        ChatroomUIKitClient.getInstance().getCacheManager().saveRoomMuteList(roomId, arrayListOf(userId))
-        ChatroomUIKitClient.getInstance().getCacheManager().removeRoomMember(roomId, userId)
-    }
-
-    override fun onUserUnmuted(roomId: String, userId: String) {
-        super.onUserUnmuted(roomId, userId)
-        ChatroomUIKitClient.getInstance().getCacheManager().removeRoomMuteMember(roomId, userId)
-        ChatroomUIKitClient.getInstance().getCacheManager().saveRoomMemberList(roomId, arrayListOf(userId))
-    }
-
-    override fun onUserBeKicked(roomId: String, userId: String) {
-        super.onUserBeKicked(roomId, userId)
-        ChatroomUIKitClient.getInstance().getCacheManager().removeRoomMember(roomId, userId)
     }
 
     /**
@@ -106,7 +83,6 @@ class MessageListViewModel(
     fun sendGift(gift: GiftEntityProtocol, onSuccess: OnValueSuccess<ChatMessage>, onError: OnError) {
         chatService.getGiftService().sendGift(gift = gift, onSuccess = {
             message ->
-            addGiftMessageByIndex(message = message, gift = gift)
             onSuccess.invoke(message)
         }, onError)
     }
@@ -118,16 +94,16 @@ class MessageListViewModel(
                         onSuccess: (ChatMessage) -> Unit = {},
                         onError: OnError = {_, _ ->}) {
         chatService.getChatService().sendTextMessage(message, roomId, onSuccess = {
-            message ->
-            addTextMessageByIndex(message = message)
-            onSuccess.invoke(message)
+            msg ->
+            addTextMessageByIndex(message = msg)
+            onSuccess.invoke(msg)
         }, onError)
     }
 
     fun translateMessage(message: ChatMessage) {
         chatService.getChatService().translateTextMessage(message, onSuccess = {
-            message ->
-            updateTextMessage(message = message)
+                msg ->
+            updateTextMessage(message = msg)
         }, onError = {code, error ->})
     }
 

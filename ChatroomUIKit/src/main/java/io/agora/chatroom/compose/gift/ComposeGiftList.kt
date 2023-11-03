@@ -1,9 +1,9 @@
 package io.agora.chatroom.compose.gift
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,6 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.agora.chatroom.ChatroomUIKitClient
+import io.agora.chatroom.compose.avatar.ImageAvatar
 import io.agora.chatroom.compose.list.ComposeBaseList
 import io.agora.chatroom.compose.utils.rememberStreamImagePainter
 import io.agora.chatroom.theme.ChatroomUIKitTheme
@@ -98,7 +100,7 @@ fun ComposeGiftItem(
             ),
     ){
 
-        val userInfo = ChatroomUIKitClient.getInstance().getChatroomUser().getUserInfo(gift.giftId)
+        val userInfo = ChatroomUIKitClient.getInstance().getChatroomUser().getUserInfo(gift.sendUser.userId)
 
         val userName = userInfo.nickName?.let {
             it.ifEmpty { userInfo.userId }
@@ -113,17 +115,15 @@ fun ComposeGiftItem(
 
 
         if (avatarUrl.isBlank()){
-            Image(
+            ImageAvatar(
                 modifier = Modifier.size(36.dp, 36.dp).padding(start = 4.dp),
                 painter = painterResource(id = R.drawable.icon_default_avatar),
-                alignment = Alignment.Center,
                 contentDescription = "userAvatar"
             )
         }else{
-            Image(
+            ImageAvatar(
                 modifier = Modifier.size(36.dp, 36.dp),
                 painter = userPainter,
-                alignment = Alignment.Center,
                 contentDescription = "userAvatar"
             )
         }
@@ -132,7 +132,9 @@ fun ComposeGiftItem(
             modifier = Modifier
                 .padding(start = 6.dp, end = 6.dp)
                 .wrapContentWidth()
-                .wrapContentHeight()
+                .wrapContentHeight(),
+            verticalArrangement = Arrangement.Center
+
         ) {
 
             Text(
@@ -153,10 +155,10 @@ fun ComposeGiftItem(
 
         }
 
-        Image(
+        ImageAvatar(
             modifier = Modifier.size(40.dp, 40.dp),
             painter = giftPainter,
-            alignment = Alignment.Center,
+            shape = RoundedCornerShape(0.dp),
             contentDescription = "gifts"
         )
 

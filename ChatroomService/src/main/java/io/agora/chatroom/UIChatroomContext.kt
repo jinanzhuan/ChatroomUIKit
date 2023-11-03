@@ -1,6 +1,7 @@
 package io.agora.chatroom
 
 import android.content.Context
+import android.util.Log
 import io.agora.chatroom.model.UIChatroomInfo
 import io.agora.chatroom.model.UICommonConfig
 
@@ -26,17 +27,23 @@ class UIChatroomContext{
     }
 
     fun setCurrentRoomInfo(info: UIChatroomInfo){
+        Log.e("apex","setCurrentRoomInfo")
         mChatroomInfo = info
     }
 
-    fun isCurrentOwner():Boolean{
-        mChatroomInfo.roomOwner?.let {
-            return it.userId == ChatroomUIKitClient.getInstance().getCurrentUser().userId
+    fun isCurrentOwner(ownerId:String?):Boolean{
+        if (ownerId?.isEmpty() == true){
+            mChatroomInfo.roomOwner?.let {
+                return it.userId == ChatroomUIKitClient.getInstance().getCurrentUser().userId
+            }
+        }else{
+            return ChatroomUIKitClient.getInstance().getCurrentUser().userId == ownerId
         }
         return false
     }
 
     fun getCurrentRoomInfo(): UIChatroomInfo{
+        Log.e("apex","getCurrentRoomInfo")
         return mChatroomInfo
     }
 

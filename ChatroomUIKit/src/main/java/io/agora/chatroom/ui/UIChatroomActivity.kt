@@ -1,54 +1,91 @@
 package io.agora.chatroom.ui
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.KeyEvent
-import android.widget.ImageView
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.ViewModelProvider
 import io.agora.chatroom.ChatroomUIKitClient
-import io.agora.chatroom.UIChatRoomViewTest
+import io.agora.chatroom.compose.ComposeChat
+import io.agora.chatroom.model.UIChatroomInfo
 import io.agora.chatroom.service.ChatroomDestroyedListener
-import io.agora.chatroom.uikit.R
+import io.agora.chatroom.theme.ChatroomUIKitTheme
+import io.agora.chatroom.viewmodel.UIRoomViewModel
+import io.agora.chatroom.viewmodel.gift.ComposeGiftListViewModel
+import io.agora.chatroom.viewmodel.messages.MessagesViewModelFactory
 
 class UIChatroomActivity : ComponentActivity(), ChatroomDestroyedListener {
 
-    private val roomView: UIChatRoomViewTest by lazy { findViewById(R.id.room_view) }
-    private var service:UIChatroomService? = null
+    private lateinit var roomId:String
+    private lateinit var service:UIChatroomService
+
+    private val roomViewModel by lazy {
+        ViewModelProvider(this@UIChatroomActivity as ComponentActivity,
+            factory = MessagesViewModelFactory(context = this@UIChatroomActivity, roomId = roomId, service = service)
+        )[UIRoomViewModel::class.java]
+    }
+
+    private val giftViewModel by lazy {
+        ViewModelProvider(this@UIChatroomActivity as ComponentActivity,
+            factory = MessagesViewModelFactory(context = this@UIChatroomActivity, roomId = roomId, service = service))[ComposeGiftListViewModel::class.java]
+    }
+
+    private val launcherToSearch: ActivityResultLauncher<Intent> =
+        (this@UIChatroomActivity as ComponentActivity).registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            roomViewModel.closeMemberSheet.value = result.resultCode == Activity.RESULT_OK
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        setContentView(R.layout.activity_chatroom)
-        val roomBg = findViewById<ImageView>(R.id.room_bg)
-        roomBg.scaleType = ImageView.ScaleType.CENTER_CROP
 
-        val roomId = intent.getStringExtra(KEY_ROOM_ID)?: return
+        roomId = intent.getStringExtra(KEY_ROOM_ID)?: return
         val ownerId = intent.getStringExtra(KEY_OWNER_ID)?: return
-        ChatroomUIKitClient.getInstance().initRoom(roomId,ownerId)
 
-        val isDarkTheme = ChatroomUIKitClient.getInstance().getContext().getCurrentTheme()
+        val uiChatroomInfo = UIChatroomInfo(
+            roomId,
+            ChatroomUIKitClient.getInstance().getChatroomUser().getUserInfo(ownerId)
+        )
 
-//        if (isDarkTheme){
-//            roomBg.setImageResource(R.drawable.icon_chatroom_bg_dark)
-//        }else{
-//            roomBg.setImageResource(R.drawable.icon_chatroom_bg_light)
-//        }
+        service = UIChatroomService(uiChatroomInfo)
 
-        val chatRoomInfo = ChatroomUIKitClient.getInstance().getContext().getCurrentRoomInfo()
-        chatRoomInfo.let {
-            service = UIChatroomService(it)
-            // 注册监听
-            ChatroomUIKitClient.getInstance().subscribeRoomDestroyed(this)
+        val commonConfig = ChatroomUIKitClient.getInstance().getContext().getCommonConfig()
+        if (commonConfig.isOpenAutoClearGiftList){
+            giftViewModel.openAutoClear()
+        }else{
+            giftViewModel.closeAutoClear()
         }
-        roomView.bindService(service)
 
+        giftViewModel.setAutoClearTime(commonConfig.autoClearTime)
+
+        setContent {
+            ChatroomUIKitTheme{
+
+                ComposeChat(
+                    roomViewModel = roomViewModel,
+                    giftListViewModel = giftViewModel,
+                    service = service,
+                    onMemberSheetSearchClick = {
+                            tab->
+                        launcherToSearch.launch(UISearchActivity.createIntent(this@UIChatroomActivity, roomId, tab))
+                    }
+                )
+            }
+        }
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_DOWN) {
             finish()
-            service?.getChatService()?.leaveChatroom(
+            service.getChatService().leaveChatroom(
                 roomId = ChatroomUIKitClient.getInstance().getContext().getCurrentRoomInfo().roomId,
                 userId = ChatroomUIKitClient.getInstance().getCurrentUser().userId,
                 onSuccess = {

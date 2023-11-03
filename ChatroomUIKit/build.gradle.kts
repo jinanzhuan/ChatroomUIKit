@@ -60,7 +60,6 @@ dependencies {
     implementation("androidx.compose.foundation:foundation-layout")
     implementation("androidx.compose.foundation:foundation")
 
-    implementation("androidx.constraintlayout:constraintlayout:2.0.1")
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
     implementation("androidx.activity:activity-ktx:1.7.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")

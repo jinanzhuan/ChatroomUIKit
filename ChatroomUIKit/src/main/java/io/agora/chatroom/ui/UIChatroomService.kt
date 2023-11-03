@@ -1,5 +1,6 @@
 package io.agora.chatroom.ui
 
+import android.util.Log
 import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.model.UIChatroomInfo
 import io.agora.chatroom.service.Chatroom
@@ -29,12 +30,17 @@ class UIChatroomService constructor(
     fun getRoomInfo() = roomInfo
 
     fun joinRoom(onSuccess: OnValueSuccess<Chatroom>, onFailure: (Int,String?) -> Unit){
-        val userId = ChatroomUIKitClient.getInstance().getCurrentUser().userId
-        chatImpl.joinChatroom( roomInfo.roomId,userId,
-            onSuccess = { onSuccess.invoke(it)},
-            onError = { code, error ->
-                onFailure.invoke(code,error)
-            }
-        )
+        Log.e("apex","joinRoom ")
+        roomInfo.let {
+            ChatroomUIKitClient.getInstance().joinChatroom( it,
+                onSuccess = { chatroom ->
+                    ChatroomUIKitClient.getInstance().sendJoinedMessage()
+                    onSuccess.invoke(chatroom)
+                },
+                onError = { code, error ->
+                    onFailure.invoke(code,error)
+                }
+            )
+        }
     }
 }

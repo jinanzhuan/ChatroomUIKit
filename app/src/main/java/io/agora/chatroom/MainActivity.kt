@@ -43,12 +43,10 @@ import io.agora.chatroom.data.testMarqueeList
 import io.agora.chatroom.data.testMenuList1
 import io.agora.chatroom.model.UIChatroomInfo
 import io.agora.chatroom.model.UIComposeSheetItem
-import io.agora.chatroom.model.marquee.UINotification
 import io.agora.chatroom.theme.BodyLarge
 import io.agora.chatroom.theme.ChatroomUIKitTheme
 import io.agora.chatroom.theme.neutralColor20
 import io.agora.chatroom.theme.neutralColor90
-import io.agora.chatroom.ui.UIChatroomActivity
 import io.agora.chatroom.ui.UIChatroomService
 import io.agora.chatroom.ui.UISearchActivity
 import io.agora.chatroom.viewmodel.RequestListViewModel
