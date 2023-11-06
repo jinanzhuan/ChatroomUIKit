@@ -9,10 +9,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.ViewModelProvider
 import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.compose.ComposeChat
+import io.agora.chatroom.compose.utils.WindowConfigUtils
 import io.agora.chatroom.model.UIChatroomInfo
 import io.agora.chatroom.service.ChatroomDestroyedListener
 import io.agora.chatroom.theme.ChatroomUIKitTheme
@@ -68,6 +70,9 @@ class UIChatroomActivity : ComponentActivity(), ChatroomDestroyedListener {
 
         setContent {
             ChatroomUIKitTheme{
+                WindowConfigUtils(
+                    statusBarColor = Color.Transparent,
+                )
 
                 ComposeChat(
                     roomViewModel = roomViewModel,

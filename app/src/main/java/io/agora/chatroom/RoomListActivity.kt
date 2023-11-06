@@ -16,15 +16,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.filled.Menu
@@ -47,6 +45,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.agora.chatroom.compose.input.InputField
 import io.agora.chatroom.compose.list.LazyColumnList
+import io.agora.chatroom.compose.utils.WindowConfigUtils
 import io.agora.chatroom.service.ChatCallback
 import io.agora.chatroom.service.ChatClient
 import io.agora.chatroom.service.ChatConnectionListener
@@ -67,6 +66,7 @@ class RoomListActivity: ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ChatroomUIKitTheme {
+                WindowConfigUtils()
                 if (hideLogin.value) {
                     // show room list
                     showRoomList()
