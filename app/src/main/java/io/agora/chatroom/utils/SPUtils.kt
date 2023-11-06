@@ -46,4 +46,12 @@ class SPUtils private constructor(private val context: Application) {
         return sp.getString("token", "") ?: ""
     }
 
+    fun saveCurrentThemeStyle(isDark: Boolean) {
+        sp.edit().putBoolean("isDark", isDark).apply()
+    }
+
+    fun getCurrentThemeStyle(): Boolean {
+        return sp.getBoolean("isDark", false)
+    }
+
 }

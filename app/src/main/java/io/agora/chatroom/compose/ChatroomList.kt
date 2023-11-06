@@ -34,6 +34,7 @@ fun ChatroomList(
     bottomContent: @Composable (() -> Unit)? = null,
     itemContent: @Composable (Int, RoomDetailBean) -> Unit = { index, item ->
         ChatroomListItem(
+            modifier = Modifier.fillMaxWidth().height(100.dp),
             roomDetail = item,
             onItemClick = onItemClick
         )

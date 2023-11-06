@@ -12,6 +12,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -33,7 +34,10 @@ import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.agora.chatroom.compose.dialog.SimpleDialog
 import io.agora.chatroom.compose.indicator.LoadingIndicator
+import io.agora.chatroom.compose.utils.WindowConfigUtils
+import io.agora.chatroom.service.OnSuccess
 import io.agora.chatroom.theme.ChatroomUIKitTheme
+import io.agora.chatroom.utils.SPUtils
 import io.agora.chatroom.viewmodel.SplashViewModel
 import io.agora.chatroom.viewmodel.dialog.DialogViewModel
 
@@ -47,6 +51,12 @@ class SplashActivity: ComponentActivity() {
 
         setContent {
             ChatroomUIKitTheme {
+                val isDarkTheme = SPUtils.getInstance(LocalContext.current.applicationContext as Application).getCurrentThemeStyle()
+                WindowConfigUtils(
+                    isDarkTheme = !isDarkTheme,
+                    statusBarColor = Color.Transparent,
+                    nativeBarColor = ChatroomUIKitTheme.colors.background
+                )
                 val viewModel = SplashViewModel(LocalContext.current.applicationContext as Application)
                 val dialogViewModel = viewModel(DialogViewModel::class.java)
                 dialogViewModel.title = stringResource(id = R.string.login_result_failed)
@@ -59,10 +69,9 @@ class SplashActivity: ComponentActivity() {
                 })
                 Image(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .statusBarsPadding(),
+                        .fillMaxSize(),
                     contentScale = ContentScale.FillHeight,
-                    painter = painterResource(id = io.agora.chatroom.uikit.R.drawable.icon_chatroom_bg_light),
+                    painter = painterResource(id = R.drawable.splash_bg),
                     contentDescription = "splash background")
 
                 ConstraintLayout(modifier = Modifier.fillMaxSize()) {
@@ -74,8 +83,8 @@ class SplashActivity: ComponentActivity() {
                             bottom.linkTo(parent.bottom)
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
-                        },
-                        text = "环信聊天室",
+                        }.navigationBarsPadding(),
+                        text = stringResource(id = R.string.app_name),
                         style = ChatroomUIKitTheme.typography.titleLarge,
                         color = ChatroomUIKitTheme.colors.primary,
                         fontWeight = FontWeight(500),
@@ -88,8 +97,8 @@ class SplashActivity: ComponentActivity() {
                             bottom.linkTo(parent.bottom, margin = 60.dp)
                             start.linkTo(parent.start)
                             end.linkTo(parent.end)
-                        },
-                        text = "Powered by Easemob",
+                        }.navigationBarsPadding(),
+                        text = stringResource(id = R.string.powered_by),
                         style = TextStyle(
                             fontSize = 13.sp,
                             fontWeight = FontWeight(400),
@@ -112,7 +121,12 @@ class SplashActivity: ComponentActivity() {
 
                 SimpleDialog(viewModel = dialogViewModel,
                     onConfirmClick = {
-                        viewModel.login()
+                        viewModel.login(onValueSuccess = { loginRes ->
+                            startActivity(Intent(this, MainActivity::class.java))
+                            finish()
+                        }, onError = { code, msg ->
+                            dialogViewModel.showDialog()
+                        })
                         dialogViewModel.dismissDialog()
                     })
 

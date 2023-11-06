@@ -1,9 +1,12 @@
 package io.agora.chatroom.viewmodel
 
+import android.util.Log
+import io.agora.chatroom.bean.CreateRoomReq
 import io.agora.chatroom.bean.RequestListResp
 import io.agora.chatroom.bean.RoomDetailBean
 import io.agora.chatroom.http.ChatroomHttpManager
 import io.agora.chatroom.service.OnError
+import io.agora.chatroom.service.OnSuccess
 import io.agora.chatroom.service.OnValueSuccess
 import retrofit2.Call
 import retrofit2.Callback
@@ -25,6 +28,7 @@ class ChatroomListViewModel :RequestListViewModel<RoomDetailBean>() {
             ) {
                 if (response.isSuccessful) {
                     val body = response.body()
+                    Log.e("MainActivity", "fetchRoomList: $body")
                     if (body != null) {
                         add(body.entities)
                         onSuccess.invoke(body.entities)
@@ -45,4 +49,38 @@ class ChatroomListViewModel :RequestListViewModel<RoomDetailBean>() {
         })
     }
 
+    /**
+     * Create a chatroom
+     */
+    fun createChatroom(
+        roomName: String,
+        owner: String,
+        onSuccess: OnValueSuccess<RoomDetailBean>,
+        onError: OnError) {
+
+        val call = ChatroomHttpManager.getService().createRoom(
+            CreateRoomReq(name = roomName, owner = owner))
+        call.enqueue(object : Callback<RoomDetailBean> {
+            override fun onResponse(call: Call<RoomDetailBean>, response: Response<RoomDetailBean>) {
+                if (response.isSuccessful) {
+                    val result = response.body()
+                    if (result != null) {
+                        onSuccess.invoke(result)
+                    } else {
+                        onError.invoke(-1, "response body is null")
+                    }
+                } else {
+                    onError.invoke(response.code(), response.message())
+                }
+            }
+
+            override fun onFailure(call: Call<RoomDetailBean>, t: Throwable) {
+                onError.invoke(-1, t.message)
+            }
+
+        })
+
+    }
+
 }
+

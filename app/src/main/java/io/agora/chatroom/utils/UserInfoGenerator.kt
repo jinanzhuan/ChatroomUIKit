@@ -1,6 +1,7 @@
 package io.agora.chatroom.utils
 
 import android.content.Context
+import androidx.compose.ui.platform.LocalContext
 import io.agora.chatroom.R
 import io.agora.chatroom.http.baseAvatarUrl
 import kotlin.random.Random
@@ -30,6 +31,14 @@ object UserInfoGenerator {
         source.let {
             return it[Random.nextInt(it.size)]
         }
+    }
+
+    /**
+     * Get a random room image.
+     */
+    fun randomRoomImage(context: Context, size: Int = 10): Int {
+        val drawableId = context.resources.getIdentifier("cover_${Random.nextInt(size)}", "drawable", context.applicationInfo.packageName)
+        return if (drawableId == 0) R.drawable.cover_1 else drawableId
     }
 
 }

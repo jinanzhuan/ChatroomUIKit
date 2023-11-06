@@ -35,5 +35,13 @@ data class BroadcastResData(
     val id: String,
 )
 
+/**
+ * The request params of creating room.
+ */
+data class CreateRoomReq(
+    val name: String,
+    val owner: String,
+)
+
 
 
