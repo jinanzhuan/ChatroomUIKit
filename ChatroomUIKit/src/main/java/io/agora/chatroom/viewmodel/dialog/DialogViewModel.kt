@@ -10,6 +10,8 @@ class DialogViewModel(
     var title: String = "",
     var icon: Int = 0,
     var text: String = "",
+    var confirmText: String = "",
+    var cancelText: String = "",
     var showCancel: Boolean = false,
 ): ViewModel() {
     private val _showDialog = mutableStateOf(false)

@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
@@ -60,7 +61,7 @@ fun SimpleDialog(
                     containerColor = colors.primary,
                 ),
                 onClick = { onConfirmClick() }) {
-                Text(text = stringResource(id = R.string.Confirm), color = colors.background)
+                Text(text = viewModel.confirmText.ifEmpty { stringResource(id = R.string.Confirm) }, color = colors.background)
             }
         },
         modifier = modifier,
@@ -75,7 +76,7 @@ fun SimpleDialog(
                         .padding(6.dp)
                         .sizeIn(minWidth = 80.dp, maxWidth = 150.dp),
                     onClick = { onCancelClick?.invoke() }) {
-                    Text(text = stringResource(id = R.string.cancel), color = colors.onBackground)
+                    Text(text = viewModel.cancelText.ifEmpty { stringResource(id = R.string.cancel) }, color = colors.onBackground)
                 }
             }
         } else null,
@@ -176,6 +177,18 @@ fun BaseDialog(
                 }
             }
         }
+    }
+}
+
+@Preview
+@Composable
+fun previewSimpleDialog() {
+    ChatroomUIKitTheme {
+        SimpleDialog(
+            viewModel = DialogViewModel(title = "Title", showCancel = true),
+            onConfirmClick = {},
+            onCancelClick = {},
+        )
     }
 }
 

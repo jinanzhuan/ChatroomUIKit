@@ -1,5 +1,6 @@
 package io.agora.chatroom.compose.list
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
@@ -116,6 +117,8 @@ fun <T> LazyColumnList(
     modifier: Modifier = Modifier,
     listState: LazyListState = rememberLazyListState(),
     reverseLayout: Boolean = false,
+    verticalArrangement: Arrangement.Vertical =
+        if (!reverseLayout) Arrangement.Top else Arrangement.Bottom,
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
     contentPadding: PaddingValues = PaddingValues(0.dp),
     onScrollChange: (LazyColumnListState) -> Unit = {_ -> },
@@ -144,7 +147,8 @@ fun <T> LazyColumnList(
             },
             horizontalAlignment = horizontalAlignment,
             reverseLayout = reverseLayout,
-            contentPadding = contentPadding
+            contentPadding = contentPadding,
+            verticalArrangement = verticalArrangement
         ) {
             itemsIndexed(viewModel.items) { index, item ->
                 Box{
