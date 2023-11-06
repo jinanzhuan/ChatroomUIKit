@@ -1,300 +1,308 @@
 package io.agora.chatroom
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.Button
-import androidx.compose.material.Divider
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ListItem
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.SwitchDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.view.WindowCompat
-import io.agora.chatroom.compose.drawer.ComposeBottomSheet
-import io.agora.chatroom.compose.drawer.ComposeMenuBottomSheet
-import io.agora.chatroom.compose.list.LazyColumnList
-import io.agora.chatroom.compose.marquee.MainScreen
-import io.agora.chatroom.compose.report.ComposeMessageReport
-import io.agora.chatroom.compose.utils.WindowConfigUtils
-import io.agora.chatroom.data.initialLongClickMenu
-import io.agora.chatroom.data.testMarqueeList
-import io.agora.chatroom.data.testMenuList1
-import io.agora.chatroom.model.UIChatroomInfo
-import io.agora.chatroom.model.UIComposeSheetItem
-import io.agora.chatroom.theme.BodyLarge
+import androidx.lifecycle.viewmodel.compose.viewModel
+import io.agora.chatroom.bean.RoomDetailBean
+import io.agora.chatroom.compose.ChatroomList
+import io.agora.chatroom.compose.avatar.Avatar
+import io.agora.chatroom.compose.image.AsyncImage
+import io.agora.chatroom.compose.indicator.LoadingIndicator
 import io.agora.chatroom.theme.ChatroomUIKitTheme
-import io.agora.chatroom.theme.neutralColor20
-import io.agora.chatroom.theme.neutralColor90
-import io.agora.chatroom.ui.UIChatroomService
-import io.agora.chatroom.ui.UISearchActivity
-import io.agora.chatroom.viewmodel.RequestListViewModel
-import io.agora.chatroom.viewmodel.marquee.MarqueeTextViewModel
-import io.agora.chatroom.viewmodel.menu.MenuViewModel
-import io.agora.chatroom.viewmodel.report.ComposeReportViewModel
-import io.agora.chatroom.viewmodel.tab.TabWithVpViewModel
+import io.agora.chatroom.ui.UIChatroomActivity
+import io.agora.chatroom.viewmodel.ChatroomListViewModel
+import io.agora.chatroom.viewmodel.RequestState
 
 class MainActivity : ComponentActivity() {
-    private var viewModel1:MenuViewModel = MenuViewModel(menuList = initialLongClickMenu, isExpanded = true)
-    private var viewModel2:MenuViewModel = MenuViewModel(menuList = testMenuList1, isExpanded = true )
-    private val viewModel4 by lazy { TestItemViewModel() }
-    var viewModel3:MenuViewModel = MenuViewModel()
-    private val marqueeViewModel = MarqueeTextViewModel(content = testMarqueeList)
-    private var viewModel5: ComposeReportViewModel = ComposeReportViewModel(
-        reportTag = mutableListOf(
-            "Unwelcome commercial content or spam",
-            "Pornographic or explicit content",
-            "Child abuse",
-            "Unwelcome commercial content or spam",
-            "Pornographic or explicit content",
-            "Child abuse",
-            "Unwelcome commercial content or spam",
-            "Pornographic or explicit content",
-            "Child abuse",
-        ),
-        service = UIChatroomService(UIChatroomInfo("", null))
-    )
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
-
-            ChatroomUIKitTheme {
-                WindowConfigUtils()
-                // A surface container using the 'background' color from the theme
-                Surface(modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colors.background)) {
-                    ShowComposeMenuDrawer(viewModel = viewModel1,viewModel5 = viewModel5)
-                    ShowDefaultComposeDrawer(viewModel = viewModel2)
-                    testLazyColumn(viewModel = viewModel4)
-                    ComposeMessageReport(
-                        modifier = Modifier.height((LocalConfiguration.current.screenHeightDp/2).dp),
-                        containerColor = ChatroomUIKitTheme.colors.background,
-                        viewModel = viewModel5,
-                        onConfirmClick = {
-                            Log.e("apex","com $it")
-                        },
-                        onCancelClick = {
-                            Log.e("apex"," onCancelClick ")
-                            viewModel5.closeDrawer()
-                        },
-                        onDismissRequest = {
-                            viewModel5.closeDrawer()
-                        }
-                    )
-
-                    MainScreen(
-                        modifier = Modifier
-                            .padding(top = 300.dp, start = 12.dp, end = 12.dp)
-                            .statusBarsPadding(),
-                        marqueeViewModel
-                    )
-
-                    Greeting(viewModel1,viewModel2,onItemClick = {
-                        Log.e("apex","onItemClick $it")
-                        when (it) {
-                            1 -> {
-                                viewModel1.openDrawer()
-                            }
-                            2 -> {
-                                viewModel2.openDrawer()
-                            }
-                            3 -> {
-                                marqueeViewModel.addMarqueeText("Notification 3 Notification 3 Notification 3 Notification 3")
-//                                viewModel3.openDrawer()
-//                                startActivity(
-//                                    UIChatroomActivity.createIntent(
-//                                        context = this@MainActivity,
-//                                        ownerId = "apex1",
-//                                        roomId = "229551090237444",
-//                                    ))
-                            }
-                            4 -> {
-//                                val list = mutableListOf<String>()
-//                                for (index in 1..50) {
-//                                    list.add("Item $index")
-//                                }
-//                                viewModel4.add(list)
-                                startActivity(Intent(this@MainActivity, UISearchActivity::class.java))
-                            }
-                        }
-                    })
-
-                }
+            val isDark = isSystemInDarkTheme()
+            var isDarkTheme by rememberSaveable {
+                mutableStateOf(isDark)
             }
-        }
-    }
-}
-
-@Composable
-fun ShowDefaultComposeDrawer(viewModel:MenuViewModel){
-    ComposeMenuBottomSheet(
-        viewModel = viewModel,
-        onListItemClick = { index,item ->
-            Log.e("apex"," default item: $index ${item.title}")
-        },
-        onDismissRequest = {
-            viewModel.closeDrawer()
-            Log.e("apex"," onClick Cancel ")
-        }
-    )
-}
-@Composable
-fun ShowComposeMenuDrawer(viewModel:MenuViewModel,viewModel5:ComposeReportViewModel){
-    ComposeMenuBottomSheet(
-        viewModel = viewModel,
-        onListItemClick = { index,item ->
-            Log.e("apex"," default item: $index ${item.title}")
-            if (index == 3){
-                viewModel5.openDrawer()
-            }
-        },
-        onDismissRequest = {
-            viewModel.closeDrawer()
-            Log.e("apex"," onClick Cancel ")
-        }
-    )
-}
-
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-fun ShowCustomComposeDrawer(viewModel: MenuViewModel){
-    val list = mutableListOf<UIComposeSheetItem>()
-    list.add(UIComposeSheetItem(id = 0, title = "Item 1"))
-    list.add(UIComposeSheetItem(id = 1, title = "Item 2"))
-    list.add(UIComposeSheetItem(id = 2, title = "Item 3"))
-    list.add(UIComposeSheetItem(id = 3, title = "Item 4"))
-
-    ComposeBottomSheet(
-        viewModel = viewModel,
-        modifier = Modifier.fillMaxWidth(),
-        drawerContent = {
-            LazyColumn(
-                modifier = Modifier
-                    .padding(start = 16.dp, end = 16.dp)
-                    .fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(10.dp),
-            ) {
-                itemsIndexed(list){ index, item ->
-                    Column{
-                        Divider(
+            val roomListViewModel = viewModel(modelClass = ChatroomListViewModel::class.java)
+            roomListViewModel.fetchRoomList()
+            ChatroomUIKitTheme(isDarkTheme = isDarkTheme) {
+                Scaffold(
+                    topBar = {
+                        Row(
                             modifier = Modifier
-                                .height(0.5.dp)
-                                .background(if (viewModel.getTheme == true) neutralColor20 else neutralColor90)
                                 .fillMaxWidth()
-                                .padding(top = 10.dp, bottom = 10.dp)
-                        )
-                        ListItem(
-                            text = {
-                                Text(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(top = 10.dp, bottom = 10.dp),
-                                    textAlign = TextAlign.Center,
-                                    style = BodyLarge,
-                                    text = item.title
+                                .background(ChatroomUIKitTheme.colors.background)
+                                .height(56.dp)
+                                .padding(16.dp),
+                            verticalAlignment = Alignment.CenterVertically) {
+
+                            Text(
+                                text = "Channel list",
+                                style = ChatroomUIKitTheme.typography.headlineLarge,
+                                color = ChatroomUIKitTheme.colors.onBackground
+                            )
+
+                            Spacer(modifier = Modifier.width(10.dp))
+
+                            if (roomListViewModel.getState is RequestState.Loading) {
+                                LoadingIndicator()
+                            }
+
+                            Spacer(modifier = Modifier.weight(1f))
+
+                            switch(
+                                checked = !isDark,
+                                onCheckedChange = {
+                                    isDarkTheme = !it
+                                },
+                                modifier = Modifier
+                                    .size(width = 54.dp, height = 28.dp)
+                                    .clip(RoundedCornerShape(28.dp))
+                                    .background(ChatroomUIKitTheme.colors.backgroundHighest))
+
+                        }
+                    },
+                    bottomBar = {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .shadow(
+                                    elevation = 36.dp,
+                                    spotColor = Color(0x26464E53),
+                                    ambientColor = Color(0x26464E53)
                                 )
-                            },
-                            modifier = Modifier.clickable {
-                                Log.e("apex"," custom item: $index ${item.title}")
+
+                                .shadow(
+                                    elevation = 24.dp,
+                                    spotColor = Color(0x14171A1C),
+                                    ambientColor = Color(0x14171A1C)
+                                )
+
+                                .border(width = 0.5.dp, color = Color(0xFFE3E6E8))
+
+                                .background(ChatroomUIKitTheme.colors.background)
+                                .height(66.dp)
+                                .padding(16.dp),
+                            verticalAlignment = Alignment.CenterVertically) {
+
+                            Avatar(
+                                imageUrl = "",
+                            )
+
+                            Spacer(modifier = Modifier.width(10.dp))
+
+                            Text(
+                                text = "Nickname",
+                                style = ChatroomUIKitTheme.typography.bodyLarge,
+                                color = ChatroomUIKitTheme.colors.onBackground
+                            )
+
+                            Spacer(modifier = Modifier.weight(1f))
+
+                            Row(modifier = Modifier
+                                .size(width = 102.dp, height = 38.dp)
+                                .clip(RoundedCornerShape(28.dp))
+                                .background(ChatroomUIKitTheme.colors.primary),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Check,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(SwitchDefaults.IconSize),
+                                )
+                                Text(
+                                    text = "Create",
+                                    style = ChatroomUIKitTheme.typography.bodyMedium,
+                                    color = ChatroomUIKitTheme.colors.background
+                                )
+                            }
+
+                        }
+                    }
+                ) { padding ->
+                    Surface(modifier = Modifier.padding(padding)) {
+                        ChatroomList(
+                            viewModel = roomListViewModel,
+                            onItemClick = { roomDetail: RoomDetailBean ->
+                                startActivity(
+                                    UIChatroomActivity.createIntent(
+                                        context = this@MainActivity,
+                                        roomId = roomDetail.id,
+                                        ownerId = roomDetail.owner
+                                    )
+                                )
                             }
                         )
                     }
+
                 }
             }
-//            TabLayoutWithViewPager(tabTitles = listOf("Participants", "Muted"))
-//            TabLayoutViewPager(
-//                onVpSelected = { i->
-//                    Log.e("apex","TabLayoutViewPager change: $i")
-//                }
-//            )
-        },
-        onDismissRequest = {
-            viewModel.closeDrawer()
-            Log.e("apex"," onClick Cancel ")
         }
-    )
-
+    }
 }
 @Composable
-fun Greeting(viewModel1: MenuViewModel,viewModel2: MenuViewModel,onItemClick:(index:Int) -> Unit = {}) {
-    Column(Modifier.fillMaxWidth()) {
-        Button(onClick = {
-            onItemClick(1)
-
-//            ShowComposeMenuDrawer(viewModel = viewModel1)
-            viewModel1.openDrawer()
-
-        }) {
-            Text("DefaultDrawer")
-        }
-        Spacer(modifier = Modifier.height(8.dp))
-        Button(onClick = {
-            onItemClick(2)
-//            viewModel2.openDrawer()
-
-        }) {
-            Text("CustomerDrawer")
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
-        Button(onClick = {
-            onItemClick(3)
-        }) {
-            Text("UIChatroomActivity")
-        }
-        Spacer(modifier = Modifier.height(8.dp))
-        Button(onClick = {
-            onItemClick(4)
-        }) {
-            Text("Add test data")
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
+fun switch(
+    checked: Boolean,
+    onCheckedChange: ((Boolean) -> Unit)?,
+    modifier: Modifier = Modifier,
+) {
+    var selected by rememberSaveable {
+        mutableStateOf(checked)
     }
 
+    Row(modifier = modifier
+        .clickable {
+            selected = !selected
+            Log.e("MainActivity", "switch selected: $selected")
+            onCheckedChange?.invoke(selected)
+        },
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween) {
+
+        val selectedModifier = Modifier
+            .size(24.dp)
+            .clip(CircleShape)
+            .background(ChatroomUIKitTheme.colors.primary)
+        val unSelectedModifier = Modifier
+            .size(24.dp)
+
+        Spacer(modifier = Modifier.width(2.dp))
+        Box(modifier = if (selected) selectedModifier else unSelectedModifier,
+            contentAlignment = Alignment.Center) {
+            Icon(
+                imageVector = Icons.Filled.Check,
+                contentDescription = null,
+                modifier = Modifier.size(SwitchDefaults.IconSize),
+            )
+        }
+
+        Box(modifier = if (selected) unSelectedModifier else selectedModifier,
+            contentAlignment = Alignment.Center) {
+            Icon(
+                imageVector = Icons.Filled.Close,
+                contentDescription = null,
+                modifier = Modifier.size(SwitchDefaults.IconSize),
+            )
+        }
+        Spacer(modifier = Modifier.width(2.dp))
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun previewSwitch() {
     ChatroomUIKitTheme {
-//        Greeting("Android")
-    }
-}
+        ElevatedCard(
+            shape = ChatroomUIKitTheme.shapes.large,
+            colors = CardDefaults.cardColors(
+                containerColor = ChatroomUIKitTheme.colors.background,
+            ),
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 6.dp
+            ),
+        ) {
+            Row(modifier = Modifier
+                .height(100.dp)
+                .fillMaxWidth()) {
+                AsyncImage(
+                    imageUrl = "https://t7.baidu.com/it/u=1595072465,3644073269&fm=193&f=GIF",
+                    modifier = Modifier
+                        .size(100.dp)
+                        .clip(RoundedCornerShape(8.dp)),
+                    shape = RoundedCornerShape(8.dp)
+                )
 
-@Composable
-fun testLazyColumn(viewModel: TestItemViewModel) {
-    ChatroomUIKitTheme {
-        LazyColumnList(viewModel) { index, item ->
-            Text(text = item, modifier = Modifier.padding(16.dp))
+                Column(modifier = Modifier.padding(vertical = 12.dp)) {
+                    Text(
+                        text = "Channel name",
+                        style = ChatroomUIKitTheme.typography.bodyLarge,
+                        color = ChatroomUIKitTheme.colors.onBackground
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Row {
+                        Text(
+                            text = "Channel name",
+                            style = ChatroomUIKitTheme.typography.bodyMedium,
+                            color = ChatroomUIKitTheme.colors.onBackground
+                        )
+
+                        Spacer(modifier = Modifier.width(10.dp))
+
+                        Text(
+                            text = "Channel name",
+                            style = ChatroomUIKitTheme.typography.bodyMedium,
+                            color = ChatroomUIKitTheme.colors.onBackground
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    Row {
+                        Spacer(modifier = Modifier.weight(1f))
+
+                        Box(
+                            modifier = Modifier
+                                .size(width = 55.dp, height = 24.dp)
+                                .clip(RoundedCornerShape(24.dp))
+                                .background(ChatroomUIKitTheme.colors.backgroundHighest),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "Enter",
+                                style = ChatroomUIKitTheme.typography.labelSmall,
+                                color = ChatroomUIKitTheme.colors.onBackground
+                            )
+                        }
+                        
+                        Spacer(modifier = Modifier.width(12.dp))
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                }
+            }
+
         }
     }
 }
-
-class TestItemViewModel: RequestListViewModel<String>()
-
-class ViewPagerViewModel(list: List<String> = emptyList()): TabWithVpViewModel<String>(contentList = list)
-
