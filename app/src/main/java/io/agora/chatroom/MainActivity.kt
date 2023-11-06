@@ -25,9 +25,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,6 +36,7 @@ import io.agora.chatroom.compose.drawer.ComposeMenuBottomSheet
 import io.agora.chatroom.compose.list.LazyColumnList
 import io.agora.chatroom.compose.marquee.MainScreen
 import io.agora.chatroom.compose.report.ComposeMessageReport
+import io.agora.chatroom.compose.utils.WindowConfigUtils
 import io.agora.chatroom.data.initialLongClickMenu
 import io.agora.chatroom.data.testMarqueeList
 import io.agora.chatroom.data.testMenuList1
@@ -82,6 +81,7 @@ class MainActivity : ComponentActivity() {
         setContent {
 
             ChatroomUIKitTheme {
+                WindowConfigUtils()
                 // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier
                     .fillMaxSize()

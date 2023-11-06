@@ -5,6 +5,12 @@ import android.graphics.Rect
 import android.util.Log
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -36,13 +42,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Bottom
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -66,6 +72,10 @@ import io.agora.chatroom.model.emoji.UIExpressionEntity
 import io.agora.chatroom.theme.ChatroomUIKitTheme
 import io.agora.chatroom.viewmodel.messages.MessageChatBarViewModel
 import io.agora.chatroom.uikit.R
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /**
  * Default ComposeChatBottomBar component that relies on [MessageChatBarViewModel] to handle data and
@@ -124,7 +134,6 @@ fun ComposeChatBottomBar(
     },
     emojiContent: @Composable (ComposerInputMessageState,onEmojiClick: (isShowFace:Boolean) -> Unit) -> Unit = { it,status->
         DefaultMessageComposerEmojiContent(
-            isDarkTheme = viewModel.getTheme,
             viewModel = viewModel,
             onEmojiClick = {
                 status(it)
@@ -210,7 +219,6 @@ fun ComposeChatBottomBar(
     },
     emojiContent: @Composable (ComposerInputMessageState, onEmojiClick: (isShowFace:Boolean) -> Unit) -> Unit = { it,status->
         DefaultMessageComposerEmojiContent(
-            isDarkTheme = isDarkTheme,
             viewModel = viewModel,
             onEmojiClick = {
                 status(it)
@@ -239,6 +247,8 @@ fun ComposeChatBottomBar(
         snackbarHostState = snackbarHostState
     )
 
+    val scope = CoroutineScope(Dispatchers.Default)
+
     val exH =  remember { mutableIntStateOf(0) }
     val exHeight by exH
 
@@ -262,8 +272,6 @@ fun ComposeChatBottomBar(
             }
         }
     })
-    Log.e("apex","keyboardHeight  $keyboardHeight")
-    Log.e("apex","navigationBars:  ${WindowInsets.navigationBars.getBottom(Density(LocalContext.current))}")
 
     exH.intValue = DisplayUtils.pxToDp(keyboardHeight - navigationBarsHeight).toInt()
 
@@ -294,7 +302,12 @@ fun ComposeChatBottomBar(
                         override fun invoke(isShowEmoji: Boolean) {
                             if (isShowEmoji){
                                 viewModel.hideKeyBoard()
-                                viewModel.showEmoji()
+                                // 延迟
+                                scope.launch {
+                                    delay(350)
+                                    // 在这里执行你的代码
+                                    viewModel.showEmoji()
+                                }
                             }else{
                                 viewModel.showKeyBoard()
                                 viewModel.hideEmoji()
@@ -306,18 +319,34 @@ fun ComposeChatBottomBar(
                 }
 
                 if (viewModel.isShowEmoji.value){
-                    DefaultComposerEmoji(
-                        isDarkTheme = isDarkTheme,
-                        maxH = exHeight,
-                        emojis = emojiList,
-                        viewModel = viewModel
-                    )
+//                    val density = LocalDensity.current
+//                    AnimatedVisibility(
+//                        visible = viewModel.isShowEmoji.value,
+//                        enter = slideInVertically {
+//                            // Slide in from 40 dp from the top.
+//                            with(density) { - exHeight.dp.roundToPx() }
+//                        } +
+//                                expandVertically(
+//                            // Expand from the top.
+//                            expandFrom = Alignment.Top
+//                        ) +
+//                        fadeIn(
+//                            // Fade in with the initial alpha of 0.3f.
+//                            initialAlpha = 0.3f
+//                        ),
+//                        exit = slideOutVertically() + fadeOut()
+//                    ){
+                        DefaultComposerEmoji(
+                            maxH = exHeight,
+                            emojis = emojiList,
+                            viewModel = viewModel
+                        )
+//                    }
                 }
 
                 Row(
                     Modifier
                         .imePadding()
-                        .background(Color.Yellow)
                         .fillMaxWidth()
                         .wrapContentHeight()
                         .background(ChatroomUIKitTheme.colors.background),
@@ -391,7 +420,6 @@ internal fun DefaultComposerLabel(
 
 @Composable
 fun DefaultComposerEmoji(
-    isDarkTheme: Boolean?,
     emojis:List<UIExpressionEntity>,
     maxH:Int,
     viewModel: MessageChatBarViewModel,
@@ -535,11 +563,10 @@ internal fun DefaultMessageComposerVoiceContent(
 
 @Composable
 internal fun DefaultMessageComposerEmojiContent(
-    isDarkTheme: Boolean? = false,
     viewModel: MessageChatBarViewModel,
     onEmojiClick: (isShowFace:Boolean) -> Unit,
 ) {
-    val resourceId = remember { mutableStateOf(R.drawable.icon_face) }
+    val resourceId = remember { mutableIntStateOf(R.drawable.icon_face) }
     val resource by resourceId
 
     var isShowEmoji = viewModel.isShowEmoji.value
@@ -560,7 +587,7 @@ internal fun DefaultMessageComposerEmojiContent(
         },
         onClick = {
             isShowEmoji = !isShowEmoji
-            resourceId.value = if (isShowEmoji){
+            resourceId.intValue = if (isShowEmoji){
                 R.drawable.icon_keyboard
             }else{
                 R.drawable.icon_face
