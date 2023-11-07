@@ -6,7 +6,7 @@ import com.google.gson.Gson
  * The response of the login request.
  */
 data class LoginRes(
-    val username: String,
+    val userName: String,
     val icon_key: String,
     val access_token: String,
     val expires_in: Long,
@@ -33,6 +33,14 @@ data class BroadcastReq(
 
 data class BroadcastResData(
     val id: String,
+)
+
+/**
+ * The request params of creating room.
+ */
+data class CreateRoomReq(
+    val name: String,
+    val owner: String,
 )
 
 

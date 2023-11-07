@@ -10,6 +10,7 @@ import io.agora.chatroom.http.ChatroomHttpManager
 import io.agora.chatroom.http.LoginReq
 import io.agora.chatroom.http.toLoginReq
 import io.agora.chatroom.model.UserInfoProtocol
+import io.agora.chatroom.service.ChatError
 import io.agora.chatroom.service.OnError
 import io.agora.chatroom.service.OnValueSuccess
 import io.agora.chatroom.utils.SPUtils
@@ -50,10 +51,26 @@ class SplashViewModel(
                         onSuccess = {
                             onValueSuccess.invoke(body)
                     }, onError= { code, msg ->
-                            onError.invoke(code, msg)
+                            if (code == ChatError.USER_ALREADY_LOGIN) {
+                                ChatroomUIKitClient.getInstance().logout(onSuccess = {
+                                    ChatroomUIKitClient.getInstance().login(
+                                        UserInfoProtocol(loginReq.username, loginReq.nickname, body.icon_key),
+                                        body.access_token,
+                                        onSuccess = {
+                                            onValueSuccess.invoke(body)
+                                        }, onError = {code, error ->
+                                            onError.invoke(code, error)
+                                        })
+                                }, onError = { code, error ->
+                                    onError.invoke(code, error)
+                                })
+                            }else {
+                                onError.invoke(code, msg)
+                            }
                         Log.e("SplashViewModel", "onError: $code $msg")
                     })
                 } else {
+                    Log.e("SplashViewModel", "onResponse: response body is null")
                     onError.invoke(-1, "response body is null")
                 }
             }

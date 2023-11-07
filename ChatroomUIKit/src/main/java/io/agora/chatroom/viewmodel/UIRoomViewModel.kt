@@ -1,6 +1,5 @@
 package io.agora.chatroom.viewmodel
 
-import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -8,7 +7,7 @@ import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.service.ChatroomChangeListener
 import io.agora.chatroom.ui.UIChatroomService
 
-class UIRoomViewModel(
+open class UIRoomViewModel(
     private val service: UIChatroomService,
     private val isDarkTheme:Boolean?,
 ) : ViewModel(), ChatroomChangeListener {
@@ -18,6 +17,13 @@ class UIRoomViewModel(
 
     private val _closeMemberSheet : MutableState<Boolean> = mutableStateOf(false)
     var closeMemberSheet = _closeMemberSheet
+
+    private val _isShowBg : MutableState<Boolean> = mutableStateOf(true)
+    var isShowBg = _isShowBg
+
+    fun hideBg(){
+        _isShowBg.value = false
+    }
 
     val getTheme: Boolean
         get() = isDarkTheme == true
@@ -34,7 +40,6 @@ class UIRoomViewModel(
     }
 
     override fun onUserJoined(roomId: String, userId: String) {
-        Log.e("apex","onUserJoined $roomId  - $userId")
         ChatroomUIKitClient.getInstance().getCacheManager().saveRoomMemberList(roomId, arrayListOf(userId))
     }
 

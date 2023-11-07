@@ -154,26 +154,26 @@
     </string-array>
 
     <string-array name="avatar_url_end" tools:ignore="ExtraTranslation">
-        <item>fc14ab00–79f7–11ee–93f4–618a64affe88</item>
-        <item>7345d230–79f8–11ee–a0d1–5f74d88fa308</item>
-        <item>7d239bc0–79f8–11ee–92b9–770b4e48f8fc</item>
-        <item>8e208410–79f8–11ee–b8e3–232a619cf52c</item>
-        <item>99296020–79f8–11ee–8475–c7a7b59db79f</item>
-        <item>a27bd9a0–79f8–11ee–8f83–551faec94303</item>
-        <item>ae308610–79f8–11ee–a6c9–5379b9a705a1</item>
-        <item>b837f7b0–79f8–11ee–b817–23850e48ca47</item>
-        <item>c0d52af0–79f8–11ee–a6ed–6fc3a8bc6581</item>
-        <item>c8354a50–79f8–11ee–97b9–0d7ccd9e7127</item>
-        <item>d2b176c0–79f8–11ee–a291–ed6692473990</item>
-        <item>de41f960–79f8–11ee–83cd–db9df9bad9bf</item>
-        <item>e7517670–79f8–11ee–a783–c1d7a432abb7</item>
-        <item>ef5724a0–79f8–11ee–8290–eb9f9e9c2195</item>
-        <item>f78da6d0–79f8–11ee–b3b8–3b446ebd1fbb</item>
-        <item>ffb9efd0–79f8–11ee–9356–ef4cfe1f2af8</item>
-        <item>07d98ea0–79f9–11ee–8047–d35f49238254</item>
-        <item>0fa12260–79f9–11ee–890f–67aacef20d88</item>
-        <item>16bc4980–79f9–11ee–b272–3568dd301252</item>
-        <item>208dde10–79f9–11ee–b9ea–5bff48db7458</item>
-        <item>298c9240–79f9–11ee–b8b6–f16f0b5f700a</item>
+        <item>fc14ab00\-79f7\-11ee-93f4\-618a64affe88</item>
+        <item>7345d230\-79f8\-11ee\-a0d1\-5f74d88fa308</item>
+        <item>7d239bc0\-79f8\-11ee\-92b9\-770b4e48f8fc</item>
+        <item>8e208410\-79f8\-11ee-b8e3\-232a619cf52c</item>
+        <item>99296020\-79f8\-11ee-8475\-c7a7b59db79f</item>
+        <item>a27bd9a0\-79f8\-11ee-8f83\-551faec94303</item>
+        <item>ae308610\-79f8\-11ee-a6c9\-5379b9a705a1</item>
+        <item>b837f7b0\-79f8\-11ee-b817\-23850e48ca47</item>
+        <item>c0d52af0\-79f8\-11ee-a6ed\-6fc3a8bc6581</item>
+        <item>c8354a50\-79f8\-11ee-97b9\-0d7ccd9e7127</item>
+        <item>d2b176c0\-79f8\-11ee-a291\-ed6692473990</item>
+        <item>de41f960\-79f8\-11ee-83cd\-db9df9bad9bf</item>
+        <item>e7517670\-79f8\-11ee-a783\-c1d7a432abb7</item>
+        <item>ef5724a0\-79f8\-11ee-8290\-eb9f9e9c2195</item>
+        <item>f78da6d0\-79f8\-11ee-b3b8\-3b446ebd1fbb</item>
+        <item>ffb9efd0\-79f8\-11ee-9356\-ef4cfe1f2af8</item>
+        <item>07d98ea0\-79f9\-11ee-8047\-d35f49238254</item>
+        <item>0fa12260\-79f9\-11ee-890f\-67aacef20d88</item>
+        <item>16bc4980\-79f9\-11ee-b272\-3568dd301252</item>
+        <item>208dde10\-79f9\-11ee-b9ea\-5bff48db7458</item>
+        <item>298c9240\-79f9\-11ee-b8b6\-f16f0b5f700a</item>
     </string-array>
 </resources>

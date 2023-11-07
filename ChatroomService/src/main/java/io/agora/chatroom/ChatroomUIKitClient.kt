@@ -8,6 +8,7 @@ import io.agora.chatroom.model.UICommonConfig
 import io.agora.chatroom.model.UIConstant
 import io.agora.chatroom.model.UserInfoProtocol
 import io.agora.chatroom.model.toUser
+import io.agora.chatroom.service.CallbackImpl
 import io.agora.chatroom.service.ChatClient
 import io.agora.chatroom.service.ChatConnectionListener
 import io.agora.chatroom.service.ChatCustomMessageBody
@@ -118,6 +119,19 @@ class ChatroomUIKitClient {
             return
         }
         userService.login(user, token, onSuccess, onError)
+    }
+
+    /**
+     * Logout the chat SDK
+     * @param onSuccess The callback to indicate the user logout successfully
+     * @param onError The callback to indicate the user logout failed
+     */
+    fun logout(onSuccess: OnSuccess, onError: OnError) {
+        if (!ChatClient.getInstance().isSdkInited) {
+            onError.invoke(ChatError.GENERAL_ERROR,"SDK not initialized")
+            return
+        }
+        ChatClient.getInstance().logout(false, CallbackImpl(onSuccess, onError))
     }
 
     /**

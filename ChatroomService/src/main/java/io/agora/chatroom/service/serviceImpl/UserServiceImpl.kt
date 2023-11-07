@@ -3,6 +3,7 @@ package io.agora.chatroom.service.serviceImpl
 import io.agora.chatroom.ChatroomResultEvent
 import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.model.UserInfoProtocol
+import io.agora.chatroom.model.toUser
 import io.agora.chatroom.model.transfer
 import io.agora.chatroom.service.CallbackImpl
 import io.agora.chatroom.service.ChatClient
@@ -90,6 +91,7 @@ class UserServiceImpl: UserService {
         onSuccess: OnSuccess,
         onError: OnError
     ) {
+        ChatroomUIKitClient.getInstance().getChatroomUser().setUserInfo(user.userId, user.toUser())
         ChatClient.getInstance().loginWithAgoraToken(user.userId, token, CallbackImpl(onSuccess, onError))
     }
 

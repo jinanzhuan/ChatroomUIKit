@@ -10,9 +10,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,13 +19,19 @@ import androidx.lifecycle.ViewModelProvider
 import io.agora.chatroom.compose.ComposeChat
 import io.agora.chatroom.compose.VideoPlayerCompose
 import io.agora.chatroom.compose.utils.WindowConfigUtils
+import io.agora.chatroom.http.ChatroomHttpManager
 import io.agora.chatroom.model.UIChatroomInfo
+import io.agora.chatroom.service.OnError
+import io.agora.chatroom.service.OnSuccess
 import io.agora.chatroom.theme.ChatroomUIKitTheme
 import io.agora.chatroom.ui.UIChatroomService
 import io.agora.chatroom.ui.UISearchActivity
 import io.agora.chatroom.viewmodel.UIRoomViewModel
 import io.agora.chatroom.viewmodel.gift.ComposeGiftListViewModel
 import io.agora.chatroom.viewmodel.messages.MessagesViewModelFactory
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class UIChatroomActivity : ComponentActivity(), ChatroomResultListener {
 
@@ -82,25 +86,31 @@ class UIChatroomActivity : ComponentActivity(), ChatroomResultListener {
                 WindowConfigUtils(
                     statusBarColor = Color.Transparent,
                 )
+                Surface(
+                    modifier = Modifier.fillMaxHeight()
+                ){
 
-                if (type == "video"){
-                    VideoPlayerCompose(Uri.parse("android.resource://$packageName/${R.raw.video_example}"))
-                }
-                ComposeChat(
-                    roomViewModel = roomViewModel,
-                    giftListViewModel = giftViewModel,
-                    service = service,
-                    onMemberSheetSearchClick = {
-                            tab->
-                        launcherToSearch.launch(
-                            UISearchActivity.createIntent(
-                                this@UIChatroomActivity,
-                                roomId,
-                                tab
-                            )
-                        )
+                    if (type == "agora_promotion_live"){
+                        roomViewModel.hideBg()
+                        VideoPlayerCompose(Uri.parse("android.resource://$packageName/${R.raw.video_example}"))
                     }
-                )
+
+                    ComposeChat(
+                        roomViewModel = roomViewModel,
+                        giftListViewModel = giftViewModel,
+                        service = service,
+                        onMemberSheetSearchClick = {
+                                tab->
+                            launcherToSearch.launch(
+                                UISearchActivity.createIntent(
+                                    this@UIChatroomActivity,
+                                    roomId,
+                                    tab
+                                )
+                            )
+                        }
+                    )
+                }
             }
         }
     }
@@ -131,7 +141,7 @@ class UIChatroomActivity : ComponentActivity(), ChatroomResultListener {
             context: Context,
             roomId: String,
             ownerId:String,
-            roomType:Int = 1
+            roomType:String = "live",
         ): Intent {
             return Intent(context, UIChatroomActivity::class.java).apply {
                 putExtra(KEY_ROOM_ID, roomId)
@@ -144,7 +154,28 @@ class UIChatroomActivity : ComponentActivity(), ChatroomResultListener {
     override fun onEventResult(event: ChatroomResultEvent, errorCode: Int, errorMessage: String?) {
         if (event == ChatroomResultEvent.DESTROY_ROOM){
             ChatroomUIKitClient.getInstance().unregisterRoomResultListener(this)
+            destroyRoom()
             finish()
         }
+    }
+
+    private fun destroyRoom(
+        onSuccess: OnSuccess = {},
+        onError: OnError = { _, _ ->}
+    ){
+        val call = ChatroomHttpManager.getService().destroyRoom()
+        call.enqueue(object : Callback<String> {
+            override fun onResponse(call: Call<String>, response: Response<String>) {
+                if (response.isSuccessful) {
+                    onSuccess.invoke()
+                }else{
+                    onError.invoke(-1,"Service exception")
+                }
+            }
+
+            override fun onFailure(call: Call<String>, t: Throwable) {
+                onError.invoke(-1, t.message)
+            }
+        })
     }
 }

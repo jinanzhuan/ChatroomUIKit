@@ -1,5 +1,6 @@
 package io.agora.chatroom.compose
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -19,11 +20,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import io.agora.chatroom.R
 import io.agora.chatroom.bean.RoomDetailBean
 import io.agora.chatroom.compose.avatar.Avatar
 import io.agora.chatroom.compose.image.AsyncImage
 import io.agora.chatroom.theme.ChatroomUIKitTheme
+import io.agora.chatroom.utils.UserInfoGenerator
 
 @Composable
 fun ChatroomListItem(
@@ -43,13 +48,19 @@ fun ChatroomListItem(
     ) {
         Row(modifier = Modifier
             .fillMaxSize()) {
-            AsyncImage(
-                imageUrl = "",
+
+            var drawableId = UserInfoGenerator.randomRoomImage(LocalContext.current)
+            if (roomDetail.video_type == "agora_promotion_live") {
+                drawableId = R.drawable.default_cover
+            }
+            Image(
+                painter = painterResource(id = drawableId),
+                contentDescription = null,
                 modifier = Modifier
                     .size(100.dp)
-                    .clip(RoundedCornerShape(8.dp)),
-                shape = RoundedCornerShape(8.dp)
             )
+
+            Spacer(modifier = Modifier.width(14.dp))
 
             Column(modifier = Modifier.padding(vertical = 12.dp)) {
                 Text(
@@ -60,13 +71,15 @@ fun ChatroomListItem(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Row {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Avatar(
                         imageUrl = roomDetail.iconKey,
                         modifier = Modifier.size(16.dp),
                     )
 
-                    Spacer(modifier = Modifier.width(10.dp))
+                    Spacer(modifier = Modifier.width(4.dp))
 
                     Text(
                         text = roomDetail.nickname,

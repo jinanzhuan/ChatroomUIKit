@@ -15,8 +15,7 @@ interface ChatroomInterface {
     fun login(@Body req: Any): Call<LoginRes>
 
     @POST("liverooms")
-    fun createRoom(@Field("name") roomName: String,
-                   @Field("owner") roomOwner: String,): Call<RoomDetailBean>
+    fun createRoom(@Body req: Any): Call<RoomDetailBean>
 
     @GET("liverooms")
     fun fetchRoomList(): Call<RequestListResp<RoomDetailBean>>

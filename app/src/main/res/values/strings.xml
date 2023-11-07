@@ -1,6 +1,10 @@
 <resources>
-    <string name="app_name">ChatroomUIKit</string>
+    <string name="app_name">环信聊天室</string>
 
     <string name="re_login">Re-login</string>
     <string name="login_result_failed">Login failed</string>
+    <string name="default_room_name">%1$s\'s living room</string>
+    <string name="powered_by">Powered by Easemob</string>
+
+
 </resources>
