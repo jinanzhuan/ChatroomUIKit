@@ -2,12 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application>
-        <activity
-            android:name="io.agora.chatroom.ui.UIChatroomActivity"
-            android:exported="false"
-            android:windowSoftInputMode="adjustResize"
-            />
         <activity android:name="io.agora.chatroom.ui.UISearchActivity" android:exported="false"/>
-
     </application>
 </manifest>

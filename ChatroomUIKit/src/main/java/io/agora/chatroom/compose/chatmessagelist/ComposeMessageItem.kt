@@ -190,7 +190,7 @@ fun ComposeMessageItem(
                                 append(char)
                                 insertMap.forEach {
                                     if (i == it.key){
-                                        for (i in 0 until it.value.count) {
+                                        for (a in 0 until it.value.count) {
                                             withStyle(style = SpanStyle()) {
                                                 appendInlineContent(it.value.emojiTag)
                                             }

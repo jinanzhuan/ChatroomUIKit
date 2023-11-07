@@ -49,7 +49,6 @@ import io.agora.chatroom.compose.avatar.Avatar
 import io.agora.chatroom.compose.image.AsyncImage
 import io.agora.chatroom.compose.indicator.LoadingIndicator
 import io.agora.chatroom.theme.ChatroomUIKitTheme
-import io.agora.chatroom.ui.UIChatroomActivity
 import io.agora.chatroom.viewmodel.ChatroomListViewModel
 import io.agora.chatroom.viewmodel.RequestState
 

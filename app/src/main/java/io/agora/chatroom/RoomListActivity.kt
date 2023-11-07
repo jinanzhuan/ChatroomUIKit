@@ -55,7 +55,6 @@ import io.agora.chatroom.service.Chatroom
 import io.agora.chatroom.service.OnError
 import io.agora.chatroom.service.OnValueSuccess
 import io.agora.chatroom.theme.ChatroomUIKitTheme
-import io.agora.chatroom.ui.UIChatroomActivity
 import io.agora.chatroom.viewmodel.RequestListViewModel
 
 class RoomListActivity: ComponentActivity() {
@@ -195,7 +194,8 @@ class RoomListActivity: ComponentActivity() {
     private fun skipToTarget(
         chatroom: Chatroom
     ) {
-        startActivity(UIChatroomActivity.createIntent(context = this,
+        startActivity(
+            UIChatroomActivity.createIntent(context = this,
             roomId = chatroom.id,
             ownerId = chatroom.owner)
         )

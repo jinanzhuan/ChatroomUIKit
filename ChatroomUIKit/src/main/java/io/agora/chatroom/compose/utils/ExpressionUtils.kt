@@ -169,8 +169,7 @@ object ExpressionUtils {
         )
     }
 
-    fun getRole(content:String):MutableList<UIRegexEntity>{
-        val list = mutableListOf<UIRegexEntity>()
+    fun getEmojiRegex():String{
         // 将list元素拼接成正则表达式
         val regexBuilder = StringBuilder()
         regexBuilder.append("(")
@@ -179,12 +178,14 @@ object ExpressionUtils {
         }
         regexBuilder.deleteCharAt(regexBuilder.length - 1) // 移除最后一个多余的 |
         regexBuilder.append(")")
-        val regex = regexBuilder.toString()
+        return regexBuilder.toString()
+    }
 
-        Log.e("apex","正则表达: $regex")
+    fun getRole(content:String):MutableList<UIRegexEntity>{
+        val list = mutableListOf<UIRegexEntity>()
 
         // 创建 Pattern 对象，用于匹配正则表达式
-        val pattern: Pattern = Pattern.compile(regex)
+        val pattern: Pattern = Pattern.compile(getEmojiRegex())
         val matcher: Matcher = pattern.matcher(content)
 
         // 筛选匹配到的字符
@@ -194,13 +195,13 @@ object ExpressionUtils {
             val startIndex = matcher.start()
             val endIndex = matcher.end()
             icon?.let {
-                val UIRegexEntity = UIRegexEntity(
+                val regexEntity = UIRegexEntity(
                     startIndex = startIndex,
                     endIndex = endIndex,
                     emojiTag = matchedString,
                     emojiIcon = it
                 )
-                list.add(UIRegexEntity)
+                list.add(regexEntity)
             }
         }
         return list

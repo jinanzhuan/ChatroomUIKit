@@ -21,7 +21,6 @@ import io.agora.chatroom.service.ChatRoomChangeListener
 import io.agora.chatroom.service.ChatType
 import io.agora.chatroom.service.Chatroom
 import io.agora.chatroom.service.ChatroomChangeListener
-import io.agora.chatroom.service.ChatroomDestroyedListener
 import io.agora.chatroom.service.ChatroomService
 import io.agora.chatroom.service.GiftEntityProtocol
 import io.agora.chatroom.service.GiftReceiveListener
@@ -289,6 +288,7 @@ class ChatroomUIKitClient {
 
     private inner class InnerChatroomChangeListener: ChatRoomChangeListener {
         override fun onChatRoomDestroyed(roomId: String, roomName: String) {
+            callbackEvent(ChatroomResultEvent.DESTROY_ROOM, ChatError.EM_NO_ERROR, "")
             clear()
 //            roomListener.onRoomDestroyed(roomId,roomName)
         }
