@@ -70,6 +70,7 @@ class SplashViewModel(
                         Log.e("SplashViewModel", "onError: $code $msg")
                     })
                 } else {
+                    Log.e("SplashViewModel", "onResponse: response body is null")
                     onError.invoke(-1, "response body is null")
                 }
             }

@@ -56,11 +56,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import io.agora.chatroom.bean.RoomDetailBean
 import io.agora.chatroom.compose.ChatroomList
 import io.agora.chatroom.compose.avatar.Avatar
-import io.agora.chatroom.compose.image.AsyncImage
 import io.agora.chatroom.compose.indicator.LoadingIndicator
 import io.agora.chatroom.compose.switch
 import io.agora.chatroom.compose.utils.WindowConfigUtils
 import io.agora.chatroom.model.UserInfoProtocol
+import io.agora.chatroom.service.ChatLog
 import io.agora.chatroom.theme.ChatroomUIKitTheme
 import io.agora.chatroom.ui.UIChatroomActivity
 import io.agora.chatroom.utils.SPUtils
@@ -240,7 +240,7 @@ class MainActivity : ComponentActivity() {
                 )
             },
             onError = { code, message ->
-                Log.e("MainActivity", "createChatroom: $code, $message")
+                ChatLog.e("MainActivity", "createChatroom: $code, $message")
             }
         )
     }

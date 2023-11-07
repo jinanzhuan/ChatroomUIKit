@@ -23,6 +23,7 @@ object HttpManager {
             .client(
                 OkHttpClient.Builder()
                     .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                    .addInterceptor(LoggerInterceptor("ChatUrl", true, true))
                     .addInterceptor(TokenInterceptor())
                     .build()
             )
