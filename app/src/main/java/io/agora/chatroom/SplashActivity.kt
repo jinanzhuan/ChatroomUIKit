@@ -55,15 +55,14 @@ class SplashActivity: ComponentActivity() {
                 WindowConfigUtils(
                     isDarkTheme = !isDarkTheme,
                     statusBarColor = Color.Transparent,
-                    nativeBarColor = ChatroomUIKitTheme.colors.background
+                    nativeBarColor = Color.Transparent
                 )
                 val viewModel = SplashViewModel(LocalContext.current.applicationContext as Application)
                 val dialogViewModel = viewModel(DialogViewModel::class.java)
                 dialogViewModel.title = stringResource(id = R.string.login_result_failed)
                 dialogViewModel.confirmText = stringResource(id = R.string.re_login)
                 viewModel.login(onValueSuccess = { loginRes ->
-                    startActivity(Intent(this, MainActivity::class.java))
-                    finish()
+                    skipToMain()
                 }, onError = { code, msg ->
                     dialogViewModel.showDialog()
                 })
@@ -122,8 +121,7 @@ class SplashActivity: ComponentActivity() {
                 SimpleDialog(viewModel = dialogViewModel,
                     onConfirmClick = {
                         viewModel.login(onValueSuccess = { loginRes ->
-                            startActivity(Intent(this, MainActivity::class.java))
-                            finish()
+                            skipToMain()
                         }, onError = { code, msg ->
                             dialogViewModel.showDialog()
                         })
@@ -132,5 +130,10 @@ class SplashActivity: ComponentActivity() {
 
             }
         }
+    }
+
+    private fun skipToMain() {
+        startActivity(Intent(this, MainActivity::class.java))
+        finish()
     }
 }
