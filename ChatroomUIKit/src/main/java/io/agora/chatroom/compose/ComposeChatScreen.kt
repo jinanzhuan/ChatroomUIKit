@@ -37,6 +37,7 @@ import io.agora.chatroom.compose.report.ComposeMessageReport
 import io.agora.chatroom.model.UIComposeSheetItem
 import io.agora.chatroom.service.ChatLog
 import io.agora.chatroom.service.ChatMessage
+import io.agora.chatroom.service.GiftEntityProtocol
 import io.agora.chatroom.service.transfer
 import io.agora.chatroom.theme.ChatroomUIKitTheme
 import io.agora.chatroom.ui.UIChatroomService
@@ -97,7 +98,8 @@ fun ComposeChatScreen(
     memberMenuViewModel: RoomMemberMenuViewModel = viewModel(RoomMemberMenuViewModel::class.java,
         factory = defaultMenuViewModelFactory()),
     onMemberSheetSearchClick: ((String) -> Unit)? = null,
-    onMessageMenuClick: ((Int, UIComposeSheetItem) -> Unit)? = null
+    onMessageMenuClick: ((Int, UIComposeSheetItem) -> Unit)? = null,
+    onGiftBottomSheetItemClick: ((GiftEntityProtocol) -> Unit) = {},
 ) {
     messageListViewModel.registerChatroomChangeListener()
     messageListViewModel.registerChatroomGiftListener()
@@ -142,6 +144,7 @@ fun ComposeChatScreen(
                             }
                         }, onError = {_, _ ->}
                     )
+                    onGiftBottomSheetItemClick(it)
                 },
                 onDismissRequest = {
                     giftBottomSheetViewModel.closeDrawer()

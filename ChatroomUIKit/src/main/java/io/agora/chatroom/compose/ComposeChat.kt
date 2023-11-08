@@ -16,6 +16,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.compose.indicator.LoadingIndicator
 import io.agora.chatroom.model.UIComposeSheetItem
+import io.agora.chatroom.service.GiftEntityProtocol
 import io.agora.chatroom.ui.UIChatroomService
 import io.agora.chatroom.uikit.R
 import io.agora.chatroom.viewmodel.UIRoomViewModel
@@ -67,6 +68,7 @@ fun ComposeChat(
         ChatroomUIKitClient.getInstance().isCurrentRoomOwner(service.getRoomInfo().roomOwner?.userId)) ),
     onMemberSheetSearchClick: ((String) -> Unit)? = null,
     onMessageMenuClick: ((Int, UIComposeSheetItem) -> Unit)? = null,
+    onGiftBottomSheetItemClick: ((GiftEntityProtocol) -> Unit) = {},
     chatBackground:Painter = if (roomViewModel.getTheme)
         painterResource(R.drawable.icon_chatroom_bg_dark)
         else painterResource(R.drawable.icon_chatroom_bg_light)
@@ -115,6 +117,7 @@ fun ComposeChat(
             membersBottomSheetViewModel = membersBottomSheetViewModel,
             onMessageMenuClick = onMessageMenuClick,
             onMemberSheetSearchClick = onMemberSheetSearchClick,
+            onGiftBottomSheetItemClick = onGiftBottomSheetItemClick
         )
 
         LaunchedEffect(roomViewModel.closeMemberSheet.value) {
