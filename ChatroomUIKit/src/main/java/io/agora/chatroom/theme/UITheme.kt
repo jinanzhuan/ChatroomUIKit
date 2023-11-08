@@ -1,6 +1,5 @@
 package io.agora.chatroom.theme
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
@@ -25,7 +24,7 @@ private val LocalTypography = compositionLocalOf<UITypography> {
 
 @Composable
 fun ChatroomUIKitTheme(
-    isDarkTheme: Boolean = ChatroomUIKitClient.getInstance().getContext().getCurrentTheme(),
+    isDarkTheme: Boolean = ChatroomUIKitClient.getInstance().getCurrentTheme(),
     colors: UIColors = if (!isDarkTheme) UIColors.defaultColors() else UIColors.defaultDarkColors(),
     shapes: UIShapes = UIShapes.defaultShapes(),
     dimens: UIDimens = UIDimens.defaultDimens(),

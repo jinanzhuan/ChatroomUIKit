@@ -106,15 +106,6 @@ class UIChatroomCacheManager{
         return getBoolean(UIConstant.CHATROOM_THEME,false)
     }
 
-    fun setUseGiftsInMsg(use: Boolean){
-        putBoolean(UIConstant.CHATROOM_USE_GIFTS_IN_LIST,use)
-    }
-
-    fun getUseGiftsInMsg():Boolean{
-        return getBoolean(UIConstant.CHATROOM_USE_GIFTS_IN_LIST,false)
-    }
-
-
     /**
      * 存入字符串
      * @param key     字符串的键

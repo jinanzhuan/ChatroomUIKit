@@ -1,5 +1,7 @@
 package io.agora.chatroom.viewmodel
 
+import android.util.Log
+import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.http.ChatroomHttpManager
 import io.agora.chatroom.service.OnError
 import io.agora.chatroom.service.OnSuccess
@@ -13,8 +15,7 @@ class ChatroomViewModel(
     private val isDarkTheme:Boolean?,
 ):UIRoomViewModel(service,isDarkTheme) {
 
-
-    fun destroyRoom(
+    private fun destroyRoom(
         onSuccess: OnSuccess = {},
         onError: OnError = { _, _ ->}
     ){
@@ -23,6 +24,7 @@ class ChatroomViewModel(
             override fun onResponse(call: Call<String>, response: Response<String>) {
                 if (response.isSuccessful) {
                     onSuccess.invoke()
+                    Log.e("apex","destroyRoom onSuccess")
                 }else{
                     onError.invoke(-1,"Service exception")
                 }
@@ -32,5 +34,33 @@ class ChatroomViewModel(
                 onError.invoke(-1, t.message)
             }
         })
+    }
+
+    fun leaveChatroom(
+        onSuccess: OnSuccess = {},
+        onError: OnError = { _, _ ->}
+    ){
+        if (ChatroomUIKitClient.getInstance().isCurrentRoomOwner()){
+            service.getChatService().destroyChatroom(
+                roomId = ChatroomUIKitClient.getInstance().getContext().getCurrentRoomInfo().roomId,
+                onSuccess = {
+                    destroyRoom(onSuccess,onError)
+                },
+                onError = {code, error ->
+                    onError.invoke(code, error)
+                }
+            )
+        }else{
+            service.getChatService().leaveChatroom(
+                roomId = ChatroomUIKitClient.getInstance().getContext().getCurrentRoomInfo().roomId,
+                userId = ChatroomUIKitClient.getInstance().getCurrentUser().userId,
+                onSuccess = {
+                    onSuccess.invoke()
+                },
+                onError = {code, error ->
+                    onError.invoke(code, error)
+                }
+            )
+        }
     }
 }

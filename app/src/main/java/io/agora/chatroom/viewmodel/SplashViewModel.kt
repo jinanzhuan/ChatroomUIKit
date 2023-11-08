@@ -48,9 +48,8 @@ class SplashViewModel(
                     ChatroomUIKitClient.getInstance().login(
                         UserInfoProtocol(loginReq.username, loginReq.nickname, loginReq.icon_key),
                         body.access_token,
-                        onSuccess = {
-                            onValueSuccess.invoke(body)
-                    }, onError= { code, msg ->
+                        onSuccess = { onValueSuccess.invoke(body) },
+                        onError= { code, msg ->
                             if (code == ChatError.USER_ALREADY_LOGIN) {
                                 ChatroomUIKitClient.getInstance().logout(onSuccess = {
                                     ChatroomUIKitClient.getInstance().login(

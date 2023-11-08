@@ -1,7 +1,8 @@
 package io.agora.chatroom
 
 data class ChatroomUIKitOptions(
-    var chatOptions: ChatSDKOptions = ChatSDKOptions()
+    var chatOptions: ChatSDKOptions = ChatSDKOptions(),
+    var uiOptions: UiOptions = UiOptions()
 )
 
 /**
@@ -14,4 +15,9 @@ data class ChatSDKOptions(
     var enableDebug: Boolean = false,
     val autoLogin: Boolean = false,
     val useUserProperties: Boolean = true
+)
+
+data class UiOptions(
+    var useGiftsInList: Boolean = false,
+    val targetLanguageList:List<String> = mutableListOf(),
 )

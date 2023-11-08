@@ -68,7 +68,7 @@ class MessageListViewModel(
 
     override fun onGiftReceived(roomId: String, gift: GiftEntityProtocol?, message: ChatMessage) {
         super.onGiftReceived(roomId, gift, message)
-        if (ChatroomUIKitClient.getInstance().getContext().getUseGiftsInMsg()){
+        if (ChatroomUIKitClient.getInstance().getUseGiftsInMsg()){
             gift?.let { giftEntity ->
                 ChatroomUIKitClient.getInstance().parseUserInfo(message)?.let{
                     giftEntity.sendUser = it

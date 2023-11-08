@@ -72,6 +72,14 @@ interface ChatroomService: MessageHandleService {
                       onError: OnError)
 
     /**
+     * destroy a chatroom.
+     * @param roomId The id of the chatroom
+     */
+    fun destroyChatroom(roomId: String,
+                      onSuccess: OnSuccess,
+                      onError: OnError)
+
+    /**
      * Fetch the members of the chatroom from server.
      * Note: Not include the owner and the admins.
      * @param roomId The id of the chatroom.

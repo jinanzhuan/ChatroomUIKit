@@ -111,7 +111,7 @@ class MainActivity : ComponentActivity() {
                                 checked = !isDark,
                                 onCheckedChange = {
                                     isDarkTheme = !it
-                                    ChatroomUIKitClient.getInstance().getContext().setCurrentTheme(isDarkTheme)
+                                    ChatroomUIKitClient.getInstance().setCurrentTheme(isDarkTheme)
                                 },
                                 modifier = Modifier
                                     .size(width = 54.dp, height = 28.dp)
@@ -195,11 +195,10 @@ class MainActivity : ComponentActivity() {
                             viewModel = roomListViewModel,
                             onItemClick = { roomDetail: RoomDetailBean ->
                                 startActivity(
-                                    UIChatroomActivity.createIntent(
+                                    ChatroomActivity.createIntent(
                                         context = this@MainActivity,
                                         roomId = roomDetail.id,
                                         ownerId = roomDetail.owner,
-                                        roomType = roomDetail.video_type
                                     )
                                 )
                             }
@@ -220,7 +219,7 @@ class MainActivity : ComponentActivity() {
             owner = userDetail.userId,
             onSuccess = { roomDetail ->
                 startActivity(
-                    UIChatroomActivity.createIntent(
+                    ChatroomActivity.createIntent(
                         context = this@MainActivity,
                         roomId = roomDetail.id,
                         ownerId = roomDetail.owner,

@@ -19,8 +19,7 @@ val LargeCorner = RoundedCornerShape(16.dp)
 data class UIShapes(
     val avatar: Shape,
     val picture: Shape,
-    val sendMessageBubble: Shape,
-    val receiveMessageBubble: Shape,
+    val messageBubble: Shape,
     val inputField: Shape,
     val attachment: Shape,
     val imageThumbnail: Shape,
@@ -39,8 +38,7 @@ data class UIShapes(
         fun defaultShapes(): UIShapes = UIShapes(
             avatar = CircleShape,
             picture = RoundedCornerShape(8.dp),
-            sendMessageBubble = RoundedCornerShape(16.dp),
-            receiveMessageBubble = RoundedCornerShape(16.dp),
+            messageBubble = RoundedCornerShape(16.dp),
             inputField = RoundedCornerShape(24.dp),
             attachment = RoundedCornerShape(16.dp),
             imageThumbnail = RoundedCornerShape(8.dp),

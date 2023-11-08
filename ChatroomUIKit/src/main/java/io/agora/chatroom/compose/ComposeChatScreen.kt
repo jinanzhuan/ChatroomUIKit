@@ -34,9 +34,12 @@ import io.agora.chatroom.compose.gift.ComposeGiftItemState
 import io.agora.chatroom.compose.gift.ComposeGiftList
 import io.agora.chatroom.compose.member.ComposeMembersBottomSheet
 import io.agora.chatroom.compose.report.ComposeMessageReport
+import io.agora.chatroom.model.UIChatroomInfo
 import io.agora.chatroom.model.UIComposeSheetItem
 import io.agora.chatroom.service.ChatLog
 import io.agora.chatroom.service.ChatMessage
+import io.agora.chatroom.service.GiftEntityProtocol
+import io.agora.chatroom.service.UserEntity
 import io.agora.chatroom.service.transfer
 import io.agora.chatroom.theme.ChatroomUIKitTheme
 import io.agora.chatroom.ui.UIChatroomService
@@ -77,8 +80,9 @@ private const val TAG = "ComposeChatScreen"
  */
 @Composable
 fun ComposeChatScreen(
-    roomId: String,
-    service: UIChatroomService,
+    roomId:String,
+    roomOwner:String,
+    service: UIChatroomService = UIChatroomService(UIChatroomInfo(roomId, UserEntity(userId = roomOwner))),
     messageListViewModel: MessageListViewModel = viewModel(MessageListViewModel::class.java,
         factory = defaultMessageListViewModelFactory(LocalContext.current, roomId, service)),
     chatBottomBarViewModel: MessageChatBarViewModel = viewModel(MessageChatBarViewModel::class.java,
@@ -99,6 +103,7 @@ fun ComposeChatScreen(
         factory = defaultMenuViewModelFactory()),
     onMemberSheetSearchClick: ((String) -> Unit)? = null,
     onMessageMenuClick: ((Int, UIComposeSheetItem) -> Unit)? = null,
+    onGiftBottomSheetItemClick: ((GiftEntityProtocol) -> Unit) = {},
     onMemberMenuClick: ((UIComposeSheetItem) -> Unit)? = null,
 ) {
     messageListViewModel.registerChatroomChangeListener()
@@ -136,7 +141,7 @@ fun ComposeChatScreen(
                             message ->
                             run {
                                 it.sendUser = ChatroomUIKitClient.getInstance().getCurrentUser().transfer()
-                                if (ChatroomUIKitClient.getInstance().getContext().getUseGiftsInMsg()){
+                                if (ChatroomUIKitClient.getInstance().getUseGiftsInMsg()){
                                     messageListViewModel.addGiftMessageByIndex(message = message, gift = it)
                                 }else{
                                     giftListViewModel.addDateToIndex(data = ComposeGiftItemState(it))
@@ -144,6 +149,7 @@ fun ComposeChatScreen(
                             }
                         }, onError = {_, _ ->}
                     )
+                    onGiftBottomSheetItemClick(it)
                 },
                 onDismissRequest = {
                     giftBottomSheetViewModel.closeDrawer()
@@ -372,7 +378,7 @@ fun defaultMuteListViewModelFactory(
 }
 
 fun defaultMenuViewModelFactory(
-    isDarkTheme: Boolean? = ChatroomUIKitClient.getInstance().getContext().getCurrentTheme(),
+    isDarkTheme: Boolean? = ChatroomUIKitClient.getInstance().getCurrentTheme(),
     title:String = "",
     menuList: List<UIComposeSheetItem> = emptyList(),
     isShowTitle:Boolean = true,
