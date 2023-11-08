@@ -14,7 +14,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
@@ -29,11 +28,8 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import io.agora.chatroom.theme.BodyLarge
+import io.agora.chatroom.theme.ChatroomUIKitTheme
 import io.agora.chatroom.theme.LargeCorner
-import io.agora.chatroom.theme.neutralColor20
-import io.agora.chatroom.theme.neutralColor95
-import io.agora.chatroom.theme.primaryColor50
 import io.agora.chatroom.viewmodel.messages.MessageChatBarViewModel
 import io.agora.chatroom.uikit.R
 import kotlinx.coroutines.delay
@@ -56,17 +52,15 @@ import kotlinx.coroutines.delay
  * @param keyboardOptions The [KeyboardOptions] to be applied to the input.
  * @param decorationBox Composable function that represents the input field decoration as it's filled with content.
  */
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun WidgetInputField(
-    isDarkTheme:Boolean? = false,
     value: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     viewModel: MessageChatBarViewModel,
     maxLines: Int = Int.MAX_VALUE,
-    border: BorderStroke = BorderStroke(1.dp, if (isDarkTheme == true) neutralColor20 else neutralColor95),
+    border: BorderStroke = BorderStroke(1.dp, ChatroomUIKitTheme.colors.neutralL95D20),
     innerPadding: PaddingValues = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
     keyboardOptions: KeyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
     decorationBox: @Composable (innerTextField: @Composable () -> Unit) -> Unit,
@@ -103,7 +97,7 @@ fun WidgetInputField(
             .focusRequester(focus)
             .border(border = border, shape = LargeCorner)
             .clip(LargeCorner)
-            .background(if (isDarkTheme == true) neutralColor20 else neutralColor95)
+            .background(ChatroomUIKitTheme.colors.neutralL95D20)
             .padding(innerPadding)
             .semantics { contentDescription = description },
         value = textFieldValue,
@@ -113,8 +107,10 @@ fun WidgetInputField(
                 onValueChange(it.text)
             }
         },
-        textStyle = BodyLarge,
-        cursorBrush = SolidColor(primaryColor50),
+        textStyle = ChatroomUIKitTheme.typography.bodyLarge.copy(
+            color = ChatroomUIKitTheme.colors.onBackground
+        ),
+        cursorBrush = SolidColor(ChatroomUIKitTheme.colors.primary),
         decorationBox = { innerTextField -> decorationBox(innerTextField) },
         maxLines = maxLines,
         singleLine = maxLines == 1,

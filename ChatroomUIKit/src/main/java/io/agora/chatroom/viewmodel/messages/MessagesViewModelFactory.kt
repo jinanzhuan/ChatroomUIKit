@@ -21,7 +21,7 @@ class MessagesViewModelFactory(
     private val context: Context,
     private val roomId: String,
     private val service: UIChatroomService,
-    private val isDarkTheme: Boolean? = ChatroomUIKitClient.getInstance().getContext().getCurrentTheme(),
+    private val isDarkTheme: Boolean? = ChatroomUIKitClient.getInstance().getCurrentTheme(),
     private val showDateSeparators: Boolean = true,
     private val showLabel: Boolean = true,
     private val showAvatar: Boolean = true,

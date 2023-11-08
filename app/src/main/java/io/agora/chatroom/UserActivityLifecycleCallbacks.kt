@@ -93,7 +93,7 @@ class UserActivityLifecycleCallbacks : Application.ActivityLifecycleCallbacks, A
     fun finishAll() {
         if (activityList.isNotEmpty()) {
             for (activity in activityList) {
-                if (activity is RoomListActivity) {
+                if (activity is ChatroomListActivity) {
                     continue
                 }
                 activity.finish()

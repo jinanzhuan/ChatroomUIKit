@@ -4,7 +4,6 @@ import android.content.Context
 import android.text.TextUtils
 import android.util.Log
 import io.agora.chatroom.model.UIChatroomInfo
-import io.agora.chatroom.model.UICommonConfig
 import io.agora.chatroom.model.UIConstant
 import io.agora.chatroom.model.UserInfoProtocol
 import io.agora.chatroom.model.toUser
@@ -54,6 +53,7 @@ class ChatroomUIKitClient {
     private val userService: UserService by lazy { UserServiceImpl() }
     private val chatroomService: ChatroomService by lazy { ChatroomServiceImpl() }
     private val giftService: GiftService by lazy { GiftServiceImpl() }
+    private var uiOptions: UiOptions = UiOptions()
 
     companion object {
         const val TAG = "ChatroomUIKitClient"
@@ -78,10 +78,10 @@ class ChatroomUIKitClient {
         applicationContext: Context,
         appKey:String,
         options: ChatroomUIKitOptions = ChatroomUIKitOptions(),
-        config: UICommonConfig = UICommonConfig()
     ){
         currentRoomContext.setRoomContext(applicationContext)
-        currentRoomContext.setCommonConfig(config)
+        uiOptions = options.uiOptions
+
         val chatOptions = ChatOptions()
         chatOptions.appKey = appKey
         chatOptions.autoLogin = options.chatOptions.autoLogin
@@ -154,7 +154,7 @@ class ChatroomUIKitClient {
     /**
      * Init the chatroom before joining it
      */
-    private fun initRoom(roomInfo:UIChatroomInfo,){
+    private fun initRoom(roomInfo:UIChatroomInfo){
         currentRoomContext.setCurrentRoomInfo(roomInfo)
         registerMessageListener()
         registerChatroomChangeListener()
@@ -176,6 +176,18 @@ class ChatroomUIKitClient {
         if (roomEventResultListener.contains(listener)) {
             roomEventResultListener.remove(listener)
         }
+    }
+
+    fun setCurrentTheme(isDark:Boolean){
+        cacheManager.setCurrentTheme(isDark)
+    }
+
+    fun getCurrentTheme():Boolean{
+        return cacheManager.getCurrentTheme()
+    }
+
+    fun getUseGiftsInMsg():Boolean{
+        return uiOptions.useGiftsInList
     }
 
     fun parseUserInfo(message: ChatMessage):UserInfoProtocol?{
@@ -224,7 +236,7 @@ class ChatroomUIKitClient {
     }
 
     fun getTranslationLanguage():List<String>{
-        return currentRoomContext.getCommonConfig().languageList
+        return uiOptions.targetLanguageList
     }
 
     fun getCurrentUser():UserEntity{

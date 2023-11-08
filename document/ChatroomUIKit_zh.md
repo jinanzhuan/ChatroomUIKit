@@ -6,7 +6,8 @@
 ```
 ┌─ Example                  	// Demo代码集成目录
 │  ├─ ChatroomListActivity  			// 主要提供 ChatroomUIKit 的房间列表页面
-│  └─ ChatroomSettingActivity   		// 主要提供 ChatroomUIKit 的房间设置页面
+│  ├─ ChatroomActivity      		// 主要提供 设置 ChatroomUIKit 的容器
+│  └─ SplashActivity                // 程序启动页
 ├─ ChatroomService           	// ChatroomUIKit协议模块
 │  ├─ model                      		// ChatroomUIKit所用到的实体对象（用户、房间信息、配置信息）
 │  ├─ service                   		// ChatroomUIKit所用到的协议和协议实现（房间协议、用户协议、礼物协议）

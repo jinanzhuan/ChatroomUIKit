@@ -136,7 +136,7 @@ fun ComposeChatScreen(
                             message ->
                             run {
                                 it.sendUser = ChatroomUIKitClient.getInstance().getCurrentUser().transfer()
-                                if (ChatroomUIKitClient.getInstance().getContext().getUseGiftsInMsg()){
+                                if (ChatroomUIKitClient.getInstance().getUseGiftsInMsg()){
                                     messageListViewModel.addGiftMessageByIndex(message = message, gift = it)
                                 }else{
                                     giftListViewModel.addDateToIndex(data = ComposeGiftItemState(it))
@@ -375,7 +375,7 @@ fun defaultMuteListViewModelFactory(
 }
 
 fun defaultMenuViewModelFactory(
-    isDarkTheme: Boolean? = ChatroomUIKitClient.getInstance().getContext().getCurrentTheme(),
+    isDarkTheme: Boolean? = ChatroomUIKitClient.getInstance().getCurrentTheme(),
     title:String = "",
     menuList: List<UIComposeSheetItem> = emptyList(),
     isShowTitle:Boolean = true,

@@ -72,7 +72,7 @@ enum class ChatroomResultEvent {
     /**
      * The event is triggered when the current user operates a message.
      */
-    MESSAGE
+    MESSAGE //改为sendMessage  添加 recall message
 }
 
 /**

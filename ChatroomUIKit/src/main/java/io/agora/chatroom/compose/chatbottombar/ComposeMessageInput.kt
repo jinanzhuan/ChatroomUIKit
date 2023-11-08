@@ -31,7 +31,6 @@ import io.agora.chatroom.widget.WidgetInputField
  */
 @Composable
 fun ComposeMessageInput(
-    isDarkTheme:Boolean? = false,
     composerMessageState: ComposerInputMessageState,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -47,7 +46,6 @@ fun ComposeMessageInput(
     val (value) = composerMessageState
 
     WidgetInputField(
-        isDarkTheme = isDarkTheme,
         modifier = modifier,
         value = value,
         maxLines = maxLines,

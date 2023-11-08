@@ -99,7 +99,6 @@ fun ComposeChatBottomBar(
     input: @Composable RowScope.(ComposerInputMessageState) -> Unit = { it ->
         @Suppress("DEPRECATION_ERROR")
         DefaultComposerInputContent(
-            isDarkTheme = viewModel.getTheme,
             composerMessageState = it,
             onValueChange = onValueChange,
             label = label,
@@ -185,7 +184,6 @@ fun ComposeChatBottomBar(
     input: @Composable RowScope.(ComposerInputMessageState) -> Unit = { it ->
         @Suppress("DEPRECATION_ERROR")
         DefaultComposerInputContent(
-            isDarkTheme = isDarkTheme,
             composerMessageState = composerMessageState,
             onValueChange = onValueChange,
             label = label,
@@ -420,14 +418,12 @@ fun DefaultComposerEmoji(
 
 @Composable
 fun RowScope.DefaultComposerInputContent(
-    isDarkTheme: Boolean? = false,
     viewModel: MessageChatBarViewModel,
     composerMessageState: ComposerInputMessageState,
     onValueChange: (String) -> Unit,
     label: @Composable (ComposerInputMessageState) -> Unit,
 ) {
     ComposeMessageInput(
-        isDarkTheme = isDarkTheme,
         modifier = Modifier.weight(1f),
         label = label,
         viewModel = viewModel,

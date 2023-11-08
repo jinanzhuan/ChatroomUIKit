@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.KeyEvent
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -16,11 +17,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.ViewModelProvider
-import io.agora.chatroom.compose.ComposeChat
+import io.agora.chatroom.compose.ComposeChatroom
 import io.agora.chatroom.compose.VideoPlayerCompose
 import io.agora.chatroom.compose.utils.WindowConfigUtils
 import io.agora.chatroom.model.UIChatroomInfo
-import io.agora.chatroom.model.UIConstant
+import io.agora.chatroom.service.UserEntity
 import io.agora.chatroom.theme.ChatroomUIKitTheme
 import io.agora.chatroom.ui.UIChatroomService
 import io.agora.chatroom.ui.UISearchActivity
@@ -29,24 +30,25 @@ import io.agora.chatroom.viewmodel.ChatroomViewModel
 import io.agora.chatroom.viewmodel.gift.ComposeGiftListViewModel
 import io.agora.chatroom.viewmodel.messages.MessagesViewModelFactory
 
-class UIChatroomActivity : ComponentActivity(), ChatroomResultListener {
+class ChatroomActivity : ComponentActivity(), ChatroomResultListener {
 
     private lateinit var roomId:String
     private lateinit var service: UIChatroomService
 
     private val roomViewModel by lazy {
-        ViewModelProvider(this@UIChatroomActivity as ComponentActivity,
+        ViewModelProvider(this@ChatroomActivity as ComponentActivity,
             factory = ChatroomFactory(service = service)
         )[ChatroomViewModel::class.java]
     }
 
     private val giftViewModel by lazy {
-        ViewModelProvider(this@UIChatroomActivity as ComponentActivity,
-            factory = MessagesViewModelFactory(context = this@UIChatroomActivity, roomId = roomId, service = service))[ComposeGiftListViewModel::class.java]
+        ViewModelProvider(this@ChatroomActivity as ComponentActivity,
+            factory = MessagesViewModelFactory(context = this@ChatroomActivity, roomId = roomId,
+                service = service))[ComposeGiftListViewModel::class.java]
     }
 
     private val launcherToSearch: ActivityResultLauncher<Intent> =
-        (this@UIChatroomActivity as ComponentActivity).registerForActivityResult(
+        (this@ChatroomActivity as ComponentActivity).registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
             roomViewModel.closeMemberSheet.value = result.resultCode == Activity.RESULT_OK
@@ -58,24 +60,13 @@ class UIChatroomActivity : ComponentActivity(), ChatroomResultListener {
 
         roomId = intent.getStringExtra(KEY_ROOM_ID)?: return
         val ownerId = intent.getStringExtra(KEY_OWNER_ID)?: return
-        val type = intent.getStringExtra(KEY_TYPE)?: UIConstant.CHATROOM_LIVE_TYPE
 
-        val uiChatroomInfo = UIChatroomInfo(
-            roomId,
-            ChatroomUIKitClient.getInstance().getChatroomUser().getUserInfo(ownerId)
-        )
-
-        service = UIChatroomService(uiChatroomInfo)
         ChatroomUIKitClient.getInstance().registerRoomResultListener(this)
+        giftViewModel.openAutoClear()
 
-        val commonConfig = ChatroomUIKitClient.getInstance().getContext().getCommonConfig()
-        if (commonConfig.isOpenAutoClearGiftList){
-            giftViewModel.openAutoClear()
-        }else{
-            giftViewModel.closeAutoClear()
-        }
-
-        giftViewModel.setAutoClearTime(commonConfig.autoClearTime)
+        val uiChatroomInfo = UIChatroomInfo(roomId, UserEntity(ownerId))
+        service = UIChatroomService(uiChatroomInfo)
+        roomViewModel.hideBg()
 
         setContent {
             ChatroomUIKitTheme{
@@ -86,12 +77,11 @@ class UIChatroomActivity : ComponentActivity(), ChatroomResultListener {
                     modifier = Modifier.fillMaxHeight()
                 ){
 
-                    if (type == UIConstant.CHATROOM_PROMOTION_LIVE_TYPE){
-                        roomViewModel.hideBg()
-                        VideoPlayerCompose(Uri.parse("android.resource://$packageName/${R.raw.video_example}"))
-                    }
+                    VideoPlayerCompose(Uri.parse("android.resource://$packageName/${R.raw.video_example}"))
 
-                    ComposeChat(
+                    ComposeChatroom(
+                        roomId = roomId,
+                        roomOwner = ownerId,
                         roomViewModel = roomViewModel,
                         giftListViewModel = giftViewModel,
                         service = service,
@@ -99,7 +89,7 @@ class UIChatroomActivity : ComponentActivity(), ChatroomResultListener {
                                 tab->
                             launcherToSearch.launch(
                                 UISearchActivity.createIntent(
-                                    this@UIChatroomActivity,
+                                    this@ChatroomActivity,
                                     roomId,
                                     tab
                                 )
@@ -114,14 +104,6 @@ class UIChatroomActivity : ComponentActivity(), ChatroomResultListener {
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_DOWN) {
             finish()
-            service.getChatService().leaveChatroom(
-                roomId = ChatroomUIKitClient.getInstance().getContext().getCurrentRoomInfo().roomId,
-                userId = ChatroomUIKitClient.getInstance().getCurrentUser().userId,
-                onSuccess = {
-                    //
-                },
-                onError = {code, error ->  }
-            )
             return true
         }
         return super.onKeyDown(keyCode, event)
@@ -131,18 +113,15 @@ class UIChatroomActivity : ComponentActivity(), ChatroomResultListener {
     companion object {
         private const val KEY_ROOM_ID = "roomId"
         private const val KEY_OWNER_ID = "ownerId"
-        private const val KEY_TYPE = "roomType"
 
         fun createIntent(
             context: Context,
             roomId: String,
             ownerId:String,
-            roomType:String = UIConstant.CHATROOM_LIVE_TYPE,
         ): Intent {
-            return Intent(context, UIChatroomActivity::class.java).apply {
+            return Intent(context, ChatroomActivity::class.java).apply {
                 putExtra(KEY_ROOM_ID, roomId)
                 putExtra(KEY_OWNER_ID, ownerId)
-                putExtra(KEY_TYPE,roomType)
             }
         }
     }
@@ -150,8 +129,13 @@ class UIChatroomActivity : ComponentActivity(), ChatroomResultListener {
     override fun onEventResult(event: ChatroomResultEvent, errorCode: Int, errorMessage: String?) {
         if (event == ChatroomResultEvent.DESTROY_ROOM){
             ChatroomUIKitClient.getInstance().unregisterRoomResultListener(this)
-            roomViewModel.destroyRoom()
             finish()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.e("apex","onDestroy")
+        roomViewModel.leaveChatroom()
     }
 }

@@ -235,6 +235,7 @@ data class UIColors(
     val neutralL50D50:Color,
     val neutralL70D40:Color,
     val neutralL98D98:Color,
+    val neutralL95D20:Color,
     val primaryL95D20:Color,
     val primaryL80D80:Color,
     val secondaryL80D70:Color,
@@ -270,6 +271,7 @@ data class UIColors(
             primaryL80D80 = primaryColor80,
             neutralL50D50 = neutralColor50,
             neutralL70D40 = neutralColor70,
+            neutralL95D20 = neutralColor95,
         )
 
         @Composable
@@ -301,6 +303,7 @@ data class UIColors(
             primaryL80D80 = primaryColor80,
             neutralL50D50 = neutralColor50,
             neutralL70D40 = neutralColor40,
+            neutralL95D20 = neutralColor20,
         )
     }
 }

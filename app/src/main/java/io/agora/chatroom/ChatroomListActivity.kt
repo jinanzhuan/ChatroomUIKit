@@ -57,7 +57,7 @@ import io.agora.chatroom.service.OnValueSuccess
 import io.agora.chatroom.theme.ChatroomUIKitTheme
 import io.agora.chatroom.viewmodel.RequestListViewModel
 
-class RoomListActivity: ComponentActivity() {
+class ChatroomListActivity: ComponentActivity() {
     private val hideLogin by lazy { mutableStateOf(false) }
     private val chatRoomListViewModel by lazy { RoomListViewModel() }
 
@@ -195,7 +195,7 @@ class RoomListActivity: ComponentActivity() {
         chatroom: Chatroom
     ) {
         startActivity(
-            UIChatroomActivity.createIntent(context = this,
+            ChatroomActivity.createIntent(context = this,
             roomId = chatroom.id,
             ownerId = chatroom.owner)
         )

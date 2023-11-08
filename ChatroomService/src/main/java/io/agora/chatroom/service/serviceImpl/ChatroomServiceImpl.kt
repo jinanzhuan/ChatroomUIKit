@@ -68,6 +68,14 @@ class ChatroomServiceImpl: ChatroomService {
         chatroomManager.leaveChatRoom(roomId, CallbackImpl(onSuccess, onError, event = ChatroomResultEvent.LEAVE_ROOM))
     }
 
+    override fun destroyChatroom(
+        roomId: String,
+        onSuccess: OnSuccess,
+        onError: OnError
+    ) {
+        chatroomManager.asyncDestroyChatRoom(roomId,CallbackImpl(onSuccess, onError, event = ChatroomResultEvent.DESTROY_ROOM))
+    }
+
     override fun fetchMembers(
         roomId: String,
         cursor: String?,

@@ -1,5 +1,6 @@
 package io.agora.chatroom.compose.list
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -41,15 +42,15 @@ fun <T> ComposeBaseList(
     var timer by remember { mutableLongStateOf(0L) }
 
     val listState = rememberLazyListState()
-//    val addItemAnimation by animateDpAsState(targetValue = 0.dp, animationSpec = spring(), label = "addItem")
-//    val removeItemAnimation by animateDpAsState(targetValue = 0.dp, animationSpec = spring(), label = "removeItem")
 
     if (viewModel.isAutoClear.value){
         LaunchedEffect(items) {
-            timer = System.currentTimeMillis() // 记录当前时间
-            delay(viewModel.autoClearTime.value) // 等待3秒
-            if (System.currentTimeMillis() - timer >= 3000 && items.isNotEmpty()) { // 判断是否有新数据加入
-                viewModel.clear() // 删除所有数据
+            timer = System.currentTimeMillis()
+            delay(viewModel.autoClearTime.value)
+            Log.e("apex","System.currentTimeMillis() - timer:" +
+                    " ${System.currentTimeMillis()} - $timer  : ${System.currentTimeMillis() - timer}")
+            if (System.currentTimeMillis() - timer >= 3000 && items.isNotEmpty()) {
+                viewModel.clear()
             }
         }
     }

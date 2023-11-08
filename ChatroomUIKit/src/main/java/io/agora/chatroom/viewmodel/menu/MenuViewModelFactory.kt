@@ -6,7 +6,7 @@ import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.model.UIComposeSheetItem
 
 class MenuViewModelFactory(
-    private val isDarkTheme: Boolean? = ChatroomUIKitClient.getInstance().getContext().getCurrentTheme(),
+    private val isDarkTheme: Boolean? = ChatroomUIKitClient.getInstance().getCurrentTheme(),
     private val title:String = "",
     private val menuList: List<UIComposeSheetItem> = emptyList(),
     private val isShowTitle:Boolean = true,

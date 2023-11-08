@@ -7,7 +7,7 @@ import io.agora.chatroom.ui.UIChatroomService
 
 class ChatroomFactory(
     private val service: UIChatroomService,
-    private val isDarkTheme: Boolean? = ChatroomUIKitClient.getInstance().getContext().getCurrentTheme(),
+    private val isDarkTheme: Boolean? = ChatroomUIKitClient.getInstance().getCurrentTheme(),
 ): ViewModelProvider.Factory {
 
     /**

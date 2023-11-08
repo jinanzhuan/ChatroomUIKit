@@ -1,6 +1,5 @@
 package io.agora.chatroom.compose
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,8 +14,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.compose.indicator.LoadingIndicator
+import io.agora.chatroom.model.UIChatroomInfo
 import io.agora.chatroom.model.UIComposeSheetItem
 import io.agora.chatroom.service.GiftEntityProtocol
+import io.agora.chatroom.service.UserEntity
 import io.agora.chatroom.ui.UIChatroomService
 import io.agora.chatroom.uikit.R
 import io.agora.chatroom.viewmodel.UIRoomViewModel
@@ -32,8 +33,10 @@ import io.agora.chatroom.viewmodel.messages.MessageListViewModel
 import io.agora.chatroom.viewmodel.report.ComposeReportViewModel
 
 @Composable
-fun ComposeChat(
-    service: UIChatroomService,
+fun ComposeChatroom(
+    roomId:String,
+    roomOwner:String,
+    service: UIChatroomService = UIChatroomService(UIChatroomInfo(roomId,UserEntity(userId = roomOwner))),
     roomViewModel:UIRoomViewModel = viewModel(UIRoomViewModel::class.java,
         factory = defaultMessageListViewModelFactory(LocalContext.current, service.getRoomInfo().roomId, service = service)),
     messageListViewModel: MessageListViewModel = viewModel(
@@ -79,7 +82,6 @@ fun ComposeChat(
         loginToRoom()
         service.joinRoom(
             onSuccess = {
-                Log.e("apex","joinChatroom  $roomId onSuccess")
                 roomViewModel.isShowLoading.value = false
                 messageListViewModel.addJoinedMessageByIndex(
                     message = ChatroomUIKitClient.getInstance().insertJoinedMessage(
@@ -87,9 +89,6 @@ fun ComposeChat(
                     )
                 )
                 muteViewModel.fetchMuteList { code, error ->  }
-            },
-            onFailure = { code,error ->
-                Log.e("apex","joinChatroom onError $code $error")
             }
         )
     } else {
