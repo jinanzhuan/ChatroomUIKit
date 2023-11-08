@@ -49,7 +49,7 @@ fun ChatroomListItem(
         Row(modifier = Modifier
             .fillMaxSize()) {
 
-            var drawableId = UserInfoGenerator.randomRoomImage(LocalContext.current)
+            var drawableId = UserInfoGenerator.getRoomImage(LocalContext.current, roomDetail.id)
             if (roomDetail.video_type == "agora_promotion_live") {
                 drawableId = R.drawable.default_cover
             }
