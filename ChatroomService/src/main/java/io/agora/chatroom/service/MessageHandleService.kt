@@ -70,6 +70,16 @@ interface MessageHandleService {
                              onError: OnError)
 
     /**
+     * Delete a message from chat server.
+     * @param message The message to delete.
+     * @param onSuccess The callback to indicate the message is deleted successfully.
+     * @param onError The callback to indicate the message is failed to delete.
+     */
+    fun recallMessage(message: ChatMessage?,
+                             onSuccess: OnSuccess,
+                             onError: OnError)
+
+    /**
      * Reports an inappropriate message.
      * @param messageId The id of the message to report.
      * @param tag The tag of the inappropriate message. You need to type a custom tag, like `porn` or `ad`.

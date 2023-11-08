@@ -61,11 +61,12 @@ class ChatroomActivity : ComponentActivity(), ChatroomResultListener {
         roomId = intent.getStringExtra(KEY_ROOM_ID)?: return
         val ownerId = intent.getStringExtra(KEY_OWNER_ID)?: return
 
+        val uiChatroomInfo = UIChatroomInfo(roomId, UserEntity(ownerId))
+        service = UIChatroomService(uiChatroomInfo)
+
         ChatroomUIKitClient.getInstance().registerRoomResultListener(this)
         giftViewModel.openAutoClear()
 
-        val uiChatroomInfo = UIChatroomInfo(roomId, UserEntity(ownerId))
-        service = UIChatroomService(uiChatroomInfo)
         roomViewModel.hideBg()
 
         setContent {

@@ -10,6 +10,7 @@ import io.agora.chatroom.service.ChatroomChangeListener
 import io.agora.chatroom.service.GiftEntityProtocol
 import io.agora.chatroom.service.GiftReceiveListener
 import io.agora.chatroom.service.OnError
+import io.agora.chatroom.service.OnSuccess
 import io.agora.chatroom.service.OnValueSuccess
 import io.agora.chatroom.ui.UIChatroomService
 
@@ -107,8 +108,11 @@ class MessageListViewModel(
         }, onError = {code, error ->})
     }
 
-    fun removeMessage() {
-
+    fun removeMessage(message: ChatMessage?, onSuccess: OnSuccess, onError: OnError) {
+        chatService.getChatService().recallMessage(message, onSuccess = {
+            removeMessage(message = message!!)
+            onSuccess.invoke()
+        }, onError)
     }
 
     fun addTextMessage(message:ChatMessage){

@@ -25,7 +25,6 @@ import io.agora.chatroom.viewmodel.gift.ComposeGiftListViewModel
 import io.agora.chatroom.viewmodel.gift.ComposeGiftSheetViewModel
 import io.agora.chatroom.viewmodel.member.MemberListViewModel
 import io.agora.chatroom.viewmodel.member.MembersBottomSheetViewModel
-import io.agora.chatroom.viewmodel.member.MutedListViewModel
 import io.agora.chatroom.viewmodel.menu.MessageMenuViewModel
 import io.agora.chatroom.viewmodel.menu.RoomMemberMenuViewModel
 import io.agora.chatroom.viewmodel.messages.MessageChatBarViewModel
@@ -66,17 +65,14 @@ fun ComposeChatroom(
     memberMenuViewModel: RoomMemberMenuViewModel = viewModel(
         RoomMemberMenuViewModel::class.java,
         factory = defaultMenuViewModelFactory()),
-    muteViewModel:MutedListViewModel = viewModel( MutedListViewModel::class.java, factory = defaultMuteListViewModelFactory(
-        roomId = service.getRoomInfo().roomId, service = service,
-        ChatroomUIKitClient.getInstance().isCurrentRoomOwner(service.getRoomInfo().roomOwner?.userId)) ),
     onMemberSheetSearchClick: ((String) -> Unit)? = null,
     onMessageMenuClick: ((Int, UIComposeSheetItem) -> Unit)? = null,
     onGiftBottomSheetItemClick: ((GiftEntityProtocol) -> Unit) = {},
+    onMemberMenuClick: ((UIComposeSheetItem) -> Unit)? = null,
     chatBackground:Painter = if (roomViewModel.getTheme)
         painterResource(R.drawable.icon_chatroom_bg_dark)
         else painterResource(R.drawable.icon_chatroom_bg_light)
 ) {
-    val roomId = roomViewModel.getRoomService.getRoomInfo().roomId
 
     if (roomViewModel.isShowLoading.value) {
         loginToRoom()
@@ -88,7 +84,6 @@ fun ComposeChatroom(
                         roomId, ChatroomUIKitClient.getInstance().getCurrentUser().userId
                     )
                 )
-                muteViewModel.fetchMuteList { code, error ->  }
             }
         )
     } else {
@@ -104,6 +99,7 @@ fun ComposeChatroom(
 
         ComposeChatScreen(
             roomId = roomId,
+            roomOwner = roomOwner,
             service = roomViewModel.getRoomService,
             messageListViewModel= messageListViewModel,
             chatBottomBarViewModel = chatBottomBarViewModel,
@@ -116,7 +112,8 @@ fun ComposeChatroom(
             membersBottomSheetViewModel = membersBottomSheetViewModel,
             onMessageMenuClick = onMessageMenuClick,
             onMemberSheetSearchClick = onMemberSheetSearchClick,
-            onGiftBottomSheetItemClick = onGiftBottomSheetItemClick
+            onGiftBottomSheetItemClick = onGiftBottomSheetItemClick,
+            onMemberMenuClick = onMemberMenuClick,
         )
 
         LaunchedEffect(roomViewModel.closeMemberSheet.value) {

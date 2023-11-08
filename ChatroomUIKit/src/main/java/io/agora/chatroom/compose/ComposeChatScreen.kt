@@ -34,10 +34,12 @@ import io.agora.chatroom.compose.gift.ComposeGiftItemState
 import io.agora.chatroom.compose.gift.ComposeGiftList
 import io.agora.chatroom.compose.member.ComposeMembersBottomSheet
 import io.agora.chatroom.compose.report.ComposeMessageReport
+import io.agora.chatroom.model.UIChatroomInfo
 import io.agora.chatroom.model.UIComposeSheetItem
 import io.agora.chatroom.service.ChatLog
 import io.agora.chatroom.service.ChatMessage
 import io.agora.chatroom.service.GiftEntityProtocol
+import io.agora.chatroom.service.UserEntity
 import io.agora.chatroom.service.transfer
 import io.agora.chatroom.theme.ChatroomUIKitTheme
 import io.agora.chatroom.ui.UIChatroomService
@@ -74,11 +76,13 @@ private const val TAG = "ComposeChatScreen"
  * @param memberMenuViewModel The view model for the member menu.
  * @param onMemberSheetSearchClick The callback for the member sheet search click.
  * @param onMessageMenuClick The callback for the message menu click.
+ * @param onMemberMenuClick The callback for the member menu click.
  */
 @Composable
 fun ComposeChatScreen(
-    roomId: String,
-    service: UIChatroomService,
+    roomId:String,
+    roomOwner:String,
+    service: UIChatroomService = UIChatroomService(UIChatroomInfo(roomId, UserEntity(userId = roomOwner))),
     messageListViewModel: MessageListViewModel = viewModel(MessageListViewModel::class.java,
         factory = defaultMessageListViewModelFactory(LocalContext.current, roomId, service)),
     chatBottomBarViewModel: MessageChatBarViewModel = viewModel(MessageChatBarViewModel::class.java,
@@ -100,6 +104,7 @@ fun ComposeChatScreen(
     onMemberSheetSearchClick: ((String) -> Unit)? = null,
     onMessageMenuClick: ((Int, UIComposeSheetItem) -> Unit)? = null,
     onGiftBottomSheetItemClick: ((GiftEntityProtocol) -> Unit) = {},
+    onMemberMenuClick: ((UIComposeSheetItem) -> Unit)? = null,
 ) {
     messageListViewModel.registerChatroomChangeListener()
     messageListViewModel.registerChatroomGiftListener()
@@ -192,10 +197,9 @@ fun ComposeChatScreen(
             ComposeMenuBottomSheet(
                 viewModel = memberMenuViewModel,
                 onListItemClick = { index,item ->
-                    ChatLog.d(TAG," default item: $index ${item.title}")
-                    when(index){
-                        0 -> {
-                            if (item.title == context.getString(R.string.menu_item_mute)){
+                    onMemberMenuClick?.invoke(item) ?:
+                        when(item.id) {
+                            R.id.action_menu_mute -> {
                                 memberListViewModel.muteUser(memberMenuViewModel.user.userId,
                                     onSuccess = {
                                         memberMenuViewModel.closeDrawer()
@@ -204,7 +208,8 @@ fun ComposeChatScreen(
                                         memberMenuViewModel.closeDrawer()
                                     }
                                 )
-                            }else if (item.title == context.getString(R.string.menu_item_unmute)){
+                            }
+                            R.id.action_menu_unmute -> {
                                 memberListViewModel.unmuteUser(memberMenuViewModel.user.userId,
                                     onSuccess = {
                                         memberMenuViewModel.closeDrawer()
@@ -214,15 +219,13 @@ fun ComposeChatScreen(
                                     }
                                 )
                             }
-                        }
-                        1 -> {
-                            if (item.title == context.getString(R.string.menu_item_remove)){
+                            R.id.action_menu_remove -> {
                                 dialogViewModel.title = context.getString(R.string.dialog_title_remove_user, memberMenuViewModel.user.nickName)
                                 dialogViewModel.showCancel = true
                                 dialogViewModel.showDialog()
                             }
+                            else -> {}
                         }
-                    }
                 },
                 onDismissRequest = {
                     memberMenuViewModel.closeDrawer()
@@ -335,7 +338,7 @@ fun ShowComposeMenuDrawer(
                         R.id.action_menu_delete -> {
                             (menuViewModel.getSelectedBean() as ChatMessage).let {
                                     message ->
-                                messageListViewModel.removeMessage(message)
+                                messageListViewModel.removeMessage(message, onSuccess = {}, onError = {code, error ->})
                             }
                             menuViewModel.closeDrawer()
                         }

@@ -22,6 +22,7 @@ import org.json.JSONObject
 class GiftServiceImpl: GiftService {
     private val chatManager by lazy { ChatClient.getInstance().chatManager() }
     private val listeners = mutableListOf<GiftReceiveListener>()
+    @Synchronized
     override fun bindGiftListener(listener: GiftReceiveListener) {
         if (!listeners.contains(listener)){
             listeners.add(listener)
@@ -29,6 +30,7 @@ class GiftServiceImpl: GiftService {
         }
     }
 
+    @Synchronized
     override fun unbindGiftListener(listener: GiftReceiveListener) {
         if (listeners.contains(listener)) {
             listeners.remove(listener)
@@ -51,12 +53,12 @@ class GiftServiceImpl: GiftService {
         message.setMessageStatusCallback(object : CallBack{
             override fun onSuccess() {
                 onSuccess.invoke(message)
-                ChatroomUIKitClient.getInstance().callbackEvent(ChatroomResultEvent.MESSAGE, ChatError.EM_NO_ERROR, "")
+                ChatroomUIKitClient.getInstance().callbackEvent(ChatroomResultEvent.SEND_MESSAGE, ChatError.EM_NO_ERROR, "")
             }
 
             override fun onError(code: Int, error: String?) {
                 onError.invoke(code,error)
-                ChatroomUIKitClient.getInstance().callbackEvent(ChatroomResultEvent.MESSAGE, code, error)
+                ChatroomUIKitClient.getInstance().callbackEvent(ChatroomResultEvent.SEND_MESSAGE, code, error)
             }
         })
         chatManager.sendMessage(message)

@@ -28,6 +28,7 @@ class ChatroomServiceImpl: ChatroomService {
     private val listeners = mutableListOf<ChatroomChangeListener>()
     private val chatroomManager by lazy { ChatClient.getInstance().chatroomManager() }
     private val chatManager by lazy { ChatClient.getInstance().chatManager() }
+    @Synchronized
     override fun bindListener(listener: ChatroomChangeListener) {
         if (!listeners.contains(listener)) {
             listeners.add(listener)
@@ -35,6 +36,7 @@ class ChatroomServiceImpl: ChatroomService {
         }
     }
 
+    @Synchronized
     override fun unbindListener(listener: ChatroomChangeListener) {
         if (listeners.contains(listener)) {
             listeners.remove(listener)
@@ -142,10 +144,10 @@ class ChatroomServiceImpl: ChatroomService {
         }
         when(operation) {
             UserOperationType.ADD_ADMIN  -> {
-                chatroomManager.asyncAddChatRoomAdmin(roomId, userId, ValueCallbackImpl(onSuccess, onError, event = ChatroomResultEvent.ADMIN))
+                chatroomManager.asyncAddChatRoomAdmin(roomId, userId, ValueCallbackImpl(onSuccess, onError))
             }
             UserOperationType.REMOVE_ADMIN -> {
-                chatroomManager.asyncRemoveChatRoomAdmin(roomId, userId, ValueCallbackImpl(onSuccess, onError, event = ChatroomResultEvent.ADMIN))
+                chatroomManager.asyncRemoveChatRoomAdmin(roomId, userId, ValueCallbackImpl(onSuccess, onError))
             }
             UserOperationType.MUTE -> {
                 chatroomManager.asyncMuteChatRoomMembers(roomId, mutableListOf(userId), -1, ValueCallbackImpl(onSuccess, onError, event = ChatroomResultEvent.MUTE_MEMBER))
@@ -243,12 +245,12 @@ class ChatroomServiceImpl: ChatroomService {
                         it.onRefreshMessage(message)
                     }
                 }
-                ChatroomUIKitClient.getInstance().callbackEvent(ChatroomResultEvent.MESSAGE, ChatError.EM_NO_ERROR, "")
+                ChatroomUIKitClient.getInstance().callbackEvent(ChatroomResultEvent.SEND_MESSAGE, ChatError.EM_NO_ERROR, "")
             }
 
             override fun onError(code: Int, error: String?) {
                 onError(code, error)
-                ChatroomUIKitClient.getInstance().callbackEvent(ChatroomResultEvent.MESSAGE, code, error)
+                ChatroomUIKitClient.getInstance().callbackEvent(ChatroomResultEvent.SEND_MESSAGE, code, error)
             }
 
             override fun onProgress(progress: Int, status: String?) {
@@ -266,6 +268,10 @@ class ChatroomServiceImpl: ChatroomService {
         chatManager.translateMessage(message,
             ChatroomUIKitClient.getInstance().getTranslationLanguage(),
             ValueCallbackImpl<ChatMessage>(onSuccess, onError, event = ChatroomResultEvent.TRANSLATE))
+    }
+
+    override fun recallMessage(message: ChatMessage?, onSuccess: OnSuccess, onError: OnError) {
+        chatManager.asyncRecallMessage(message, CallbackImpl(onSuccess, onError, event = ChatroomResultEvent.RECALL_MESSAGE))
     }
 
     override fun reportMessage(

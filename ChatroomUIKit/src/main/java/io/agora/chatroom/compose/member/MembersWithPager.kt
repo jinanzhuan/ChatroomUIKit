@@ -152,7 +152,7 @@ fun MutedListPage(
 ) {
     var request by rememberSaveable { mutableStateOf(autoRequest) }
     if (request) {
-        viewModel.getMuteList()
+        viewModel.fetchMuteList()
         request = false
     }
     Column(modifier = modifier) {

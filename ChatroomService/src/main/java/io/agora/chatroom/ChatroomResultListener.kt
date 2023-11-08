@@ -55,24 +55,19 @@ enum class ChatroomResultEvent {
     FETCH_MEMBERS,
 
     /**
-     * This event is triggered when the current user operates room member information.
-     */
-    MEMBERS_INFO,
-
-    /**
      * The event is triggered when the current user fetches a room mutes from server.
      */
     FETCH_MUTES,
 
     /**
-     * The event is triggered when the current user operates the member permissions.
+     * The event is triggered when the current user sends a message.
      */
-    ADMIN,
+    SEND_MESSAGE,
 
     /**
-     * The event is triggered when the current user operates a message.
+     * The event is triggered when the current user deletes a message.
      */
-    MESSAGE //改为sendMessage  添加 recall message
+    RECALL_MESSAGE
 }
 
 /**
