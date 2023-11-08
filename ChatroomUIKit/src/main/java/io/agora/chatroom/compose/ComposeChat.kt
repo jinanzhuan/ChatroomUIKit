@@ -67,6 +67,7 @@ fun ComposeChat(
         ChatroomUIKitClient.getInstance().isCurrentRoomOwner(service.getRoomInfo().roomOwner?.userId)) ),
     onMemberSheetSearchClick: ((String) -> Unit)? = null,
     onMessageMenuClick: ((Int, UIComposeSheetItem) -> Unit)? = null,
+    onMemberMenuClick: ((UIComposeSheetItem) -> Unit)? = null,
     chatBackground:Painter = if (roomViewModel.getTheme)
         painterResource(R.drawable.icon_chatroom_bg_dark)
         else painterResource(R.drawable.icon_chatroom_bg_light)
@@ -115,6 +116,7 @@ fun ComposeChat(
             membersBottomSheetViewModel = membersBottomSheetViewModel,
             onMessageMenuClick = onMessageMenuClick,
             onMemberSheetSearchClick = onMemberSheetSearchClick,
+            onMemberMenuClick = onMemberMenuClick
         )
 
         LaunchedEffect(roomViewModel.closeMemberSheet.value) {

@@ -51,12 +51,12 @@ class GiftServiceImpl: GiftService {
         message.setMessageStatusCallback(object : CallBack{
             override fun onSuccess() {
                 onSuccess.invoke(message)
-                ChatroomUIKitClient.getInstance().callbackEvent(ChatroomResultEvent.MESSAGE, ChatError.EM_NO_ERROR, "")
+                ChatroomUIKitClient.getInstance().callbackEvent(ChatroomResultEvent.SEND_MESSAGE, ChatError.EM_NO_ERROR, "")
             }
 
             override fun onError(code: Int, error: String?) {
                 onError.invoke(code,error)
-                ChatroomUIKitClient.getInstance().callbackEvent(ChatroomResultEvent.MESSAGE, code, error)
+                ChatroomUIKitClient.getInstance().callbackEvent(ChatroomResultEvent.SEND_MESSAGE, code, error)
             }
         })
         chatManager.sendMessage(message)

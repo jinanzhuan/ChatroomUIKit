@@ -73,6 +73,7 @@ private const val TAG = "ComposeChatScreen"
  * @param memberMenuViewModel The view model for the member menu.
  * @param onMemberSheetSearchClick The callback for the member sheet search click.
  * @param onMessageMenuClick The callback for the message menu click.
+ * @param onMemberMenuClick The callback for the member menu click.
  */
 @Composable
 fun ComposeChatScreen(
@@ -97,7 +98,8 @@ fun ComposeChatScreen(
     memberMenuViewModel: RoomMemberMenuViewModel = viewModel(RoomMemberMenuViewModel::class.java,
         factory = defaultMenuViewModelFactory()),
     onMemberSheetSearchClick: ((String) -> Unit)? = null,
-    onMessageMenuClick: ((Int, UIComposeSheetItem) -> Unit)? = null
+    onMessageMenuClick: ((Int, UIComposeSheetItem) -> Unit)? = null,
+    onMemberMenuClick: ((UIComposeSheetItem) -> Unit)? = null,
 ) {
     messageListViewModel.registerChatroomChangeListener()
     messageListViewModel.registerChatroomGiftListener()
@@ -189,10 +191,9 @@ fun ComposeChatScreen(
             ComposeMenuBottomSheet(
                 viewModel = memberMenuViewModel,
                 onListItemClick = { index,item ->
-                    ChatLog.d(TAG," default item: $index ${item.title}")
-                    when(index){
-                        0 -> {
-                            if (item.title == context.getString(R.string.menu_item_mute)){
+                    onMemberMenuClick?.invoke(item) ?:
+                        when(item.id) {
+                            R.id.action_menu_mute -> {
                                 memberListViewModel.muteUser(memberMenuViewModel.user.userId,
                                     onSuccess = {
                                         memberMenuViewModel.closeDrawer()
@@ -201,7 +202,8 @@ fun ComposeChatScreen(
                                         memberMenuViewModel.closeDrawer()
                                     }
                                 )
-                            }else if (item.title == context.getString(R.string.menu_item_unmute)){
+                            }
+                            R.id.action_menu_unmute -> {
                                 memberListViewModel.unmuteUser(memberMenuViewModel.user.userId,
                                     onSuccess = {
                                         memberMenuViewModel.closeDrawer()
@@ -211,15 +213,13 @@ fun ComposeChatScreen(
                                     }
                                 )
                             }
-                        }
-                        1 -> {
-                            if (item.title == context.getString(R.string.menu_item_remove)){
+                            R.id.action_menu_remove -> {
                                 dialogViewModel.title = context.getString(R.string.dialog_title_remove_user, memberMenuViewModel.user.nickName)
                                 dialogViewModel.showCancel = true
                                 dialogViewModel.showDialog()
                             }
+                            else -> {}
                         }
-                    }
                 },
                 onDismissRequest = {
                     memberMenuViewModel.closeDrawer()
@@ -332,7 +332,7 @@ fun ShowComposeMenuDrawer(
                         R.id.action_menu_delete -> {
                             (menuViewModel.getSelectedBean() as ChatMessage).let {
                                     message ->
-                                messageListViewModel.removeMessage(message)
+                                messageListViewModel.removeMessage(message, onSuccess = {}, onError = {code, error ->})
                             }
                             menuViewModel.closeDrawer()
                         }
