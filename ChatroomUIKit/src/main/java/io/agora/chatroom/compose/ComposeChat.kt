@@ -62,9 +62,6 @@ fun ComposeChat(
     memberMenuViewModel: RoomMemberMenuViewModel = viewModel(
         RoomMemberMenuViewModel::class.java,
         factory = defaultMenuViewModelFactory()),
-    muteViewModel:MutedListViewModel = viewModel( MutedListViewModel::class.java, factory = defaultMuteListViewModelFactory(
-        roomId = service.getRoomInfo().roomId, service = service,
-        ChatroomUIKitClient.getInstance().isCurrentRoomOwner(service.getRoomInfo().roomOwner?.userId)) ),
     onMemberSheetSearchClick: ((String) -> Unit)? = null,
     onMessageMenuClick: ((Int, UIComposeSheetItem) -> Unit)? = null,
     onMemberMenuClick: ((UIComposeSheetItem) -> Unit)? = null,
@@ -85,7 +82,6 @@ fun ComposeChat(
                         roomId, ChatroomUIKitClient.getInstance().getCurrentUser().userId
                     )
                 )
-                muteViewModel.fetchMuteList { code, error ->  }
             },
             onFailure = { code,error ->
                 Log.e("apex","joinChatroom onError $code $error")

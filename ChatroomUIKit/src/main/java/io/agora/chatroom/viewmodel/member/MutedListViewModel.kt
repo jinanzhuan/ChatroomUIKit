@@ -35,6 +35,7 @@ data class MutedListViewModel(
         onSuccess: OnValueSuccess<List<UserEntity>> = {},
         onError: OnError = { _, _ ->}
     ) {
+        clear()
         loading()
         service.getChatService().fetchMuteList(roomId, 1, 100, { muteList ->
             ChatroomUIKitClient.getInstance().getCacheManager().saveRoomMuteList(roomId, muteList.map { it.key })
