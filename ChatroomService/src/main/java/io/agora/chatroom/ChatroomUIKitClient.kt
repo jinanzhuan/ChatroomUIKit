@@ -163,6 +163,7 @@ class ChatroomUIKitClient {
     /**
      * Register a room result listener.
      */
+    @Synchronized
     fun registerRoomResultListener(listener: ChatroomResultListener){
         if (!roomEventResultListener.contains(listener)) {
             roomEventResultListener.add(listener)
@@ -172,6 +173,7 @@ class ChatroomUIKitClient {
     /**
      * Unregister a room result listener.
      */
+    @Synchronized
     fun unregisterRoomResultListener(listener: ChatroomResultListener){
         if (roomEventResultListener.contains(listener)) {
             roomEventResultListener.remove(listener)
@@ -190,8 +192,8 @@ class ChatroomUIKitClient {
         if (roomEventResultListener.isEmpty()) {
             return
         }
-        roomEventResultListener.forEach {
-            it.onEventResult(event, errorCode, errorMessage)
+        roomEventResultListener.iterator().forEach { listener ->
+            listener.onEventResult(event, errorCode, errorMessage)
         }
     }
 
@@ -267,11 +269,13 @@ class ChatroomUIKitClient {
     }
 
 
+    @Synchronized
     fun clear(){
         eventListeners.clear()
         giftListeners.clear()
     }
 
+    @Synchronized
     fun clearUserStateChangeListener(){
         userStateChangeListeners.clear()
     }
@@ -311,7 +315,7 @@ class ChatroomUIKitClient {
 
         override fun onMemberExited(roomId: String, roomName: String, participant: String) {
             try {
-                for (listener in eventListeners) {
+                for (listener in eventListeners.iterator()) {
                     listener.onUserLeft(roomId,roomName)
                 }
             } catch (e: Exception) {
@@ -326,7 +330,7 @@ class ChatroomUIKitClient {
             participant: String
         ) {
             try {
-                for (listener in eventListeners) {
+                for (listener in eventListeners.iterator()) {
                     listener.onUserBeKicked(roomId,roomName)
                 }
             } catch (e: Exception) {
@@ -340,7 +344,7 @@ class ChatroomUIKitClient {
             expireTime: Long
         ) {
             try {
-                for (listener in eventListeners) {
+                for (listener in eventListeners.iterator()) {
                     if (mutes.size > 0){
                         for (mute in mutes) {
                             listener.onUserMuted(chatRoomId,mute)
@@ -354,7 +358,7 @@ class ChatroomUIKitClient {
 
         override fun onMuteListRemoved(chatRoomId: String, mutes: MutableList<String>) {
             try {
-                for (listener in eventListeners) {
+                for (listener in eventListeners.iterator()) {
                     if (mutes.size > 0){
                         for (mute in mutes) {
                             listener.onUserUnmuted(chatRoomId,mute)
@@ -374,7 +378,7 @@ class ChatroomUIKitClient {
 
         override fun onAdminAdded(chatRoomId: String, admin: String) {
             try {
-                for (listener in eventListeners) {
+                for (listener in eventListeners.iterator()) {
                     listener.onAdminAdded(chatRoomId,admin)
                 }
             } catch (e: Exception) {
@@ -384,7 +388,7 @@ class ChatroomUIKitClient {
 
         override fun onAdminRemoved(chatRoomId: String, admin: String) {
             try {
-                for (listener in eventListeners) {
+                for (listener in eventListeners.iterator()) {
                     listener.onAdminRemoved(chatRoomId,admin)
                 }
             } catch (e: Exception) {
@@ -396,7 +400,7 @@ class ChatroomUIKitClient {
 
         override fun onAnnouncementChanged(chatRoomId: String, announcement: String) {
             try {
-                for (listener in eventListeners) {
+                for (listener in eventListeners.iterator()) {
                     listener.onAnnouncementUpdated(chatRoomId,announcement)
                 }
             } catch (e: Exception) {
@@ -408,7 +412,7 @@ class ChatroomUIKitClient {
     private inner class InnerUserStateChangeListener: ChatConnectionListener {
         override fun onConnected() {
             try {
-                for (listener in userStateChangeListeners) {
+                for (listener in userStateChangeListeners.iterator()) {
                     listener.onConnected()
                 }
             } catch (e: Exception) {
@@ -430,7 +434,7 @@ class ChatroomUIKitClient {
                 return
             }
             try {
-                for (listener in userStateChangeListeners) {
+                for (listener in userStateChangeListeners.iterator()) {
                     listener.onDisconnected(errorCode)
                 }
             } catch (e: Exception) {
@@ -440,7 +444,7 @@ class ChatroomUIKitClient {
 
         override fun onTokenExpired() {
             try {
-                for (listener in userStateChangeListeners) {
+                for (listener in userStateChangeListeners.iterator()) {
                     listener.onTokenExpired()
                 }
             } catch (e: Exception) {
@@ -450,7 +454,7 @@ class ChatroomUIKitClient {
 
         override fun onTokenWillExpire() {
             try {
-                for (listener in userStateChangeListeners) {
+                for (listener in userStateChangeListeners.iterator()) {
                     listener.onTokenWillExpire()
                 }
             } catch (e: Exception) {
@@ -460,7 +464,7 @@ class ChatroomUIKitClient {
 
         override fun onLogout(errorCode: Int, info: String?) {
             try {
-                for (listener in userStateChangeListeners) {
+                for (listener in userStateChangeListeners.iterator()) {
                     listener.onLogout(errorCode, info)
                 }
             } catch (e: Exception) {
@@ -476,7 +480,7 @@ class ChatroomUIKitClient {
             messages?.forEach {
                 if (it.type == ChatMessageType.TXT) {
                     try {
-                        for (listener in eventListeners) {
+                        for (listener in eventListeners.iterator()) {
                             listener.onMessageReceived(it)
                         }
                     } catch (e: Exception) {
@@ -497,7 +501,7 @@ class ChatroomUIKitClient {
                             when (msgType) {
                                 UICustomMsgType.CHATROOMUIKITUSERJOIN -> {
                                     try {
-                                        for (listener in eventListeners) {
+                                        for (listener in eventListeners.iterator()) {
                                             parseJoinedMsg(it)?.let { userInfo->
                                                 chatroomUser.setUserInfo(it.from,userInfo.toUser())
                                             }
@@ -509,7 +513,7 @@ class ChatroomUIKitClient {
                                 }
                                 UICustomMsgType.CHATROOMUIKITGIFT -> {
                                     try {
-                                        for (listener in giftListeners) {
+                                        for (listener in giftListeners.iterator()) {
                                             val giftEntity = parseGiftMsg(it)
                                             listener.onGiftReceived(
                                                 roomId = currentRoomContext.getCurrentRoomInfo().roomId,

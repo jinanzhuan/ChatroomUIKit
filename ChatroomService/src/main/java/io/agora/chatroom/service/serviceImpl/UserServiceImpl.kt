@@ -21,6 +21,7 @@ import io.agora.chatroom.service.transfer
 class UserServiceImpl: UserService {
     private val listeners = mutableListOf<UserStateChangeListener>()
     private val userInfoManager by lazy { ChatClient.getInstance().userInfoManager() }
+    @Synchronized
     override fun bindUserStateChangeListener(listener: UserStateChangeListener) {
         if (listeners.contains(listener)) {
             listeners.add(listener)
@@ -28,6 +29,7 @@ class UserServiceImpl: UserService {
         }
     }
 
+    @Synchronized
     override fun unbindUserStateChangeListener(listener: UserStateChangeListener) {
         if (listeners.contains(listener)) {
             listeners.remove(listener)
@@ -53,12 +55,10 @@ class UserServiceImpl: UserService {
                     it.value.transfer().transfer()
                 } ?: listOf()
                 onSuccess.invoke(userEntities)
-                ChatroomUIKitClient.getInstance().callbackEvent(ChatroomResultEvent.MEMBERS_INFO, ChatError.EM_NO_ERROR, "")
             }
 
             override fun onError(error: Int, errorMsg: String?) {
                 onError.invoke(error, errorMsg)
-                ChatroomUIKitClient.getInstance().callbackEvent(ChatroomResultEvent.MEMBERS_INFO, error, errorMsg)
             }
         })
     }
@@ -71,12 +71,10 @@ class UserServiceImpl: UserService {
         userInfoManager.updateOwnInfo(userEntity.transfer(), object :ChatValueCallback<String> {
             override fun onSuccess(value: String?) {
                 onSuccess.invoke()
-                ChatroomUIKitClient.getInstance().callbackEvent(ChatroomResultEvent.MEMBERS_INFO, ChatError.EM_NO_ERROR, "")
             }
 
             override fun onError(error: Int, errorMsg: String?) {
                 onError.invoke(error, errorMsg)
-                ChatroomUIKitClient.getInstance().callbackEvent(ChatroomResultEvent.MEMBERS_INFO, error, errorMsg)
             }
         })
     }

@@ -22,6 +22,7 @@ import org.json.JSONObject
 class GiftServiceImpl: GiftService {
     private val chatManager by lazy { ChatClient.getInstance().chatManager() }
     private val listeners = mutableListOf<GiftReceiveListener>()
+    @Synchronized
     override fun bindGiftListener(listener: GiftReceiveListener) {
         if (!listeners.contains(listener)){
             listeners.add(listener)
@@ -29,6 +30,7 @@ class GiftServiceImpl: GiftService {
         }
     }
 
+    @Synchronized
     override fun unbindGiftListener(listener: GiftReceiveListener) {
         if (listeners.contains(listener)) {
             listeners.remove(listener)

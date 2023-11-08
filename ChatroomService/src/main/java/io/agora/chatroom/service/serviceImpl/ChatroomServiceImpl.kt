@@ -28,6 +28,7 @@ class ChatroomServiceImpl: ChatroomService {
     private val listeners = mutableListOf<ChatroomChangeListener>()
     private val chatroomManager by lazy { ChatClient.getInstance().chatroomManager() }
     private val chatManager by lazy { ChatClient.getInstance().chatManager() }
+    @Synchronized
     override fun bindListener(listener: ChatroomChangeListener) {
         if (!listeners.contains(listener)) {
             listeners.add(listener)
@@ -35,6 +36,7 @@ class ChatroomServiceImpl: ChatroomService {
         }
     }
 
+    @Synchronized
     override fun unbindListener(listener: ChatroomChangeListener) {
         if (listeners.contains(listener)) {
             listeners.remove(listener)
