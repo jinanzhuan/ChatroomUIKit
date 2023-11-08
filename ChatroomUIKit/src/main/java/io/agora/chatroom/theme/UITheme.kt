@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.compositionLocalOf
+import io.agora.chatroom.ChatroomUIKitClient
 
 private val LocalDimens = compositionLocalOf<UIDimens> {
     error("No dimens provided! Make sure to wrap all usages of Chatroom components in a ChatroomUIKitTheme.")
@@ -24,7 +25,7 @@ private val LocalTypography = compositionLocalOf<UITypography> {
 
 @Composable
 fun ChatroomUIKitTheme(
-    isDarkTheme: Boolean = isSystemInDarkTheme(),
+    isDarkTheme: Boolean = ChatroomUIKitClient.getInstance().getContext().getCurrentTheme(),
     colors: UIColors = if (!isDarkTheme) UIColors.defaultColors() else UIColors.defaultDarkColors(),
     shapes: UIShapes = UIShapes.defaultShapes(),
     dimens: UIDimens = UIDimens.defaultDimens(),

@@ -111,6 +111,7 @@ class MainActivity : ComponentActivity() {
                                 checked = !isDark,
                                 onCheckedChange = {
                                     isDarkTheme = !it
+                                    ChatroomUIKitClient.getInstance().getContext().setCurrentTheme(isDarkTheme)
                                 },
                                 modifier = Modifier
                                     .size(width = 54.dp, height = 28.dp)

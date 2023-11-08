@@ -5,12 +5,6 @@ import android.graphics.Rect
 import android.util.Log
 import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -48,7 +42,6 @@ import androidx.compose.ui.Alignment.Companion.Bottom
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -102,7 +95,7 @@ fun ComposeChatBottomBar(
     menuItemResource: List<UIChatBarMenuItem> = viewModel.getMenuItem,
     onSendMessage: (String) -> Unit = { },
     onValueChange: (String) -> Unit = { viewModel.setMessageInput(it) },
-    label: @Composable (ComposerInputMessageState) -> Unit = { DefaultComposerLabel(isDarkTheme = viewModel.getTheme,it.ownCapabilities) },
+    label: @Composable (ComposerInputMessageState) -> Unit = { DefaultComposerLabel(it.ownCapabilities) },
     input: @Composable RowScope.(ComposerInputMessageState) -> Unit = { it ->
         @Suppress("DEPRECATION_ERROR")
         DefaultComposerInputContent(
@@ -115,7 +108,6 @@ fun ComposeChatBottomBar(
     },
     trailingContent: @Composable (ComposerInputMessageState) -> Unit = {
         DefaultMessageComposerTrailingContent(
-            isDarkTheme = viewModel.getTheme,
             value = it.inputValue,
             validationErrors = it.validationErrors,
             ownCapabilities = it.ownCapabilities,
@@ -127,7 +119,6 @@ fun ComposeChatBottomBar(
     },
     voiceContent: @Composable (ComposerInputMessageState) -> Unit = {
         DefaultMessageComposerVoiceContent(
-            isDarkTheme = viewModel.getTheme,
             ownCapabilities = it.ownCapabilities,
             onVoiceClick = {}
         )
@@ -190,7 +181,7 @@ fun ComposeChatBottomBar(
     onMenuClick: (Int) -> Unit = {},
     menuItemResource: List<UIChatBarMenuItem>,
     onValueChange: (String) -> Unit = {},
-    label: @Composable (ComposerInputMessageState) -> Unit = { DefaultComposerLabel(isDarkTheme,composerMessageState.ownCapabilities) },
+    label: @Composable (ComposerInputMessageState) -> Unit = { DefaultComposerLabel(composerMessageState.ownCapabilities) },
     input: @Composable RowScope.(ComposerInputMessageState) -> Unit = { it ->
         @Suppress("DEPRECATION_ERROR")
         DefaultComposerInputContent(
@@ -203,7 +194,6 @@ fun ComposeChatBottomBar(
     },
     trailingContent: @Composable (ComposerInputMessageState) -> Unit = {
         DefaultMessageComposerTrailingContent(
-            isDarkTheme = isDarkTheme,
             value = it.inputValue,
             validationErrors = it.validationErrors,
             onSendMessage = onSendMessage,
@@ -212,7 +202,6 @@ fun ComposeChatBottomBar(
     },
     voiceContent: @Composable (ComposerInputMessageState) -> Unit = {
         DefaultMessageComposerVoiceContent(
-            isDarkTheme = isDarkTheme,
             ownCapabilities = it.ownCapabilities,
             onVoiceClick = {}
         )
@@ -319,29 +308,11 @@ fun ComposeChatBottomBar(
                 }
 
                 if (viewModel.isShowEmoji.value){
-//                    val density = LocalDensity.current
-//                    AnimatedVisibility(
-//                        visible = viewModel.isShowEmoji.value,
-//                        enter = slideInVertically {
-//                            // Slide in from 40 dp from the top.
-//                            with(density) { - exHeight.dp.roundToPx() }
-//                        } +
-//                                expandVertically(
-//                            // Expand from the top.
-//                            expandFrom = Alignment.Top
-//                        ) +
-//                        fadeIn(
-//                            // Fade in with the initial alpha of 0.3f.
-//                            initialAlpha = 0.3f
-//                        ),
-//                        exit = slideOutVertically() + fadeOut()
-//                    ){
-                        DefaultComposerEmoji(
-                            maxH = exHeight,
-                            emojis = emojiList,
-                            viewModel = viewModel
-                        )
-//                    }
+                    DefaultComposerEmoji(
+                        maxH = exHeight,
+                        emojis = emojiList,
+                        viewModel = viewModel
+                    )
                 }
 
                 Row(
@@ -408,7 +379,6 @@ fun ComposeChatBottomBar(
  */
 @Composable
 internal fun DefaultComposerLabel(
-    isDarkTheme: Boolean?,
     ownCapabilities: Set<String>)
 {
     Text(
@@ -448,30 +418,6 @@ fun DefaultComposerEmoji(
     }
 }
 
-/**
- * Represents the default input content of the Composer.
- *
- * @param label Customizable composable that represents the input field label (hint).
- * @param composerMessageState The state of the message input.
- * @param onValueChange Handler when the input field value changes.
- */
-@Deprecated(
-    message = "To be marked as an internal component. Use ComposeMessageInput directly.",
-    replaceWith = ReplaceWith(
-        expression = "MessageInput(" +
-            "    messageComposerState: MessageComposerState," +
-            "    onValueChange: (String) -> Unit," +
-            "    modifier: Modifier = Modifier," +
-            "    maxLines: Int = DefaultMessageInputMaxLines," +
-            "    keyboardCapitalization: KeyboardCapitalization," +
-            "    label: @Composable (MessageComposerState) -> Unit," +
-            "    innerLeadingContent: @Composable RowScope.() -> Unit," +
-            "    innerTrailingContent: @Composable RowScope.() -> Unit" +
-            ")",
-        imports = arrayOf("ComposeMessageInput")
-    ),
-    level = DeprecationLevel.ERROR,
-)
 @Composable
 fun RowScope.DefaultComposerInputContent(
     isDarkTheme: Boolean? = false,
@@ -491,16 +437,15 @@ fun RowScope.DefaultComposerInputContent(
 }
 
 /**
- * Represents the default trailing content for the Composer, which represent a send button or a cooldown timer.
+ * Represents the default trailing content for the Composer, which represent a send button.
  *
  * @param value The input value.
  * @param validationErrors List of errors for message validation.
  * @param onSendMessage Handler when the user wants to send a message.
- * @param ownCapabilities Set of capabilities the user is given for the current channel.
+ * @param ownCapabilities Set of capabilities the user is given for the Conversation.
  */
 @Composable
 internal fun DefaultMessageComposerTrailingContent(
-    isDarkTheme: Boolean? = false,
     value: String,
     validationErrors: List<UIValidationError>,
     ownCapabilities: Set<String>,
@@ -533,7 +478,6 @@ internal fun DefaultMessageComposerTrailingContent(
 
 @Composable
 internal fun DefaultMessageComposerVoiceContent(
-    isDarkTheme: Boolean? = false,
     ownCapabilities: Set<String>,
     onVoiceClick: () -> Unit,
 ) {
@@ -680,15 +624,6 @@ internal fun DefaultChatBarComposerContent(
     )
 }
 
-/**
- * Shows a [Toast] with an error if one of the following constraints are violated:
- *
- * - The message length exceeds the maximum allowed message length.
- * - The number of selected attachments is too big.
- * - At least one of the attachments is too big.
- *
- * @param validationErrors The list of validation errors for the current user input.
- */
 @Composable
 private fun MessageInputValidationError(validationErrors: List<UIValidationError>, snackbarHostState: SnackbarHostState) {
     if (validationErrors.isNotEmpty()) {

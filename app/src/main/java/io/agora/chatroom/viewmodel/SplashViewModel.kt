@@ -46,7 +46,7 @@ class SplashViewModel(
                     Log.e("SplashViewModel", "onResponse: $body")
                     SPUtils.getInstance(context).saveToken(body.access_token)
                     ChatroomUIKitClient.getInstance().login(
-                        UserInfoProtocol(loginReq.username, loginReq.nickname, body.icon_key),
+                        UserInfoProtocol(loginReq.username, loginReq.nickname, loginReq.icon_key),
                         body.access_token,
                         onSuccess = {
                             onValueSuccess.invoke(body)
@@ -54,7 +54,7 @@ class SplashViewModel(
                             if (code == ChatError.USER_ALREADY_LOGIN) {
                                 ChatroomUIKitClient.getInstance().logout(onSuccess = {
                                     ChatroomUIKitClient.getInstance().login(
-                                        UserInfoProtocol(loginReq.username, loginReq.nickname, body.icon_key),
+                                        UserInfoProtocol(loginReq.username, loginReq.nickname, loginReq.icon_key),
                                         body.access_token,
                                         onSuccess = {
                                             onValueSuccess.invoke(body)

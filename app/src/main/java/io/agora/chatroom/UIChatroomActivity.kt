@@ -19,19 +19,15 @@ import androidx.lifecycle.ViewModelProvider
 import io.agora.chatroom.compose.ComposeChat
 import io.agora.chatroom.compose.VideoPlayerCompose
 import io.agora.chatroom.compose.utils.WindowConfigUtils
-import io.agora.chatroom.http.ChatroomHttpManager
 import io.agora.chatroom.model.UIChatroomInfo
-import io.agora.chatroom.service.OnError
-import io.agora.chatroom.service.OnSuccess
+import io.agora.chatroom.model.UIConstant
 import io.agora.chatroom.theme.ChatroomUIKitTheme
 import io.agora.chatroom.ui.UIChatroomService
 import io.agora.chatroom.ui.UISearchActivity
-import io.agora.chatroom.viewmodel.UIRoomViewModel
+import io.agora.chatroom.viewmodel.ChatroomFactory
+import io.agora.chatroom.viewmodel.ChatroomViewModel
 import io.agora.chatroom.viewmodel.gift.ComposeGiftListViewModel
 import io.agora.chatroom.viewmodel.messages.MessagesViewModelFactory
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class UIChatroomActivity : ComponentActivity(), ChatroomResultListener {
 
@@ -40,8 +36,8 @@ class UIChatroomActivity : ComponentActivity(), ChatroomResultListener {
 
     private val roomViewModel by lazy {
         ViewModelProvider(this@UIChatroomActivity as ComponentActivity,
-            factory = MessagesViewModelFactory(context = this@UIChatroomActivity, roomId = roomId, service = service)
-        )[UIRoomViewModel::class.java]
+            factory = ChatroomFactory(service = service)
+        )[ChatroomViewModel::class.java]
     }
 
     private val giftViewModel by lazy {
@@ -62,7 +58,7 @@ class UIChatroomActivity : ComponentActivity(), ChatroomResultListener {
 
         roomId = intent.getStringExtra(KEY_ROOM_ID)?: return
         val ownerId = intent.getStringExtra(KEY_OWNER_ID)?: return
-        val type = intent.getStringExtra(KEY_TYPE)?: "live"
+        val type = intent.getStringExtra(KEY_TYPE)?: UIConstant.CHATROOM_LIVE_TYPE
 
         val uiChatroomInfo = UIChatroomInfo(
             roomId,
@@ -90,7 +86,7 @@ class UIChatroomActivity : ComponentActivity(), ChatroomResultListener {
                     modifier = Modifier.fillMaxHeight()
                 ){
 
-                    if (type == "agora_promotion_live"){
+                    if (type == UIConstant.CHATROOM_PROMOTION_LIVE_TYPE){
                         roomViewModel.hideBg()
                         VideoPlayerCompose(Uri.parse("android.resource://$packageName/${R.raw.video_example}"))
                     }
@@ -141,7 +137,7 @@ class UIChatroomActivity : ComponentActivity(), ChatroomResultListener {
             context: Context,
             roomId: String,
             ownerId:String,
-            roomType:String = "live",
+            roomType:String = UIConstant.CHATROOM_LIVE_TYPE,
         ): Intent {
             return Intent(context, UIChatroomActivity::class.java).apply {
                 putExtra(KEY_ROOM_ID, roomId)
@@ -154,28 +150,8 @@ class UIChatroomActivity : ComponentActivity(), ChatroomResultListener {
     override fun onEventResult(event: ChatroomResultEvent, errorCode: Int, errorMessage: String?) {
         if (event == ChatroomResultEvent.DESTROY_ROOM){
             ChatroomUIKitClient.getInstance().unregisterRoomResultListener(this)
-            destroyRoom()
+            roomViewModel.destroyRoom()
             finish()
         }
-    }
-
-    private fun destroyRoom(
-        onSuccess: OnSuccess = {},
-        onError: OnError = { _, _ ->}
-    ){
-        val call = ChatroomHttpManager.getService().destroyRoom()
-        call.enqueue(object : Callback<String> {
-            override fun onResponse(call: Call<String>, response: Response<String>) {
-                if (response.isSuccessful) {
-                    onSuccess.invoke()
-                }else{
-                    onError.invoke(-1,"Service exception")
-                }
-            }
-
-            override fun onFailure(call: Call<String>, t: Throwable) {
-                onError.invoke(-1, t.message)
-            }
-        })
     }
 }

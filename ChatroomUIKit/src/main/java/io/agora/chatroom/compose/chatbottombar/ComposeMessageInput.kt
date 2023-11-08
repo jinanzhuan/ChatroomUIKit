@@ -39,7 +39,7 @@ fun ComposeMessageInput(
     maxLines: Int = DefaultMessageInputMaxLines,
     keyboardOptions: KeyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
     label: @Composable (ComposerInputMessageState) -> Unit = {
-        DefaultComposerLabel(isDarkTheme = isDarkTheme,ownCapabilities = composerMessageState.ownCapabilities)
+        DefaultComposerLabel(ownCapabilities = composerMessageState.ownCapabilities)
     },
     innerLeadingContent: @Composable RowScope.() -> Unit = {},
     innerTrailingContent: @Composable RowScope.() -> Unit = {},
