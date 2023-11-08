@@ -91,12 +91,15 @@ fun ComposeChat(
             }
         )
     } else {
-        Image(
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize(),
-            painter = chatBackground,
-            contentDescription = "bg",
-        )
+
+        if (roomViewModel.isShowBg.value){
+            Image(
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize(),
+                painter = chatBackground,
+                contentDescription = "bg",
+            )
+        }
 
         ComposeChatScreen(
             roomId = roomId,

@@ -6,7 +6,7 @@ import com.google.gson.Gson
  * The response of the login request.
  */
 data class LoginRes(
-    val username: String,
+    val userName: String,
     val icon_key: String,
     val access_token: String,
     val expires_in: Long,

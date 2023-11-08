@@ -74,15 +74,13 @@ fun DefaultGiftItemContent(
     onItemClick: (Int,ComposeGiftListItemState) -> Unit,
 ){
     when (giftListItem) {
-        //is ComposeDynamicGiftListItemState -> ComposeDynamicGiftItem(giftListItem)
-        else -> ComposeGiftItem(viewModel,itemIndex,giftListItem,onItemClick)
+        else -> ComposeGiftItem(itemIndex,giftListItem,onItemClick)
     }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ComposeGiftItem(
-    viewModel: ComposeGiftListViewModel,
     itemIndex:Int,
     item:ComposeGiftListItemState,
     onItemClick: (Int,ComposeGiftListItemState) -> Unit,

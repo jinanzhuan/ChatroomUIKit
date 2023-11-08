@@ -44,11 +44,4 @@ class ComposeGiftListViewModel(
         }
     }
 
-//    private fun checkUserInfo(message: ChatMessage):UserInfoProtocol?{
-//        if (message.ext().containsKey(UIConstant.CHATROOM_UIKIT_USER_INFO)) {
-//            val jsonObject = message.getStringAttribute(UIConstant.CHATROOM_UIKIT_USER_INFO)
-//            return GsonTools.toBean(jsonObject.toString(), UserInfoProtocol::class.java)
-//        }
-//        return null
-//    }
 }

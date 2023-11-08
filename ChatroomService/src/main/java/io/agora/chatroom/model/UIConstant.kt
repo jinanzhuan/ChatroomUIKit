@@ -11,4 +11,7 @@ object UIConstant{
 
     const val CHATROOM_THEME = "chatroom_theme"
     const val CHATROOM_USE_GIFTS_IN_LIST = "chatroom_use_gifts_in_list"
+
+    const val CHATROOM_PROMOTION_LIVE_TYPE = "agora_promotion_live"
+    const val CHATROOM_LIVE_TYPE = "live"
 }

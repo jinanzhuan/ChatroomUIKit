@@ -21,6 +21,11 @@
             android:theme="@style/Theme.ChatroomUIKit">
         </activity>
         <activity android:name="io.agora.chatroom.RoomListActivity"/>
+        <activity
+            android:name="io.agora.chatroom.UIChatroomActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize"
+            />
         <activity android:name="io.agora.chatroom.SplashActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

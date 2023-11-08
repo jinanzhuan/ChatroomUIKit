@@ -5,4 +5,6 @@
     <string name="login_result_failed">Login failed</string>
     <string name="default_room_name">%1$s\'s living room</string>
     <string name="powered_by">Powered by Easemob</string>
+
+
 </resources>
