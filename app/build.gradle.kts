@@ -20,6 +20,7 @@ android {
         localProperties.load(project.rootProject.file("local.properties").inputStream())
 
         buildConfigField("String", "CHATROOM_APP_KEY", "\"${localProperties.getProperty("CHATROOM_APP_KEY")}\"")
+        buildConfigField("String", "REQUEST_HOST", "\"${localProperties.getProperty("REQUEST_HOST")}\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
