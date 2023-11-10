@@ -1,6 +1,5 @@
 package io.agora.chatroom.compose.utils
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -82,7 +81,6 @@ object ExpressionUtils {
         var isContains = false
         emojiList.forEach {
             val startIndex = key.indexOf(it.emojiText)
-//            Log.e("apex","containsKey $startIndex  ${it.emojiText}")
             if (startIndex != -1){
                 isContains = true
             }

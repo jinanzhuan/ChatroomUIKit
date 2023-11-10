@@ -43,6 +43,7 @@ class MessagesViewModelFactory(
                 menuItemResource = menuItemResource,
                 emojiColumns = emojiColumns,
                 composerChatBarController = ComposerChatBarController(
+                    context = context,
                     roomId = service.getRoomInfo().roomId,
                     chatService = service.getChatService(),
                     capabilities = setOf(UICapabilities.SEND_MESSAGE)

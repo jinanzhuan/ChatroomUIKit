@@ -1,8 +1,15 @@
 package io.agora.chatroom.commons
 
+import android.content.Context
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.style.ImageSpan
+import android.util.Log
 import io.agora.chatroom.model.UserInfoProtocol
 import io.agora.chatroom.service.ChatroomService
 import io.agora.chatroom.compose.utils.DispatcherProvider
+import io.agora.chatroom.compose.utils.ExpressionUtils
+import io.agora.chatroom.data.emojiMap
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,6 +18,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 class ComposerChatBarController(
+    private val context: Context,
     private val roomId: String,
     private val chatService: ChatroomService,
     private val capabilities: Set<String> = setOf(),
@@ -25,6 +33,8 @@ class ComposerChatBarController(
      * UI state of the current composer input.
      */
     val input: MutableStateFlow<String> = MutableStateFlow("")
+
+    private val emoji: MutableStateFlow<SpannableStringBuilder> = MutableStateFlow(SpannableStringBuilder())
 
     private val ownCapabilities = MutableStateFlow<Set<String>>(capabilities)
 
@@ -71,7 +81,26 @@ class ComposerChatBarController(
     }
 
     fun setEmojiInput(value: String){
-        this.input.value += value
+        this.emoji.value = checkEmoji(value)
+    }
+
+    private fun checkEmoji(selectEmoji:String):SpannableStringBuilder{
+        val spBuild = SpannableStringBuilder(selectEmoji)
+        val emojiRes = emojiMap[selectEmoji]
+        val emojiDrawable = emojiRes?.let { context.getDrawable(it) }
+        emojiDrawable?.setBounds(0, 0, emojiDrawable.intrinsicWidth, emojiDrawable.intrinsicHeight)
+        val imageSpan = emojiDrawable?.let { ImageSpan(it, ImageSpan.ALIGN_BOTTOM) }
+        val startIndex = selectEmoji.indexOf(selectEmoji)
+        if (startIndex >= 0) {
+            val endIndex: Int = startIndex + selectEmoji.length
+            spBuild.setSpan(
+                imageSpan,
+                startIndex,
+                endIndex,
+                SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
+        return spBuild
     }
 
     fun clearData() {
@@ -101,6 +130,11 @@ class ComposerChatBarController(
             state.value = state.value.copy(inputValue = input)
 
             handleValidationErrors()
+        }.debounce(ComputeMentionSuggestionsDebounceTime).launchIn(scope)
+
+        emoji.onEach { input ->
+            state.value = state.value.copy(emoji = input)
+
         }.debounce(ComputeMentionSuggestionsDebounceTime).launchIn(scope)
 
         validationErrors.onEach { validationErrors ->

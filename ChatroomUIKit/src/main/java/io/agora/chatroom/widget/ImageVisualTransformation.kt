@@ -26,7 +26,6 @@ class ImageVisualTransformation(private val context: Context) : VisualTransforma
                 val endIndex = matcher.end()
             }
         }
-
         return TransformedText(builder.toAnnotatedString(), OffsetMapping.Identity)
     }
 }
