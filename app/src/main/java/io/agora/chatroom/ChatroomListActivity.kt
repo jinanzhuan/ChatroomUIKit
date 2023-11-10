@@ -194,11 +194,6 @@ class ChatroomListActivity: ComponentActivity() {
     private fun skipToTarget(
         chatroom: Chatroom
     ) {
-        startActivity(
-            ChatroomActivity.createIntent(context = this,
-            roomId = chatroom.id,
-            ownerId = chatroom.owner)
-        )
     }
 
     @Composable

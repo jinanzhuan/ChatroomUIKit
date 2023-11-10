@@ -1,5 +1,7 @@
 package io.agora.chatroom.bean
 
+import java.io.Serializable
+
 data class RoomDetailBean(
     val affiliations: List<Any>,
     val affiliations_count: Int,
@@ -17,8 +19,8 @@ data class RoomDetailBean(
     val showid: Int,
     val status: String,
     val video_type: String
-)
+): Serializable
 
 data class Ext(
     val videoUrl: String
-)
+): Serializable

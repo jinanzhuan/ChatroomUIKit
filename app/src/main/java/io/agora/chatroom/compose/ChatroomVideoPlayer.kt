@@ -12,10 +12,13 @@ import io.agora.chatroom.theme.ChatroomUIKitTheme
 import io.agora.chatroom.widget.CustomVideoView
 
 @Composable
-fun VideoPlayerCompose(uri: Uri) {
+fun VideoPlayerCompose(
+    uri: Uri,
+    modifier: Modifier = Modifier
+) {
     Surface(
         color = ChatroomUIKitTheme.colors.background,
-        modifier = Modifier.fillMaxHeight()
+        modifier = modifier
     ) {
         val height = (LocalContext.current.resources.displayMetrics.heightPixels * 1.03).toInt()
         val width = LocalContext.current.resources.displayMetrics.widthPixels

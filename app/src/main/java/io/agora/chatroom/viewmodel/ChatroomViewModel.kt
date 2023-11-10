@@ -36,21 +36,29 @@ class ChatroomViewModel(
         })
     }
 
+    /**
+     * Finish living.
+     */
+    fun endLive(
+        onSuccess: OnSuccess = {},
+        onError: OnError = { _, _ ->}
+    ){
+        service.getChatService().destroyChatroom(
+            roomId = ChatroomUIKitClient.getInstance().getContext().getCurrentRoomInfo().roomId,
+            onSuccess = {
+                destroyRoom(onSuccess,onError)
+            },
+            onError = {code, error ->
+                onError.invoke(code, error)
+            }
+        )
+    }
+
     fun leaveChatroom(
         onSuccess: OnSuccess = {},
         onError: OnError = { _, _ ->}
     ){
-        if (ChatroomUIKitClient.getInstance().isCurrentRoomOwner()){
-            service.getChatService().destroyChatroom(
-                roomId = ChatroomUIKitClient.getInstance().getContext().getCurrentRoomInfo().roomId,
-                onSuccess = {
-                    destroyRoom(onSuccess,onError)
-                },
-                onError = {code, error ->
-                    onError.invoke(code, error)
-                }
-            )
-        }else{
+        if (!ChatroomUIKitClient.getInstance().isCurrentRoomOwner()){
             service.getChatService().leaveChatroom(
                 roomId = ChatroomUIKitClient.getInstance().getContext().getCurrentRoomInfo().roomId,
                 userId = ChatroomUIKitClient.getInstance().getCurrentUser().userId,
