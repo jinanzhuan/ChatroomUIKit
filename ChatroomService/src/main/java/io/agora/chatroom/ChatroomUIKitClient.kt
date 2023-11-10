@@ -200,6 +200,7 @@ class ChatroomUIKitClient {
         return null
     }
 
+    @Synchronized
     internal fun callbackEvent(event: ChatroomResultEvent, errorCode: Int, errorMessage: String?) {
         if (roomEventResultListener.isEmpty()) {
             return
