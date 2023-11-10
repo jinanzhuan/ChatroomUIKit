@@ -143,7 +143,9 @@ fun DefaultMemberItem(
     onItemClick: ((UserEntity) -> Unit)? = null,
     onExtendClick: ((UserEntity) -> Unit)? = null,
     extendContent: @Composable ((UserEntity) -> Unit)? = {user ->
-        if (ChatroomUIKitClient.getInstance().getContext().getCurrentRoomInfo().roomOwner?.userId == ChatClient.getInstance().currentUser) {
+        val roomOwner = ChatroomUIKitClient.getInstance().getContext().getCurrentRoomInfo().roomOwner?.userId
+        if (roomOwner == ChatClient.getInstance().currentUser
+            && roomOwner != user.userId) {
             IconButton(
                 onClick = { onExtendClick?.invoke(user) }) {
                 Icon(
