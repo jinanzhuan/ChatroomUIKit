@@ -73,6 +73,7 @@ class ChatroomActivity : ComponentActivity(), ChatroomResultListener {
             ChatroomUIKitTheme{
                 WindowConfigUtils(
                     statusBarColor = Color.Transparent,
+                    nativeBarColor = Color.Transparent,
                 )
                 Surface(
                     modifier = Modifier.fillMaxHeight()

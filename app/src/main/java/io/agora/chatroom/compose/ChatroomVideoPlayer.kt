@@ -1,22 +1,15 @@
 package io.agora.chatroom.compose
 
 import android.net.Uri
-import android.util.DisplayMetrics
-import android.view.ViewGroup
-import android.widget.VideoView
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
-import io.agora.chatroom.R
 import io.agora.chatroom.theme.ChatroomUIKitTheme
+import io.agora.chatroom.widget.CustomVideoView
 
 @Composable
 fun VideoPlayerCompose(uri: Uri) {
@@ -24,19 +17,30 @@ fun VideoPlayerCompose(uri: Uri) {
         color = ChatroomUIKitTheme.colors.background,
         modifier = Modifier.fillMaxHeight()
     ) {
+        val height = (LocalContext.current.resources.displayMetrics.heightPixels * 1.03).toInt()
+        val width = LocalContext.current.resources.displayMetrics.widthPixels
         AndroidView(
             factory = { context ->
-                VideoView(context).apply {
-//                    background = getContext().getDrawable(R.drawable.splash_bg)
-                    layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+                CustomVideoView(context).apply {
                     setVideoURI(uri)
+                    val radio = height * 1.0 / width
+                    val videoRadio = 2.0
+                    if (radio > videoRadio) {
+                        val videoWidth = (height / videoRadio).toInt()
+                        setVideoSize(videoWidth, height)
+                    }else {
+                        val videoHeight = (width * videoRadio).toInt()
+                        setVideoSize(width, videoHeight)
+                    }
                     setOnPreparedListener { mediaPlayer ->
                         mediaPlayer.isLooping = true
                     }
                     start()
+
                 }
             },
             modifier = Modifier.fillMaxSize()
         )
     }
 }
+
