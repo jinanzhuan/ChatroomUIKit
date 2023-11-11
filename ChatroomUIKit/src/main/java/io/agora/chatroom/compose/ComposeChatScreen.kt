@@ -36,6 +36,8 @@ import io.agora.chatroom.compose.member.ComposeMembersBottomSheet
 import io.agora.chatroom.compose.report.ComposeMessageReport
 import io.agora.chatroom.model.UIChatroomInfo
 import io.agora.chatroom.model.UIComposeSheetItem
+import io.agora.chatroom.model.UserInfoProtocol
+import io.agora.chatroom.model.toUser
 import io.agora.chatroom.service.ChatLog
 import io.agora.chatroom.service.ChatMessage
 import io.agora.chatroom.service.GiftEntityProtocol
@@ -81,8 +83,8 @@ private const val TAG = "ComposeChatScreen"
 @Composable
 fun ComposeChatScreen(
     roomId:String,
-    roomOwner:String,
-    service: UIChatroomService = UIChatroomService(UIChatroomInfo(roomId, UserEntity(userId = roomOwner))),
+    roomOwner: UserInfoProtocol,
+    service: UIChatroomService = UIChatroomService(UIChatroomInfo(roomId, roomOwner.toUser())),
     messageListViewModel: MessageListViewModel = viewModel(MessageListViewModel::class.java,
         factory = defaultMessageListViewModelFactory(LocalContext.current, roomId, service)),
     chatBottomBarViewModel: MessageChatBarViewModel = viewModel(MessageChatBarViewModel::class.java,
@@ -220,7 +222,7 @@ fun ComposeChatScreen(
                                 )
                             }
                             R.id.action_menu_remove -> {
-                                dialogViewModel.title = context.getString(R.string.dialog_title_remove_user, memberMenuViewModel.user.nickName)
+                                dialogViewModel.title = context.getString(R.string.dialog_title_remove_user, memberMenuViewModel.user.nickname)
                                 dialogViewModel.showCancel = true
                                 dialogViewModel.showDialog()
                             }

@@ -34,9 +34,8 @@ fun MemberList(
     headerContent: @Composable (() -> Unit)? = null,
     bottomContent: @Composable (() -> Unit)? = null,
     itemContent: @Composable (Int, UserEntity) -> Unit = { index, item ->
-        val user = ChatroomUIKitClient.getInstance().getCacheManager().getUserInfo(item.userId)
         DefaultMemberItem(
-            user = user,
+            user = item,
             showRole = showRole,
             onItemClick = onItemClick,
             onExtendClick = onExtendClick

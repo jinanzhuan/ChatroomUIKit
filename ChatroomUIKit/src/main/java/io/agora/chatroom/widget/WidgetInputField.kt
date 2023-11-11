@@ -29,7 +29,6 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import io.agora.chatroom.theme.ChatroomUIKitTheme
-import io.agora.chatroom.theme.LargeCorner
 import io.agora.chatroom.viewmodel.messages.MessageChatBarViewModel
 import io.agora.chatroom.uikit.R
 import kotlinx.coroutines.delay
@@ -95,8 +94,8 @@ fun WidgetInputField(
     BasicTextField(
         modifier = modifier
             .focusRequester(focus)
-            .border(border = border, shape = LargeCorner)
-            .clip(LargeCorner)
+            .border(border = border, shape = ChatroomUIKitTheme.shapes.large)
+            .clip(ChatroomUIKitTheme.shapes.large)
             .background(ChatroomUIKitTheme.colors.neutralL95D20)
             .padding(innerPadding)
             .semantics { contentDescription = description },

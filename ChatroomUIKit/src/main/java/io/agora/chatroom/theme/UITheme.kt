@@ -22,6 +22,16 @@ private val LocalTypography = compositionLocalOf<UITypography> {
     error("No typography provided! Make sure to wrap all usages of Chatroom components in a ChatroomUIKitTheme.")
 }
 
+/**
+ * Chatroom theme that provides [UIColors], [UIDimens], [UIShapes], and [UITypography]
+ *
+ * @param isDarkTheme Whether the theme is dark or not.
+ * @param colors The [UIColors] to use for this theme.
+ * @param shapes The [UIShapes] to use for this theme.
+ * @param dimens The [UIDimens] to use for this theme.
+ * @param typography The [UITypography] to use for this theme.
+ * @param content The content of the theme.
+ */
 @Composable
 fun ChatroomUIKitTheme(
     isDarkTheme: Boolean = ChatroomUIKitClient.getInstance().getCurrentTheme(),

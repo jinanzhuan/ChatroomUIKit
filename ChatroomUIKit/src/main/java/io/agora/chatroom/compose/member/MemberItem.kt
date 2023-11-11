@@ -1,5 +1,6 @@
 package io.agora.chatroom.compose.member
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -101,6 +102,7 @@ fun DefaultMemberItem(
         }
     },
     avatarContent: @Composable (UserEntity) -> Unit = { user ->
+        Log.e("DefaultMemberItem", "avatarContent: $user")
         Spacer(modifier = Modifier.width(12.dp))
         Avatar(
             imageUrl = user.avatarURL ?: "",
@@ -119,7 +121,7 @@ fun DefaultMemberItem(
                 .fillMaxHeight()
         ) {
             Text(
-                text = user.nickName?.let {
+                text = user.nickname?.let {
                     it.ifBlank { user.userId }
                 } ?: user.userId ,
                 modifier = Modifier
@@ -193,7 +195,7 @@ fun MemberItemPreview() {
     ChatroomUIKitTheme {
         DefaultMemberItem(user = UserEntity(
             userId = "123",
-            nickName = "nickname",
+            nickname = "nickname",
             avatarURL = "",
             identify = ""
         ))

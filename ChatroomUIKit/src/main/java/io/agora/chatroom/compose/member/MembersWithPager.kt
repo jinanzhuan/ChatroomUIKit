@@ -119,8 +119,7 @@ fun MembersPage(
         MemberList(
             viewModel = viewModel,
             modifier = Modifier
-                .fillMaxSize()
-                .background(ChatroomUIKitTheme.colors.background),
+                .fillMaxSize(),
             showRole = true,
             onItemClick = { user ->
                 onItemClick?.invoke(tab, user)
@@ -166,8 +165,7 @@ fun MutedListPage(
         MemberList(
             viewModel = viewModel,
             modifier = Modifier
-                .fillMaxSize()
-                .background(ChatroomUIKitTheme.colors.background),
+                .fillMaxSize(),
             showRole = false,
             onItemClick = { user ->
                 onItemClick?.invoke(tab, user)
