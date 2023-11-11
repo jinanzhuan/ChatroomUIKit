@@ -155,7 +155,7 @@ class MainActivity : ComponentActivity() {
                             Spacer(modifier = Modifier.width(10.dp))
 
                             Text(
-                                text = userDetail?.nickName?:userDetail?.userId ?: "",
+                                text = userDetail?.nickname?:userDetail?.userId ?: "",
                                 style = ChatroomUIKitTheme.typography.bodyLarge,
                                 color = ChatroomUIKitTheme.colors.onBackground
                             )
@@ -209,7 +209,7 @@ class MainActivity : ComponentActivity() {
             return
         }
         viewModel.createChatroom(
-            roomName = resources.getString(R.string.default_room_name, userDetail.nickName),
+            roomName = resources.getString(R.string.default_room_name, userDetail.nickname),
             owner = userDetail.userId,
             onSuccess = { roomDetail ->
                 skipToChat(roomDetail)

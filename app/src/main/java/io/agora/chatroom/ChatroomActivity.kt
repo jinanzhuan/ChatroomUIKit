@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.KeyEvent
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -57,6 +58,7 @@ import io.agora.chatroom.compose.dialog.SimpleDialog
 import io.agora.chatroom.compose.utils.WindowConfigUtils
 import io.agora.chatroom.model.UIChatroomInfo
 import io.agora.chatroom.service.UserEntity
+import io.agora.chatroom.service.transfer
 import io.agora.chatroom.theme.ChatroomUIKitTheme
 import io.agora.chatroom.ui.UIChatroomService
 import io.agora.chatroom.ui.UISearchActivity
@@ -108,7 +110,16 @@ class ChatroomActivity : ComponentActivity(), ChatroomResultListener {
 
         val roomName = room.name
 
-        val uiChatroomInfo = UIChatroomInfo(roomId, UserEntity(ownerId))
+        val owner = UserEntity(
+            userId = ownerId,
+            nickname = room.nickname,
+            avatarURL = room.iconKey
+        )
+
+        Log.e("ChatroomActivity", "onCreate room: $room")
+        Log.e("ChatroomActivity", "onCreate owner: $owner")
+
+        val uiChatroomInfo = UIChatroomInfo(roomId, owner)
         service = UIChatroomService(uiChatroomInfo)
 
         ChatroomUIKitClient.getInstance().registerRoomResultListener(this)
@@ -127,126 +138,123 @@ class ChatroomActivity : ComponentActivity(), ChatroomResultListener {
                 factory = defaultMembersViewModelFactory(service.getRoomInfo().roomId, service,
                     ChatroomUIKitClient.getInstance().isCurrentRoomOwner(room.owner)))
 
-                ConstraintLayout {
-                    val (topBar, chat) = createRefs()
+                Surface(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                ) {
+                    VideoPlayerCompose(
+                        uri = Uri.parse("android.resource://$packageName/${R.raw.video_example}"),
+                        modifier = Modifier.fillMaxHeight()
+                    )
+                    Scaffold(
+                        containerColor = Color.Transparent,
+                        topBar = {
+                            TopAppBar(
+                                colors = TopAppBarDefaults.topAppBarColors(
+                                    containerColor = Color.Transparent,
+                                ),
+                                title = {
+                                    Row (
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        modifier = Modifier
+                                            .wrapContentWidth()
+                                            .height(38.dp)
+                                            .background(
+                                                color = ChatroomUIKitTheme.colors.barrageL20D10,
+                                                shape = RoundedCornerShape(19.dp)
+                                            ),
+                                    ){
 
-                    Surface(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .constrainAs(chat) {
-                                top.linkTo(parent.top)
-                                start.linkTo(parent.start)
-                                end.linkTo(parent.end)
-                                bottom.linkTo(parent.bottom)
-                            },
-                    ){
-                        VideoPlayerCompose(
-                            uri = Uri.parse("android.resource://$packageName/${R.raw.video_example}"),
-                            modifier = Modifier.fillMaxHeight()
-                        )
+                                        Spacer(modifier = Modifier.width(3.dp))
 
-                        ComposeChatroom(
-                            roomId = roomId,
-                            roomOwner = ownerId,
-                            roomViewModel = roomViewModel,
-                            giftListViewModel = giftViewModel,
-                            service = service,
-                            onMemberSheetSearchClick = {
-                                    tab->
-                                launcherToSearch.launch(
-                                    UISearchActivity.createIntent(
-                                        this@ChatroomActivity,
-                                        roomId = roomId,
-                                        tab
+                                        Avatar(
+                                            imageUrl = room.iconKey,
+                                            modifier = Modifier.size(32.dp, 32.dp),
+                                            contentDescription = "owner avatar"
+                                        )
+
+                                        Column(
+                                            modifier = Modifier
+                                                .padding(start = 8.dp)
+                                                .wrapContentWidth()
+                                                .wrapContentHeight(),
+                                            verticalArrangement = Arrangement.Center
+
+                                        ) {
+
+                                            Text(
+                                                text = roomName,
+                                                modifier = Modifier
+                                                    .wrapContentWidth()
+                                                    .wrapContentHeight(),
+                                                style = ChatroomUIKitTheme.typography.bodySmall.copy(
+                                                    color = Color.White
+                                                )
+                                            )
+
+                                            Text(
+                                                text = if(room.nickname.isEmpty()) ownerId else room.nickname,
+                                                modifier = Modifier
+                                                    .wrapContentWidth()
+                                                    .wrapContentHeight(),
+                                                style = ChatroomUIKitTheme.typography.bodySmall.copy(
+                                                    color = Color.White
+                                                )
+                                            )
+
+                                        }
+
+                                        Spacer(modifier = Modifier.width(16.dp))
+
+                                    }
+                                },
+                                navigationIcon = {
+                                    IconButton(onClick = { checkIfOwner() }) {
+                                        Icon(
+                                            painter = painterResource(id = io.agora.chatroom.uikit.R.drawable.arrow_left),
+                                            contentDescription = "callback navigation",
+                                            tint = Color.White
+                                        )
+                                    }
+                                },
+                                actions = {
+                                    IconButton(onClick = { membersBottomSheetViewModel.openDrawer() }) {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.icon_members),
+                                            contentDescription = "chatroom member",
+                                            tint = Color.White
+                                        )
+                                    }
+                                }
+                            )
+                        }
+                    ) { paddingValues ->
+                        Surface(
+                            modifier = Modifier
+                                .padding(paddingValues = paddingValues)
+                                .fillMaxHeight(),
+                            color = Color.Transparent
+                        ){
+                            ComposeChatroom(
+                                roomId = roomId,
+                                roomOwner = owner.transfer(),
+                                roomViewModel = roomViewModel,
+                                giftListViewModel = giftViewModel,
+                                service = service,
+                                onMemberSheetSearchClick = {
+                                        tab->
+                                    launcherToSearch.launch(
+                                        UISearchActivity.createIntent(
+                                            this@ChatroomActivity,
+                                            roomId = roomId,
+                                            tab
+                                        )
                                     )
-                                )
-                            }
-                        )
+                                }
+                            )
+                        }
                     }
 
-                    TopAppBar(
-                        modifier = Modifier.constrainAs(topBar) {
-                            top.linkTo(parent.top)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                        },
-                        colors = TopAppBarDefaults.topAppBarColors(
-                            containerColor = Color.Transparent,
-                        ),
-                        title = {
-                            Row (
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier
-                                    .wrapContentWidth()
-                                    .height(38.dp)
-                                    .background(
-                                        color = ChatroomUIKitTheme.colors.barrageL20D10,
-                                        shape = RoundedCornerShape(19.dp)
-                                    ),
-                            ){
-
-                                Spacer(modifier = Modifier.width(3.dp))
-
-                                Avatar(
-                                    imageUrl = room.iconKey,
-                                    modifier = Modifier.size(32.dp, 32.dp),
-                                    contentDescription = "owner avatar"
-                                )
-
-                                Column(
-                                    modifier = Modifier
-                                        .padding(start = 8.dp)
-                                        .wrapContentWidth()
-                                        .wrapContentHeight(),
-                                    verticalArrangement = Arrangement.Center
-
-                                ) {
-
-                                    Text(
-                                        text = roomName,
-                                        modifier = Modifier
-                                            .wrapContentWidth()
-                                            .wrapContentHeight(),
-                                        style = ChatroomUIKitTheme.typography.bodySmall.copy(
-                                            color = Color.White
-                                        )
-                                    )
-
-                                    Text(
-                                        text = if(room.nickname.isEmpty()) ownerId else room.nickname,
-                                        modifier = Modifier
-                                            .wrapContentWidth()
-                                            .wrapContentHeight(),
-                                        style = ChatroomUIKitTheme.typography.bodySmall.copy(
-                                            color = Color.White
-                                        )
-                                    )
-
-                                }
-
-                                Spacer(modifier = Modifier.width(16.dp))
-
-                            }
-                        },
-                        navigationIcon = {
-                            IconButton(onClick = { checkIfOwner() }) {
-                                Icon(
-                                    painter = painterResource(id = io.agora.chatroom.uikit.R.drawable.arrow_left),
-                                    contentDescription = "callback navigation",
-                                    tint = Color.White
-                                )
-                            }
-                        },
-                        actions = {
-                            IconButton(onClick = { membersBottomSheetViewModel.openDrawer() }) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.icon_members),
-                                    contentDescription = "chatroom member",
-                                    tint = Color.White
-                                )
-                            }
-                        }
-                    )
                 }
 
                 SimpleDialog(

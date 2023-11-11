@@ -27,8 +27,4 @@ class CustomVideoView: VideoView {
         invalidate()
     }
 
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-
-    }
 }
