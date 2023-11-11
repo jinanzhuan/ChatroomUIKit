@@ -11,8 +11,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -27,6 +29,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -39,6 +42,7 @@ import io.agora.chatroom.compose.drawer.ComposeMenuBottomSheet
 import io.agora.chatroom.compose.input.SearchInputFiled
 import io.agora.chatroom.compose.member.MembersPage
 import io.agora.chatroom.compose.member.MutedListPage
+import io.agora.chatroom.compose.utils.WindowConfigUtils
 import io.agora.chatroom.service.ChatLog
 import io.agora.chatroom.theme.ChatroomUIKitTheme
 import io.agora.chatroom.ui.UISearchActivity.Companion.TAG
@@ -66,6 +70,11 @@ class UISearchActivity : ComponentActivity() {
 
         setContent {
             ChatroomUIKitTheme {
+                WindowConfigUtils(
+                    isDarkTheme = !ChatroomUIKitClient.getInstance().getCurrentTheme(),
+                    statusBarColor = Color.Transparent,
+                    nativeBarColor = Color.Transparent,
+                )
                 SearchScaffold(this, roomId!!, title!!)
             }
         }
@@ -103,6 +112,7 @@ fun SearchScaffold(context: Activity, roomId: String, title: String) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
+                modifier = Modifier.statusBarsPadding(),
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = ChatroomUIKitTheme.colors.background,
                     titleContentColor = ChatroomUIKitTheme.colors.onBackground,
@@ -197,7 +207,7 @@ fun SearchScaffold(context: Activity, roomId: String, title: String) {
 
             if (title == stringResource(id = R.string.member_management_participant)) {
                 MembersPage(
-                    modifier = Modifier.padding(innerPadding),
+                    modifier = Modifier.padding(innerPadding).navigationBarsPadding(),
                     viewModel = viewModel,
                     tab = title,
                     onExtendClick = { tab, user ->
@@ -208,7 +218,7 @@ fun SearchScaffold(context: Activity, roomId: String, title: String) {
                 )
             } else if (title == stringResource(id = R.string.member_management_mute)) {
                 MutedListPage(
-                    modifier = Modifier.padding(innerPadding),
+                    modifier = Modifier.padding(innerPadding).navigationBarsPadding(),
                     viewModel = mutedViewModel,
                     tab = title,
                     onExtendClick = { tab, user ->
