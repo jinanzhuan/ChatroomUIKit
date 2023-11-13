@@ -1,6 +1,8 @@
 package io.agora.chatroom.compose
 
+import android.app.Activity
 import android.content.Context
+import android.view.inputmethod.InputMethodManager
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -41,10 +43,9 @@ import io.agora.chatroom.model.toUser
 import io.agora.chatroom.service.ChatLog
 import io.agora.chatroom.service.ChatMessage
 import io.agora.chatroom.service.GiftEntityProtocol
-import io.agora.chatroom.service.UserEntity
 import io.agora.chatroom.service.transfer
 import io.agora.chatroom.theme.ChatroomUIKitTheme
-import io.agora.chatroom.ui.UIChatroomService
+import io.agora.chatroom.UIChatroomService
 import io.agora.chatroom.uikit.R
 import io.agora.chatroom.viewmodel.dialog.DialogViewModel
 import io.agora.chatroom.viewmodel.gift.ComposeGiftListViewModel
@@ -128,6 +129,8 @@ fun ComposeChatScreen(
                 interactionSource = remember { MutableInteractionSource() },
             ){
                 isShowInput.value = false
+                val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                inputMethodManager.hideSoftInputFromWindow((context as Activity).currentFocus?.windowToken, 0)
             }
         ) {
             val defaultBottomSheetHeight = LocalConfiguration.current.screenHeightDp/2

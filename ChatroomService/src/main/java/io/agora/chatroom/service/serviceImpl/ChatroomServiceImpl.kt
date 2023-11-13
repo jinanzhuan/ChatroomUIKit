@@ -240,11 +240,6 @@ class ChatroomServiceImpl: ChatroomService {
         message.setMessageStatusCallback(object : ChatCallback {
             override fun onSuccess() {
                 onSuccess(message)
-                if (listeners.size > 0){
-                    listeners.forEach {
-                        it.onRefreshMessage(message)
-                    }
-                }
                 ChatroomUIKitClient.getInstance().callbackEvent(ChatroomResultEvent.SEND_MESSAGE, ChatError.EM_NO_ERROR, "")
             }
 

@@ -1,8 +1,12 @@
 package io.agora.chatroom.commons
 
+import android.content.Context
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import io.agora.chatroom.model.UserInfoProtocol
 import io.agora.chatroom.service.ChatroomService
 import io.agora.chatroom.compose.utils.DispatcherProvider
+import io.agora.chatroom.widget.EaseSmileUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,6 +15,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 class ComposerChatBarController(
+    private val context: Context,
     private val roomId: String,
     private val chatService: ChatroomService,
     private val capabilities: Set<String> = setOf(),
@@ -25,6 +30,16 @@ class ComposerChatBarController(
      * UI state of the current composer input.
      */
     val input: MutableStateFlow<String> = MutableStateFlow("")
+
+
+    private val _emoji: MutableStateFlow<CharSequence> = MutableStateFlow("")
+    val emoji = _emoji
+
+    private val _clear : MutableState<Boolean> = mutableStateOf(false)
+    var isNeedClear = _clear
+
+    private val _isInsertEmoji : MutableState<Boolean> = mutableStateOf(false)
+    var isInsertEmoji = _isInsertEmoji
 
     private val ownCapabilities = MutableStateFlow<Set<String>>(capabilities)
 
@@ -68,17 +83,27 @@ class ComposerChatBarController(
      */
     fun setMessageInput(value: String) {
         this.input.value = value
+        _clear.value = false
+        _isInsertEmoji.value = false
     }
 
     fun setEmojiInput(value: String){
         this.input.value += value
+        val smiledText = EaseSmileUtils.getSmiledText(context, value)
+        if (smiledText != null) {
+            this._emoji.value = smiledText
+        }
+        _clear.value = false
+        _isInsertEmoji.value = true
     }
 
     fun clearData() {
         input.value = ""
+        _emoji.value = ""
+        _clear.value = true
+        _isInsertEmoji.value = false
         validationErrors.value = emptyList()
     }
-
 
     init {
         setupComposerState()

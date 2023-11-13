@@ -5,7 +5,7 @@ import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.http.ChatroomHttpManager
 import io.agora.chatroom.service.OnError
 import io.agora.chatroom.service.OnSuccess
-import io.agora.chatroom.ui.UIChatroomService
+import io.agora.chatroom.UIChatroomService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

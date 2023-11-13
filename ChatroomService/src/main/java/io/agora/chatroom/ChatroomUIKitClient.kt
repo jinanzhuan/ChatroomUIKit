@@ -322,7 +322,6 @@ class ChatroomUIKitClient {
         override fun onChatRoomDestroyed(roomId: String, roomName: String) {
             callbackEvent(ChatroomResultEvent.DESTROY_ROOM, ChatError.EM_NO_ERROR, "")
             clear()
-//            roomListener.onRoomDestroyed(roomId,roomName)
         }
 
         override fun onMemberJoined(roomId: String?, participant: String?) {}
@@ -492,6 +491,16 @@ class ChatroomUIKitClient {
 
         override fun onMessageReceived(messages: MutableList<ChatMessage>?) {
             messages?.forEach {
+                if (it.isBroadcast){
+                    try {
+                        for (listener in eventListeners.iterator()) {
+                            listener.onBroadcastReceived(it)
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+
                 if (it.type == ChatMessageType.TXT) {
                     try {
                         for (listener in eventListeners.iterator()) {

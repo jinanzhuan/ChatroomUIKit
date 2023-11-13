@@ -8,7 +8,7 @@ import io.agora.chatroom.service.OnError
 import io.agora.chatroom.service.OnValueSuccess
 import io.agora.chatroom.service.UserEntity
 import io.agora.chatroom.service.UserOperationType
-import io.agora.chatroom.ui.UIChatroomService
+import io.agora.chatroom.UIChatroomService
 import io.agora.chatroom.viewmodel.RequestListViewModel
 
 open class MemberListViewModel(

@@ -105,7 +105,12 @@ interface MessageListener {
      */
     fun onMessageReceived(message: ChatMessage){}
 
-    fun onRefreshMessage(message: ChatMessage){}
+    /**
+     * The callback to indicate a broadcast message is received.
+     * @param message The broadcast message received.
+     */
+    fun onBroadcastReceived(message: ChatMessage){}
+
 }
 
 interface GiftReceiveListener {

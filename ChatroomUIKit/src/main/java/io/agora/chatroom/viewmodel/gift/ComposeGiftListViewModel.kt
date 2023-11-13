@@ -6,7 +6,7 @@ import io.agora.chatroom.compose.gift.ComposeGiftListItemState
 import io.agora.chatroom.service.ChatMessage
 import io.agora.chatroom.service.GiftEntityProtocol
 import io.agora.chatroom.service.GiftReceiveListener
-import io.agora.chatroom.ui.UIChatroomService
+import io.agora.chatroom.UIChatroomService
 import io.agora.chatroom.viewmodel.ComposeBaseListViewModel
 
 class ComposeGiftListViewModel(

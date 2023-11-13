@@ -27,7 +27,7 @@ import io.agora.chatroom.compose.search.DefaultSearchBar
 import io.agora.chatroom.compose.tabrow.PagerWithTabs
 import io.agora.chatroom.service.UserEntity
 import io.agora.chatroom.theme.ChatroomUIKitTheme
-import io.agora.chatroom.ui.UIChatroomService
+import io.agora.chatroom.UIChatroomService
 import io.agora.chatroom.uikit.R
 import io.agora.chatroom.viewmodel.member.MemberListViewModel
 import io.agora.chatroom.viewmodel.member.MemberViewModelFactory

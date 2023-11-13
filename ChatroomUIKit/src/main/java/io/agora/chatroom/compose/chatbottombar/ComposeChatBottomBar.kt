@@ -1,8 +1,11 @@
 package io.agora.chatroom.compose.chatbottombar
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Context
 import android.graphics.Rect
 import android.util.Log
+import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -94,14 +97,15 @@ fun ComposeChatBottomBar(
     onMenuClick: (Int) -> Unit = {},
     menuItemResource: List<UIChatBarMenuItem> = viewModel.getMenuItem,
     onSendMessage: (String) -> Unit = { },
-    onValueChange: (String) -> Unit = { viewModel.setMessageInput(it) },
-    label: @Composable (ComposerInputMessageState) -> Unit = { DefaultComposerLabel(it.ownCapabilities) },
+    onValueChange: (String) -> Unit = {
+        Log.e("apex","onValueChange: $it")
+        viewModel.setMessageInput(it)
+    },
     input: @Composable RowScope.(ComposerInputMessageState) -> Unit = { it ->
         @Suppress("DEPRECATION_ERROR")
         DefaultComposerInputContent(
             composerMessageState = it,
             onValueChange = onValueChange,
-            label = label,
             viewModel = viewModel,
         )
     },
@@ -180,13 +184,11 @@ fun ComposeChatBottomBar(
     onMenuClick: (Int) -> Unit = {},
     menuItemResource: List<UIChatBarMenuItem>,
     onValueChange: (String) -> Unit = {},
-    label: @Composable (ComposerInputMessageState) -> Unit = { DefaultComposerLabel(composerMessageState.ownCapabilities) },
     input: @Composable RowScope.(ComposerInputMessageState) -> Unit = { it ->
         @Suppress("DEPRECATION_ERROR")
         DefaultComposerInputContent(
             composerMessageState = composerMessageState,
             onValueChange = onValueChange,
-            label = label,
             viewModel = viewModel,
         )
     },
@@ -255,6 +257,7 @@ fun ComposeChatBottomBar(
                     kbHeight.intValue = keypadHeight
                 }else{
                     viewModel.hideKeyBoard()
+                    exH.intValue = 0
                 }
             }
         }
@@ -262,7 +265,7 @@ fun ComposeChatBottomBar(
 
     exH.intValue = DisplayUtils.pxToDp(keyboardHeight - navigationBarsHeight).toInt()
 
-    Box(modifier = modifier.navigationBarsPadding()) {
+    Box(modifier = modifier) {
         if (showInput){
             Column(
                 Modifier.wrapContentHeight()
@@ -289,10 +292,8 @@ fun ComposeChatBottomBar(
                         override fun invoke(isShowEmoji: Boolean) {
                             if (isShowEmoji){
                                 viewModel.hideKeyBoard()
-                                // 延迟
                                 scope.launch {
                                     delay(350)
-                                    // 在这里执行你的代码
                                     viewModel.showEmoji()
                                 }
                             }else{
@@ -311,19 +312,16 @@ fun ComposeChatBottomBar(
                         emojis = emojiList,
                         viewModel = viewModel
                     )
+                }else{
+                    Row(
+                        Modifier
+                            .height(exHeight.dp)
+                            .fillMaxWidth()
+                            .wrapContentHeight()
+                            .background(ChatroomUIKitTheme.colors.primary),
+                        verticalAlignment = Bottom
+                    ) {}
                 }
-
-                Row(
-                    Modifier
-                        .imePadding()
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                        .background(ChatroomUIKitTheme.colors.background),
-                    verticalAlignment = Bottom
-                ) {
-
-                }
-
             }
         }else{
 
@@ -369,23 +367,6 @@ fun ComposeChatBottomBar(
     }
 }
 
-
-/**
- * Default input field label that the user can override in [ComposeChatBottomBar].
- *
- * @param ownCapabilities Set of capabilities the user is given for the current channel.
- */
-@Composable
-internal fun DefaultComposerLabel(
-    ownCapabilities: Set<String>)
-{
-    Text(
-        text = stringResource(id = R.string.stream_compose_message_label),
-        style = ChatroomUIKitTheme.typography.bodyLarge,
-        color = ChatroomUIKitTheme.colors.onBackground
-    )
-}
-
 @Composable
 fun DefaultComposerEmoji(
     emojis:List<UIExpressionEntity>,
@@ -421,11 +402,9 @@ fun RowScope.DefaultComposerInputContent(
     viewModel: MessageChatBarViewModel,
     composerMessageState: ComposerInputMessageState,
     onValueChange: (String) -> Unit,
-    label: @Composable (ComposerInputMessageState) -> Unit,
 ) {
     ComposeMessageInput(
         modifier = Modifier.weight(1f),
-        label = label,
         viewModel = viewModel,
         composerMessageState = composerMessageState,
         onValueChange = onValueChange,
@@ -512,6 +491,8 @@ internal fun DefaultMessageComposerEmojiContent(
     var isShowEmoji = viewModel.isShowEmoji.value
     val description = stringResource(id = R.string.stream_compose_cd_emoji_button)
 
+    val context = LocalContext.current
+
     IconButton(
         modifier = Modifier.semantics { contentDescription = description },
         content = {
@@ -533,6 +514,10 @@ internal fun DefaultMessageComposerEmojiContent(
                 R.drawable.icon_face
             }
             onEmojiClick(isShowEmoji)
+            if (isShowEmoji){
+                val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                inputMethodManager.hideSoftInputFromWindow((context as Activity).currentFocus?.windowToken, 0)
+            }
         }
 
     )

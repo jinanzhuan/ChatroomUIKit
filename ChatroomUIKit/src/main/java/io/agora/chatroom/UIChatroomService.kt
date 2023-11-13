@@ -1,7 +1,5 @@
-package io.agora.chatroom.ui
+package io.agora.chatroom
 
-import android.util.Log
-import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.model.UIChatroomInfo
 import io.agora.chatroom.service.Chatroom
 import io.agora.chatroom.service.ChatroomService
@@ -31,7 +29,6 @@ class UIChatroomService constructor(
 
     fun joinRoom(onSuccess: OnValueSuccess<Chatroom>, onFailure: (Int,String?) -> Unit = { _, _ ->}){
         roomInfo.let {
-            Log.e(TAG, "joinRoom owner: ${it.roomOwner}")
             ChatroomUIKitClient.getInstance().joinChatroom( it,
                 onSuccess = { chatroom ->
                     if (it.roomOwner != null && it.roomOwner!!.userId.isNotEmpty()) {

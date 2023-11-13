@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import io.agora.chatroom.commons.ComposerChatBarController
 import io.agora.chatroom.commons.ComposerInputMessageState
 import io.agora.chatroom.model.UIChatBarMenuItem
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 class MessageChatBarViewModel(
@@ -42,28 +41,27 @@ class MessageChatBarViewModel(
         _showKeyboard.value = false
     }
 
-
-
-
     /**
      * The full UI state that has all the required data.
      */
     val composerMessageState: StateFlow<ComposerInputMessageState> = composerChatBarController.state
 
-    /**
-     * UI state of the current composer input.
-     */
-    val input: MutableStateFlow<String> = composerChatBarController.input
-
-    fun updateInputValue(){
-        composerChatBarController.updateInputValue()
-    }
 
     val getTheme: Boolean?
         get() = isDarkTheme
 
     val getMenuItem:List<UIChatBarMenuItem>
         get() = menuItemResource
+
+    val isClear:Boolean
+        get() = composerChatBarController.isNeedClear.value
+
+
+    val emoji:CharSequence
+        get() = composerChatBarController.emoji.value
+
+    val isInsertEmoji:Boolean
+        get() = composerChatBarController.isInsertEmoji.value
 
     /**
      * Called when the input changes and the internal state needs to be updated.

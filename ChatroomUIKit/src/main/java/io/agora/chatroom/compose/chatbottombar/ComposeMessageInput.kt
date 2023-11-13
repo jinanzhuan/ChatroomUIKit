@@ -1,5 +1,6 @@
 package io.agora.chatroom.compose.chatbottombar
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -24,10 +25,6 @@ import io.agora.chatroom.widget.WidgetInputField
  * @param onValueChange Handler when the value changes.
  * @param modifier Modifier for styling.
  * @param maxLines The number of lines that are allowed in the input.
- * @param keyboardOptions The [KeyboardOptions] to be applied to the input.
- * @param label Composable that represents the label UI, when there's no input.
- * @param innerLeadingContent Composable that represents the persistent inner leading content.
- * @param innerTrailingContent Composable that represents the persistent inner trailing content.
  */
 @Composable
 fun ComposeMessageInput(
@@ -36,45 +33,15 @@ fun ComposeMessageInput(
     modifier: Modifier = Modifier,
     viewModel: MessageChatBarViewModel,
     maxLines: Int = DefaultMessageInputMaxLines,
-    keyboardOptions: KeyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
-    label: @Composable (ComposerInputMessageState) -> Unit = {
-        DefaultComposerLabel(ownCapabilities = composerMessageState.ownCapabilities)
-    },
-    innerLeadingContent: @Composable RowScope.() -> Unit = {},
-    innerTrailingContent: @Composable RowScope.() -> Unit = {},
 ) {
     val (value) = composerMessageState
 
     WidgetInputField(
         modifier = modifier,
-        value = value,
         maxLines = maxLines,
         onValueChange = onValueChange,
         enabled = true,
         viewModel = viewModel,
-        innerPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-        keyboardOptions = keyboardOptions,
-        decorationBox = { innerTextField ->
-            Column {
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    innerLeadingContent()
-
-                    Box(modifier = Modifier.weight(1f)) {
-                        innerTextField()
-
-                        if (value.isEmpty()) {
-                            label(composerMessageState)
-                        }
-                    }
-
-                    innerTrailingContent()
-                }
-            }
-        }
     )
 }
 

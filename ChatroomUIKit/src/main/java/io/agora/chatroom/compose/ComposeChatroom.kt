@@ -19,8 +19,7 @@ import io.agora.chatroom.model.UIComposeSheetItem
 import io.agora.chatroom.model.UserInfoProtocol
 import io.agora.chatroom.model.toUser
 import io.agora.chatroom.service.GiftEntityProtocol
-import io.agora.chatroom.service.UserEntity
-import io.agora.chatroom.ui.UIChatroomService
+import io.agora.chatroom.UIChatroomService
 import io.agora.chatroom.uikit.R
 import io.agora.chatroom.viewmodel.UIRoomViewModel
 import io.agora.chatroom.viewmodel.gift.ComposeGiftListViewModel

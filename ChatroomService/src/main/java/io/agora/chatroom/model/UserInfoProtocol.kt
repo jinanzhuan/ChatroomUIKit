@@ -1,9 +1,9 @@
 package io.agora.chatroom.model
 
-import io.agora.chat.UserInfo
+import io.agora.chatroom.service.ChatUserInfo
 import io.agora.chatroom.service.UserEntity
 
-fun UserInfoProtocol.transfer() = UserInfo().run {
+fun UserInfoProtocol.transfer() = ChatUserInfo().run {
     this.userId = userId
     this.nickname = nickname
     this.avatarUrl = avatarUrl

@@ -1,6 +1,6 @@
 package io.agora.chatroom.viewmodel.member
 
-import io.agora.chatroom.ui.UIChatroomService
+import io.agora.chatroom.UIChatroomService
 import io.agora.chatroom.viewmodel.menu.BottomSheetViewModel
 
 data class MembersBottomSheetViewModel(
