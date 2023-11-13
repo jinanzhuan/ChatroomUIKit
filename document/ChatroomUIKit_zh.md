@@ -109,8 +109,7 @@ This guide provides several usage examples for different ChatroomUIKit component
 Please refer to the following steps to run the Android platform application in Android Studio
 
 * First download the demo to the local location
-* Then configure the appKey in the local. properties folder in the root directory
-* Set up app service host
+* Then configure the CHATROOM_APP_KEY and REQUEST_HOST in the local.properties folder in the root directory
 * Run demo
 
 ### [Step 1: Initialize ChatroomUIKit](https://github.com/apex-wang/ChatroomUIKit#step-1-initialize-chatroomuikit)
