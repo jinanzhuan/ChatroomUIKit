@@ -1,15 +1,12 @@
 package io.agora.chatroom.commons
 
 import android.content.Context
-import android.text.SpannableString
-import android.text.SpannableStringBuilder
-import android.text.style.ImageSpan
-import android.util.Log
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import io.agora.chatroom.model.UserInfoProtocol
 import io.agora.chatroom.service.ChatroomService
 import io.agora.chatroom.compose.utils.DispatcherProvider
-import io.agora.chatroom.compose.utils.ExpressionUtils
-import io.agora.chatroom.data.emojiMap
+import io.agora.chatroom.widget.EaseSmileUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,7 +31,15 @@ class ComposerChatBarController(
      */
     val input: MutableStateFlow<String> = MutableStateFlow("")
 
-    private val emoji: MutableStateFlow<SpannableStringBuilder> = MutableStateFlow(SpannableStringBuilder())
+
+    private val _emoji: MutableStateFlow<CharSequence> = MutableStateFlow("")
+    val emoji = _emoji
+
+    private val _clear : MutableState<Boolean> = mutableStateOf(false)
+    var isNeedClear = _clear
+
+    private val _isInsertEmoji : MutableState<Boolean> = mutableStateOf(false)
+    var isInsertEmoji = _isInsertEmoji
 
     private val ownCapabilities = MutableStateFlow<Set<String>>(capabilities)
 
@@ -78,36 +83,27 @@ class ComposerChatBarController(
      */
     fun setMessageInput(value: String) {
         this.input.value = value
+        _clear.value = false
+        _isInsertEmoji.value = false
     }
 
     fun setEmojiInput(value: String){
-        this.emoji.value = checkEmoji(value)
-    }
-
-    private fun checkEmoji(selectEmoji:String):SpannableStringBuilder{
-        val spBuild = SpannableStringBuilder(selectEmoji)
-        val emojiRes = emojiMap[selectEmoji]
-        val emojiDrawable = emojiRes?.let { context.getDrawable(it) }
-        emojiDrawable?.setBounds(0, 0, emojiDrawable.intrinsicWidth, emojiDrawable.intrinsicHeight)
-        val imageSpan = emojiDrawable?.let { ImageSpan(it, ImageSpan.ALIGN_BOTTOM) }
-        val startIndex = selectEmoji.indexOf(selectEmoji)
-        if (startIndex >= 0) {
-            val endIndex: Int = startIndex + selectEmoji.length
-            spBuild.setSpan(
-                imageSpan,
-                startIndex,
-                endIndex,
-                SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
+        this.input.value += value
+        val smiledText = EaseSmileUtils.getSmiledText(context, value)
+        if (smiledText != null) {
+            this._emoji.value = smiledText
         }
-        return spBuild
+        _clear.value = false
+        _isInsertEmoji.value = true
     }
 
     fun clearData() {
         input.value = ""
+        _emoji.value = ""
+        _clear.value = true
+        _isInsertEmoji.value = false
         validationErrors.value = emptyList()
     }
-
 
     init {
         setupComposerState()
@@ -130,11 +126,6 @@ class ComposerChatBarController(
             state.value = state.value.copy(inputValue = input)
 
             handleValidationErrors()
-        }.debounce(ComputeMentionSuggestionsDebounceTime).launchIn(scope)
-
-        emoji.onEach { input ->
-            state.value = state.value.copy(emoji = input)
-
         }.debounce(ComputeMentionSuggestionsDebounceTime).launchIn(scope)
 
         validationErrors.onEach { validationErrors ->

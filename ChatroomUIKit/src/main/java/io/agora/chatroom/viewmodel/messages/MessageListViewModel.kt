@@ -12,7 +12,7 @@ import io.agora.chatroom.service.GiftReceiveListener
 import io.agora.chatroom.service.OnError
 import io.agora.chatroom.service.OnSuccess
 import io.agora.chatroom.service.OnValueSuccess
-import io.agora.chatroom.ui.UIChatroomService
+import io.agora.chatroom.UIChatroomService
 
 class MessageListViewModel(
     private val isDarkTheme: Boolean? = false,

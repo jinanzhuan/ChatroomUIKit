@@ -41,26 +41,27 @@ class MessageChatBarViewModel(
         _showKeyboard.value = false
     }
 
-    fun updateInputContent(content:String){
-        composerChatBarController.input.value = content
-    }
-
-
     /**
      * The full UI state that has all the required data.
      */
     val composerMessageState: StateFlow<ComposerInputMessageState> = composerChatBarController.state
 
 
-    fun updateInputValue(){
-        composerChatBarController.updateInputValue()
-    }
-
     val getTheme: Boolean?
         get() = isDarkTheme
 
     val getMenuItem:List<UIChatBarMenuItem>
         get() = menuItemResource
+
+    val isClear:Boolean
+        get() = composerChatBarController.isNeedClear.value
+
+
+    val emoji:CharSequence
+        get() = composerChatBarController.emoji.value
+
+    val isInsertEmoji:Boolean
+        get() = composerChatBarController.isInsertEmoji.value
 
     /**
      * Called when the input changes and the internal state needs to be updated.

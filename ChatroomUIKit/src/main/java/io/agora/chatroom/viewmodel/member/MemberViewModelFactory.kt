@@ -2,7 +2,7 @@ package io.agora.chatroom.viewmodel.member
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import io.agora.chatroom.ui.UIChatroomService
+import io.agora.chatroom.UIChatroomService
 
 class MemberViewModelFactory(
     private val roomId: String,

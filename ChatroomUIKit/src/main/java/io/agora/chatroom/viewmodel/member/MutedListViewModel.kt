@@ -4,7 +4,7 @@ import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.service.OnError
 import io.agora.chatroom.service.OnValueSuccess
 import io.agora.chatroom.service.UserEntity
-import io.agora.chatroom.ui.UIChatroomService
+import io.agora.chatroom.UIChatroomService
 
 data class MutedListViewModel(
     private val roomId: String,

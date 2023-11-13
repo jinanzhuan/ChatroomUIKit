@@ -3,7 +3,7 @@ package io.agora.chatroom.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import io.agora.chatroom.ChatroomUIKitClient
-import io.agora.chatroom.ui.UIChatroomService
+import io.agora.chatroom.UIChatroomService
 
 class ChatroomFactory(
     private val service: UIChatroomService,

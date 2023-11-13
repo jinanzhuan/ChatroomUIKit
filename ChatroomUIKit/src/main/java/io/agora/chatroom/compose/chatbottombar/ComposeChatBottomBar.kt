@@ -228,7 +228,7 @@ fun ComposeChatBottomBar(
         )
     }
 ) {
-    val (_,_,_,validationErrors) = composerMessageState
+    val (_,_,validationErrors) = composerMessageState
     val snackbarHostState = remember { SnackbarHostState() }
 
     MessageInputValidationError(

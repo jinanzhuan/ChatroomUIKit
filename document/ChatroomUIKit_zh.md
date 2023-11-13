@@ -2,21 +2,323 @@
 
 *English | [英文](ChatroomUIKit.md)*
 
+# [Sample Demo](https://github.com/apex-wang/ChatroomUIKit#sample-demo)
+
+In this project, there is a best practice demonstration project in the `Example` folder for you to build your own business capabilities.
+
+To experience functions of the ChatroomUIKit, you can scan the following QR code to try a demo.
+
+[![SampleDemo](https://github.com/apex-wang/ChatroomUIKit/raw/main/Documentation/demo.png)](https://github.com/apex-wang/ChatroomUIKit/blob/main/Documentation/demo.png).
+
+# [Chatroom UIKit Guide](https://github.com/apex-wang/ChatroomUIKit#chatroom-uikit-guide)
+
+## [Introduction](https://github.com/apex-wang/ChatroomUIKit#introduction)
+
+This guide presents an overview and usage examples of the ChatroomUIKit framework in Android development, as well as describes various components and features of this UIKit, enabling developers to have a good understanding of the UIKit and make effective use of it.
+
+## [Table of Contents](https://github.com/apex-wang/ChatroomUIKit#table-of-contents)
+
+- [Requirements](https://github.com/apex-wang/ChatroomUIKit#requirements)
+- [Installation](https://github.com/apex-wang/ChatroomUIKit#installation)
+- [Documentation](https://github.com/apex-wang/ChatroomUIKit#documentation)
+- [Structure](https://github.com/apex-wang/ChatroomUIKit#structure)
+- [QuickStart](https://github.com/apex-wang/ChatroomUIKit#quickStart)
+- [Precautions](https://github.com/apex-wang/ChatroomUIKit#precautions)
+- [AdvancedUsage](https://github.com/apex-wang/ChatroomUIKit#advancedusage)
+- [Customize](https://github.com/apex-wang/ChatroomUIKit#customize)
+- [BusinessFlowchart](https://github.com/apex-wang/ChatroomUIKit#businessflowchart)
+- [ApiSequenceDiagram](https://github.com/apex-wang/ChatroomUIKit#apisequencediagram)
+- [DesignGuidelines](https://github.com/apex-wang/ChatroomUIKit#designguidelines)
+- [Contributing](https://github.com/apex-wang/ChatroomUIKit#contributing)
+- [License](https://github.com/apex-wang/ChatroomUIKit#license)
+
+# [Requirements](https://github.com/apex-wang/ChatroomUIKit#requirements)
+
+- iOS 13.0+
+- Xcode 13.0+
+- Swift 5.0+
+
+# [Installation](https://github.com/apex-wang/ChatroomUIKit#installation)
+
+You can use build.gradle to rely on the ChatroomUIKit library as a dependency for app projects.
+
+## [Local_module_dependencies](https://github.com/apex-wang/ChatroomUIKit#Local_module_dependencies)
+
+1. Open your project in Android Studio.
+
+2. Choose **File** > **import Module**.
+
+3. Search for **ChatroomUIKit** and select it.
+
+## [CocoaPods](https://github.com/apex-wang/ChatroomUIKit#cocoapods)
+
+```
+implementation 'ChatroomUIKit'
+```
+
+# [Structure](https://github.com/apex-wang/ChatroomUIKit#structure)
+
+### [ChatroomUIKit Basic Components](https://github.com/apex-wang/ChatroomUIKit#chatroomuikit-basic-components)
+
 ## 目录结构
 ```
-┌─ Example                  	// Demo代码集成目录
-│  ├─ ChatroomListActivity  			// 主要提供 ChatroomUIKit 的房间列表页面
-│  ├─ ChatroomActivity      		// 主要提供 设置 ChatroomUIKit 的容器
-│  └─ SplashActivity                // 程序启动页
-├─ ChatroomService           	// ChatroomUIKit协议模块
-│  ├─ model                      		// ChatroomUIKit所用到的实体对象（用户、房间信息、配置信息）
-│  ├─ service                   		// ChatroomUIKit所用到的协议和协议实现（房间协议、用户协议、礼物协议）
-│  └─                     		// 
-└─ ChatroomUIKit            	// 包含UI和数据绑定处理
-   ├─ binder                    	// 把UI Compose和Service关联起来的业务绑定模块
-   ├─ compose                   	// 基础UI Compose组件(底部输入框、消息列表、礼物列表、底部抽屉)支持明暗主题换肤
-   ├─ theme                     	// 资源文件 提供项目需要的颜色、字体、主题、渐变、尺寸等属性
-   ├─ viewModel                 	// 数据处理
-   ├─ widget                    	// 小单元组件
-   └─ ui                        	// 整体组装UI模块 提供完整的聊天室场景UI
+┌─ Example                      // SampleDemo目录
+│  ├─ ChatroomListActivity              // 主要提供 ChatroomUIKit 的房间列表页面
+│  ├─ ChatroomActivity                  // 显示 ChatroomUIKit room的核心页面
+│  ├─ compose                           // SampleDemo 中用的的一些小的 Compose
+│  ├─ http                              // 封装的网络请求 用于实现和app service交互
+│  └─ SplashActivity                    // 程序启动页
+├─ ChatroomService              // ChatroomUIKit协议模块
+│  ├─ model                              // ChatroomUIKit所用到的实体对象（用户、房间信息、配置信息）
+│  ├─ service                            // ChatroomUIKit所用到的协议和协议实现（房间协议、用户协议、礼物协议）
+│  │    └─ Protocol                      // Business protocol component.    
+│  │         ├─ GiftService              // Gift sending and receiving channel.
+│  │         ├─ UserService              // Component for user login and user attribute update.
+│  │         └─ ChatroomService          // Component for implementing the protocol for chat room management, including joining and leaving the chat room and sending and receiving messages.
+│  └─ ChatroomUIKit                      // ChatroomUIKit initialization class.
+└─ ChatroomUIKit            
+       ├─ compose                   	// 基础UI Compose组件(底部输入框、消息列表、礼物列表、底部抽屉)支持明暗主题换肤
+       ├─ theme                     	// 资源文件 提供项目需要的颜色、字体、主题、渐变、尺寸等属性
+       ├─ viewModel                 	// 数据处理
+       ├─ widget                    	// 小单元组件
+       └─ ui                        	// 搜索页面
 ```
+
+# [Documentation](https://github.com/apex-wang/ChatroomUIKit#documentation)
+
+## [Document](https://github.com/apex-wang/ChatroomUIKit/tree/main/Documentation/ChatroomUIKit.doccarchive)
+
+You can open the `ChatroomUIKit.doccarchive` file in Xcode to view files in it or deploy this file to your homepage.
+
+Also, you can right-click the file to show the package contents and copy all files inside to a folder. Then drag this folder to the `terminal` app and run the following command to deploy it on the local IP address.
+
+```
+python3 -m http.server 8080
+```
+
+After deployment, you can visit `http://yourlocalhost:8080/documentation/chatroomuikit` in your browser, where `yourlocalhost` is your local IP address. Alternatively, you can deploy this folder on an external network address.
+
+## [Appearance](https://github.com/apex-wang/ChatroomUIKit/tree/main/Documentation/Appearance.md).
+
+Detailed descriptions of available items in the `UI` component.
+
+# [QuickStart](https://github.com/apex-wang/ChatroomUIKit#quickstart)
+
+This guide provides several usage examples for different ChatroomUIKit components. Refer to the `Examples` folder for detailed code snippets and projects showing various use cases.
+
+Please refer to the following steps to run the Android platform application in Android Studio
+
+* First download the demo to the local location
+* Then configure the appKey in the local. properties folder in the root directory
+* Set up app service host
+* Run demo
+
+### [Step 1: Initialize ChatroomUIKit](https://github.com/apex-wang/ChatroomUIKit#step-1-initialize-chatroomuikit)
+
+``` Kotlin
+class ChatroomApplication : Application() {
+    override fun onCreate() {
+    
+        val chatroomUIKitOptions = ChatroomUIKitOptions(
+            uiOptions = UiOptions(
+                targetLanguageList = listOf(GlobalConfig.targetLanguage.code),
+                useGiftsInList = false,
+            )
+        )
+        
+        ChatroomUIKitClient.getInstance().setUp(
+            applicationContext = this,
+            options = chatroomUIKitOptions,
+            appKey = BuildConfig.CHATROOM_APP_KEY
+        )
+    }
+}
+```
+
+### [Step 2: Login](https://github.com/apex-wang/ChatroomUIKit#step-2-login)
+
+```
+// Log in to the ChatroomUIKit with the user information of the current user object that conforms to the `UserInfoProtocol` protocol.
+// The token needs to be obtained from your app server. You can also log in with a temporary token generated on the Agora Console.
+// To generate a user and a temporary user token on the Agora Console, see https://docs.agora.io/en/agora-chat/get-started/enable?platform=ios#manage-users-and-generate-tokens.
+ChatroomUIKitClient.getInstance().login(with userId: "user id", token: "token", completion: <#T##(ChatError?) -> Void#>)
+```
+
+### [Step 3: Create chat room](https://github.com/apex-wang/ChatroomUIKit#step-3-create-chat-room-view)
+
+```
+// 1. Get a chat room list and join a chat room. Alternatively, create a chat room on the Agora Console.
+// Choose ProjectManager > Operation Manager > Chat Room and click Create Chat Room and set parameters in the displayed dialog box to create a chat room. Get the chat room ID to pass it in to the following `launchRoomView` method.
+// 2. Load ComposeChatroom with setContent in activity. ComposeChatroom is a fully packaged chatroom scenario component that we have packaged. 
+// 3. Set the parameters required for ComposeChatroom
+// 4. Add users to the chat room on the Console.
+// Choose ProjectManager > Operation Manager > Chat Room. Select View Chat Room Members in the Action column of a chat room and add users to the chat room in the displayed dialog box.  
+```
+
+[![CreateChatroom](https://github.com/apex-wang/ChatroomUIKit/raw/main/Documentation/CreateChatroom.png)](https://github.com/apex-wang/ChatroomUIKit/blob/main/Documentation/CreateChatroom.png).
+
+Please refer to the next chapter for transparent transmission of events.
+
+# [AdvancedUsage](https://github.com/apex-wang/ChatroomUIKit#advancedusage)
+
+Here are three examples of advanced usage.
+
+
+### [1.Login](https://github.com/apex-wang/ChatroomUIKit#1login)
+
+```Swift
+class YourAppUser: UserInfoProtocol {
+    var userId: String = "your application user id"
+            
+    var nickName: String = "you user nick name"
+            
+    var avatarURL: String = "you user avatar url"
+            
+    var gender: Int = 1
+            
+    var identity: String =  "you user level symbol url"
+            
+}
+// Use the user information of the current user object that conforms to the UserInfoProtocol protocol to log in to ChatroomUIKit.
+// You need to get a user token from your app server. Alternatively, you can use a temporary token. To generate a temporary toke, visit https://docs.agora.io/en/agora-chat/get-started/enable?platform=ios#generate-a-user-token.
+ChatroomUIKitClient.getInstance().login(with: YourAppUser(), token: "token", completion: <#T##(ChatError?) -> Void#>)
+```
+
+
+### [2.Initializing the chat room compose](https://github.com/apex-wang/ChatroomUIKit#2initializing-the-chat-room-view)
+
+``` Kotlin
+// 1. Get a chat room list and join a chat room. Alternatively, create a chat room on the Agora Console.
+// 2. Load ComposeChatroom with setContent in activity.
+    
+    val chatroomUIKitOptions = ChatroomUIKitOptions(
+            chatOptions = ChatSDKOptions(),
+            uiOptions = UiOptions(
+                targetLanguageList = listOf(GlobalConfig.targetLanguage.code),
+                useGiftsInList = false,
+            )
+        )
+    ChatroomUIKitClient.getInstance().setUp(applicationContext: Context,appKey:String,options: ChatroomUIKitOptions = ChatroomUIKitOptions())        
+
+```
+
+### [3.Listening to ChatroomUIKit events and errors](https://github.com/apex-wang/ChatroomUIKit#3listening-to-chatroomuikit-events-and-errors)
+
+You can call the `registerRoomResultListener` method to listen for ChatroomUIKit events and errors.
+
+```
+ChatroomUIKitClient.getInstance().registerRoomResultListener(this)
+```
+
+# [Customization](https://github.com/apex-wang/ChatroomUIKit#customization)
+
+### [1.Modify configurable items](https://github.com/apex-wang/ChatroomUIKit#1modify-configurable-items)
+
+The following shows how to change the overall cell layout style of the chat area and how to create the ChatroomView.
+
+```
+// You can change the overall cell layout style of the chat area by setting the properties.
+Appearance.ChatMessageDisplayContentStyle = .all
+// Create the ChatroomView by passing in parameters like layout parameters and the bottom toolbar extension button model protocol array.
+let roomView = ChatroomUIKitClient.shared.launchRoomViewWithOptions(roomId: self.room?.chatroomId ?? "", frame: CGRect(x: 0, y: self.playView.frame.maxY, width: self.view.frame.width, height: 336+BottomBarHeight), ownerId: self.room?.owner ?? "")
+self.view.addSubView(roomView)
+```
+
+For details, see [Appearance](https://github.com/apex-wang/ChatroomUIKit/blob/main/Documentation/Appearance.md).
+
+### [2.Custom components](https://github.com/apex-wang/ChatroomUIKit#2custom-components)
+
+The following shows how to customize the gift message  cell.
+
+```
+class CustomGiftMessageCell: GiftMessageCell {
+    lazy var redDot: UIView = {
+        UIView().backgroundColor(.red).cornerRadius(.large)
+    }()
+    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        self.addSubview(redDot)
+    }
+    
+    override func refresh(item: GiftEntityProtocol) {
+        super.refresh(item: item)
+        self.redDot.isHidden = item.selected
+    }
+}
+//Register the custom class that inherits the original class in ChatroomUIKit to replace the original one.
+//Call this method before creating a ChatroomView or using other UI components.
+ComponentsRegister.shared.GiftMessagesViewCell = CustomGiftMessageCell.self
+```
+
+For details, see [ComponentsRegister](https://github.com/apex-wang/ChatroomUIKit/blob/main/Documentation/ComponentsRegister.md).
+
+### [3.Switch original or custom theme](https://github.com/apex-wang/ChatroomUIKit#3switch-original-or-custom-theme)
+
+- Switch to the light or dark theme that comes with the ChatroomUIKit.
+
+```
+Theme.switchTheme(style: .dark)` or `Theme.switchTheme(style: .light)
+```
+
+- Switch to a custom theme.
+
+```
+/**
+How to customize a theme?
+
+To customize a theme, you need to define the hue values of the following five theme colors by reference to the theme color of the design document.
+
+All colors in ChatroomUIKit are defined with the HSLA color model that is a way of representing colors using hue, saturation, lightness, and alpha. 
+
+H (Hue): Hue, the basic attribute of color, is a degree on the color wheel from 0 to 360. 0 is red, 120 is green, and 240 is blue.
+
+S (Saturation): Saturation is the intensity and purity of a color. The higher the saturation is, the brighter the color is; the lower the saturation is, the closer the color gets to gray. Saturation is represented by a percentage value, ranging from 0% to 100%. 0% means a shade of gray, and 100% is the full color.
+
+L (Lightness): Lightness is the brightness or darkness of a color. The higher the brightness is, the brighter the color is; the lower the brightness is, the darker the color is. Lightness is represented by a percentage value, ranging from 0% to 100%. 0% indicates a black color and 100% will result in a white color.
+
+A (Alpha): Alpha is the transparency of a color. The value 1 means fully opaque and 0 is fully transparent.
+
+By adjusting the values of individual components of the HSLA model, you can achieve precise color control.
+ */
+Appearance.primaryHue = 191/360.0
+Appearance.secondaryHue = 210/360.0
+Appearance.errorHue = 189/360.0
+Appearance.neutralHue = 191/360.0
+Appearance.neutralSpecialHue = 199/360.0
+Theme.switchTheme(style: .custom)
+```
+
+Note that custom themes and built-in themes are mutually exclusive. 
+
+# [BusinessFlowchart](https://github.com/apex-wang/ChatroomUIKit#businessflowchart)
+
+The following figure presents the entire logic of business requests and callbacks.
+
+![Overall flow diagram of business logic](https://github.com/apex-wang/ChatroomUIKit/raw/main/Documentation/BusinessFlowchart.png)
+
+# [ApiSequenceDiagram](https://github.com/apex-wang/ChatroomUIKit#apisequencediagram)
+
+The following figure is the best-practice API calling sequence diagram in the `Example` project.
+
+![APIUML](https://github.com/apex-wang/ChatroomUIKit/raw/main/Documentation/Api.png)
+
+# [DesignGuidelines](https://github.com/apex-wang/ChatroomUIKit#designguidelines)
+
+For any questions about design guidelines and details, you can add comments to the Figma design draft and mention our designer Stevie Jiang.
+
+See the [UI design drawing](https://www.figma.com/file/OX2dUdilAKHahAh9VwX8aI/Streamuikit?node-id=137%3A38589&mode=dev).
+
+See the [UI design guidelines](https://www.figma.com/file/OX2dUdilAKHahAh9VwX8aI/Streamuikit?node-id=137)
+
+# [Contributing](https://github.com/apex-wang/ChatroomUIKit#contributing)
+
+Contributions and feedback are welcome! For any issues or improvement suggestions, you can open an issue or submit a pull request.
+
+## [Author](https://github.com/apex-wang/ChatroomUIKit#author)
+
+apex-wang, [1746807718@qq.com](mailto:1746807718@qq.com)
+
+## [License](https://github.com/apex-wang/ChatroomUIKit#license)
+
+ChatroomUIKit is available under the MIT license. See the LICENSE file for more information.

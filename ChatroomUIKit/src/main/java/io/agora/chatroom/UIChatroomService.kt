@@ -1,6 +1,5 @@
-package io.agora.chatroom.ui
+package io.agora.chatroom
 
-import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.model.UIChatroomInfo
 import io.agora.chatroom.service.Chatroom
 import io.agora.chatroom.service.ChatroomService

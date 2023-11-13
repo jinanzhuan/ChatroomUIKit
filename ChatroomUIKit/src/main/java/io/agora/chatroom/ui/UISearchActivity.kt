@@ -34,6 +34,7 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.agora.chatroom.ChatroomUIKitClient
+import io.agora.chatroom.UIChatroomService
 import io.agora.chatroom.compose.dialog.SimpleDialog
 import io.agora.chatroom.compose.drawer.ComposeMenuBottomSheet
 import io.agora.chatroom.compose.input.SearchInputFiled

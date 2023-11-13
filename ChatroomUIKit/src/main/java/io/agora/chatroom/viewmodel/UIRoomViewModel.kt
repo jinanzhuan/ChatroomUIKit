@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.service.ChatroomChangeListener
-import io.agora.chatroom.ui.UIChatroomService
+import io.agora.chatroom.UIChatroomService
 
 open class UIRoomViewModel(
     private val service: UIChatroomService,

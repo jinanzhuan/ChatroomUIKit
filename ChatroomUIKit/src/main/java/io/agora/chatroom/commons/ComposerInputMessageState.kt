@@ -1,6 +1,5 @@
 package io.agora.chatroom.commons
 
-import android.text.SpannableStringBuilder
 import io.agora.chatroom.model.UserInfoProtocol
 
 /**
@@ -12,7 +11,6 @@ import io.agora.chatroom.model.UserInfoProtocol
 
 data class ComposerInputMessageState(
     val inputValue: String = "",
-    val emoji: SpannableStringBuilder = SpannableStringBuilder(""),
     val ownCapabilities: Set<String> = setOf(),
     val validationErrors: List<UIValidationError> = emptyList(),
     val currentUser: UserInfoProtocol? = null,

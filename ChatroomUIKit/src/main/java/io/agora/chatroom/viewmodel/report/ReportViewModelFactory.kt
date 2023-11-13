@@ -3,7 +3,7 @@ package io.agora.chatroom.viewmodel.report
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import io.agora.chatroom.ui.UIChatroomService
+import io.agora.chatroom.UIChatroomService
 import io.agora.chatroom.uikit.R
 
 class ReportViewModelFactory(

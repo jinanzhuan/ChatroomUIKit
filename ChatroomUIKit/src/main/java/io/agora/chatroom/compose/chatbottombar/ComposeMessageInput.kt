@@ -34,13 +34,10 @@ fun ComposeMessageInput(
     viewModel: MessageChatBarViewModel,
     maxLines: Int = DefaultMessageInputMaxLines,
 ) {
-    val (value,emoji) = composerMessageState
-    Log.e("apex","composerMessageState $value - $emoji ")
+    val (value) = composerMessageState
 
     WidgetInputField(
         modifier = modifier,
-        value = value,
-        emoji = emoji,
         maxLines = maxLines,
         onValueChange = onValueChange,
         enabled = true,

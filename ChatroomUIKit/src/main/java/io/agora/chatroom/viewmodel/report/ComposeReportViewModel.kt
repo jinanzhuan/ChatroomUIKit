@@ -4,7 +4,7 @@ import androidx.compose.runtime.mutableStateOf
 import io.agora.chatroom.model.report.UIReportEntity
 import io.agora.chatroom.service.OnError
 import io.agora.chatroom.service.OnSuccess
-import io.agora.chatroom.ui.UIChatroomService
+import io.agora.chatroom.UIChatroomService
 import io.agora.chatroom.viewmodel.menu.BottomSheetViewModel
 
 class ComposeReportViewModel(
