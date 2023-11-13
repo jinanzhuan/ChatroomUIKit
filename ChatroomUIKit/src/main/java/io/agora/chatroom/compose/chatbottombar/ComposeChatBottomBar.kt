@@ -257,6 +257,7 @@ fun ComposeChatBottomBar(
                     kbHeight.intValue = keypadHeight
                 }else{
                     viewModel.hideKeyBoard()
+                    exH.intValue = 0
                 }
             }
         }
@@ -264,7 +265,7 @@ fun ComposeChatBottomBar(
 
     exH.intValue = DisplayUtils.pxToDp(keyboardHeight - navigationBarsHeight).toInt()
 
-    Box(modifier = modifier.navigationBarsPadding()) {
+    Box(modifier = modifier) {
         if (showInput){
             Column(
                 Modifier.wrapContentHeight()
@@ -291,10 +292,8 @@ fun ComposeChatBottomBar(
                         override fun invoke(isShowEmoji: Boolean) {
                             if (isShowEmoji){
                                 viewModel.hideKeyBoard()
-                                // 延迟
                                 scope.launch {
                                     delay(350)
-                                    // 在这里执行你的代码
                                     viewModel.showEmoji()
                                 }
                             }else{
@@ -313,19 +312,16 @@ fun ComposeChatBottomBar(
                         emojis = emojiList,
                         viewModel = viewModel
                     )
+                }else{
+                    Row(
+                        Modifier
+                            .height(exHeight.dp)
+                            .fillMaxWidth()
+                            .wrapContentHeight()
+                            .background(ChatroomUIKitTheme.colors.primary),
+                        verticalAlignment = Bottom
+                    ) {}
                 }
-
-                Row(
-                    Modifier
-                        .imePadding()
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                        .background(ChatroomUIKitTheme.colors.background),
-                    verticalAlignment = Bottom
-                ) {
-
-                }
-
             }
         }else{
 

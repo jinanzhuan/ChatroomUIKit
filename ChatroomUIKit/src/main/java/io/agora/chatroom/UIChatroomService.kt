@@ -31,6 +31,9 @@ class UIChatroomService constructor(
         roomInfo.let {
             ChatroomUIKitClient.getInstance().joinChatroom( it,
                 onSuccess = { chatroom ->
+                    if (it.roomOwner != null && it.roomOwner!!.userId.isNotEmpty()) {
+                        ChatroomUIKitClient.getInstance().getCacheManager().saveRoomMemberList(it.roomId, listOf(it.roomOwner!!.userId))
+                    }
                     ChatroomUIKitClient.getInstance().sendJoinedMessage()
                     onSuccess.invoke(chatroom)
                 },

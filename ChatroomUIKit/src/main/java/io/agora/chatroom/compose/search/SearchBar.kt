@@ -70,6 +70,7 @@ fun DefaultSearchBar(
             Icon(
                 painter = painterResource(id = iconResource),
                 modifier = Modifier.size(22.dp),
+                tint = ChatroomUIKitTheme.colors.onBackground,
                 contentDescription = "Search bar")
             Spacer(modifier = Modifier.width(8.dp))
             Text(

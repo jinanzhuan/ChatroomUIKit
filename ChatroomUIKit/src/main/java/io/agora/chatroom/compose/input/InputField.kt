@@ -38,13 +38,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import io.agora.chatroom.theme.BodyLarge
 import io.agora.chatroom.theme.ChatroomUIKitTheme
-import io.agora.chatroom.theme.LargeCorner
 import io.agora.chatroom.uikit.R
 import kotlinx.coroutines.delay
 
@@ -57,6 +56,7 @@ fun InputField(
     modifier: Modifier = Modifier,
     isRequestFocus:Boolean = false,
     onValueChange: (String) -> Unit = {},
+    textStyle: TextStyle = ChatroomUIKitTheme.typography.bodyLarge,
     enabled: Boolean = true,
     maxLines: Int = Int.MAX_VALUE,
     border: BorderStroke = BorderStroke(1.dp, ChatroomUIKitTheme.colors.inputSurface),
@@ -96,8 +96,8 @@ fun InputField(
     BasicTextField(
         modifier = modifier
             .focusRequester(focus)
-            .border(border = border, shape = LargeCorner)
-            .clip(LargeCorner)
+            .border(border = border, shape = ChatroomUIKitTheme.shapes.large)
+            .clip(ChatroomUIKitTheme.shapes.large)
             .background(ChatroomUIKitTheme.colors.inputSurface)
             .padding(innerPadding)
             .semantics { contentDescription = description },
@@ -108,7 +108,7 @@ fun InputField(
                 onValueChange(it.text)
             }
         },
-        textStyle = BodyLarge,
+        textStyle = textStyle,
         cursorBrush = SolidColor(ChatroomUIKitTheme.colors.primary),
         decorationBox = { innerTextField ->
             if (decorationBox == null) {
@@ -165,6 +165,9 @@ fun SearchInputFiled(
     modifier: Modifier = Modifier,
     isRequestFocus:Boolean = false,
     onValueChange: (String) -> Unit = {},
+    textStyle: TextStyle = ChatroomUIKitTheme.typography.bodyLarge.copy(
+        color = ChatroomUIKitTheme.colors.onBackground
+    ),
     enabled: Boolean = true,
     maxLines: Int = Int.MAX_VALUE,
     border: BorderStroke = BorderStroke(1.dp, ChatroomUIKitTheme.colors.inputSurface),
@@ -186,6 +189,7 @@ fun SearchInputFiled(
         },
         enabled = enabled,
         maxLines = maxLines,
+        textStyle = textStyle,
         border = border,
         innerPadding = innerPadding,
         keyboardOptions = keyboardOptions,

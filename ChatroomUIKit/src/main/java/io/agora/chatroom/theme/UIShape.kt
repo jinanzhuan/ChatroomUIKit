@@ -1,7 +1,6 @@
 package io.agora.chatroom.theme
 
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.runtime.Composable
@@ -10,13 +9,31 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 
 
-val ExtraSmallCorner = RoundedCornerShape(4.dp)
-val SmallCorner = RoundedCornerShape(8.dp)
-val MediumCorner = RoundedCornerShape(12.dp)
-val LargeCorner = RoundedCornerShape(16.dp)
-
+/**
+ * Contains all the shapes for components.
+ * @param extraSmall Used for extra small shape.
+ * @param small Used for small shape.
+ * @param medium Used for medium shape.
+ * @param large Used for large shape.
+ * @param extraLarge Used for extra large shape.
+ * @param avatar Used for avatar shape.
+ * @param picture Used for picture shape.
+ * @param messageBubble Used for message bubble shape.
+ * @param inputField Used for input field shape.
+ * @param attachment Used for attachment shape.
+ * @param imageThumbnail Used for image thumbnail shape.
+ * @param bottomSheet Used for bottom sheet shape.
+ * @param header Used for header shape.
+ * @param sendGift Used for send gift shape.
+ * @param giftItemBg Used for gift item background shape.
+ */
 @Immutable
 data class UIShapes(
+    val extraSmall: Shape,
+    val small: Shape,
+    val medium: Shape,
+    val large: Shape,
+    val extraLarge: Shape = ShapeDefaults.ExtraLarge,
     val avatar: Shape,
     val picture: Shape,
     val messageBubble: Shape,
@@ -25,17 +42,17 @@ data class UIShapes(
     val imageThumbnail: Shape,
     val bottomSheet: Shape,
     val header: Shape,
-    val extraSmall: Shape = ExtraSmallCorner,
-    val small: Shape = SmallCorner,
-    val medium: Shape = MediumCorner,
-    val large: Shape = LargeCorner,
-    val extraLarge: Shape = ShapeDefaults.ExtraLarge,
     val sendGift:Shape,
     val giftItemBg:Shape,
 ) {
     companion object {
         @Composable
         fun defaultShapes(): UIShapes = UIShapes(
+            extraSmall = RoundedCornerShape(4.dp),
+            small  = RoundedCornerShape(8.dp),
+            medium  = RoundedCornerShape(12.dp),
+            large  = RoundedCornerShape(16.dp),
+            extraLarge  = ShapeDefaults.ExtraLarge,
             avatar = CircleShape,
             picture = RoundedCornerShape(8.dp),
             messageBubble = RoundedCornerShape(16.dp),
@@ -44,11 +61,6 @@ data class UIShapes(
             imageThumbnail = RoundedCornerShape(8.dp),
             bottomSheet = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
             header = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
-            extraSmall = ExtraSmallCorner,
-            small  = SmallCorner,
-            medium  = MediumCorner,
-            large  = LargeCorner,
-            extraLarge  = ShapeDefaults.ExtraLarge,
             sendGift = RoundedCornerShape(bottomStart = 8.dp, bottomEnd = 8.dp),
             giftItemBg = RoundedCornerShape(22.dp),
         )

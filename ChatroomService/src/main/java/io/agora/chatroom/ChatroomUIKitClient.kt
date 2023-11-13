@@ -155,6 +155,7 @@ class ChatroomUIKitClient {
      * Init the chatroom before joining it
      */
     private fun initRoom(roomInfo:UIChatroomInfo){
+        Log.e(TAG, "initRoom owner: ${roomInfo.roomOwner}")
         currentRoomContext.setCurrentRoomInfo(roomInfo)
         registerMessageListener()
         registerChatroomChangeListener()
@@ -200,6 +201,7 @@ class ChatroomUIKitClient {
         return null
     }
 
+    @Synchronized
     internal fun callbackEvent(event: ChatroomResultEvent, errorCode: Int, errorMessage: String?) {
         if (roomEventResultListener.isEmpty()) {
             return

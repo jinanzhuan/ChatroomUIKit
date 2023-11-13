@@ -155,7 +155,7 @@ class MainActivity : ComponentActivity() {
                             Spacer(modifier = Modifier.width(10.dp))
 
                             Text(
-                                text = userDetail?.nickName?:userDetail?.userId ?: "",
+                                text = userDetail?.nickname?:userDetail?.userId ?: "",
                                 style = ChatroomUIKitTheme.typography.bodyLarge,
                                 color = ChatroomUIKitTheme.colors.onBackground
                             )
@@ -194,13 +194,7 @@ class MainActivity : ComponentActivity() {
                                 .background(ChatroomUIKitTheme.colors.backgroundHigh),
                             viewModel = roomListViewModel,
                             onItemClick = { roomDetail: RoomDetailBean ->
-                                startActivity(
-                                    ChatroomActivity.createIntent(
-                                        context = this@MainActivity,
-                                        roomId = roomDetail.id,
-                                        ownerId = roomDetail.owner,
-                                    )
-                                )
+                                skipToChat(roomDetail)
                             }
                         )
                     }
@@ -215,20 +209,23 @@ class MainActivity : ComponentActivity() {
             return
         }
         viewModel.createChatroom(
-            roomName = resources.getString(R.string.default_room_name, userDetail.nickName),
+            roomName = resources.getString(R.string.default_room_name, userDetail.nickname),
             owner = userDetail.userId,
             onSuccess = { roomDetail ->
-                startActivity(
-                    ChatroomActivity.createIntent(
-                        context = this@MainActivity,
-                        roomId = roomDetail.id,
-                        ownerId = roomDetail.owner,
-                    )
-                )
+                skipToChat(roomDetail)
             },
             onError = { code, message ->
                 ChatLog.e("MainActivity", "createChatroom: $code, $message")
             }
+        )
+    }
+
+    private fun skipToChat(roomDetail: RoomDetailBean) {
+        startActivity(
+            ChatroomActivity.createIntent(
+                context = this@MainActivity,
+                room = roomDetail,
+            )
         )
     }
 }

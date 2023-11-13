@@ -16,8 +16,9 @@ import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.compose.indicator.LoadingIndicator
 import io.agora.chatroom.model.UIChatroomInfo
 import io.agora.chatroom.model.UIComposeSheetItem
+import io.agora.chatroom.model.UserInfoProtocol
+import io.agora.chatroom.model.toUser
 import io.agora.chatroom.service.GiftEntityProtocol
-import io.agora.chatroom.service.UserEntity
 import io.agora.chatroom.UIChatroomService
 import io.agora.chatroom.uikit.R
 import io.agora.chatroom.viewmodel.UIRoomViewModel
@@ -31,11 +32,31 @@ import io.agora.chatroom.viewmodel.messages.MessageChatBarViewModel
 import io.agora.chatroom.viewmodel.messages.MessageListViewModel
 import io.agora.chatroom.viewmodel.report.ComposeReportViewModel
 
+/**
+ * This is a compose screen that shows the chat screen.
+ * @param roomId The room id of the chat room.
+ * @param roomOwner The owner of the chat room.
+ * @param service The chat room service.
+ * @param messageListViewModel The view model for the message list.
+ * @param chatBottomBarViewModel The view model for the chat bottom bar.
+ * @param messageItemMenuViewModel The view model for the message item menu.
+ * @param giftBottomSheetViewModel The view model for the gift bottom sheet.
+ * @param giftListViewModel The view model for the gift list.
+ * @param reportViewModel The view model for the report.
+ * @param membersBottomSheetViewModel The view model for the members bottom sheet.
+ * @param memberListViewModel The view model for the member list.
+ * @param memberMenuViewModel The view model for the member menu.
+ * @param onMemberSheetSearchClick The callback for the member sheet search click.
+ * @param onMessageMenuClick The callback for the message menu click.
+ * @param onMemberMenuClick The callback for the member menu click.
+ * @param onGiftBottomSheetItemClick The callback for the gift bottom sheet item click.
+ * @param chatBackground The background of the chat room.
+ */
 @Composable
 fun ComposeChatroom(
     roomId:String,
-    roomOwner:String,
-    service: UIChatroomService = UIChatroomService(UIChatroomInfo(roomId,UserEntity(userId = roomOwner))),
+    roomOwner: UserInfoProtocol,
+    service: UIChatroomService = UIChatroomService(UIChatroomInfo(roomId, roomOwner.toUser())),
     roomViewModel:UIRoomViewModel = viewModel(UIRoomViewModel::class.java,
         factory = defaultMessageListViewModelFactory(LocalContext.current, service.getRoomInfo().roomId, service = service)),
     messageListViewModel: MessageListViewModel = viewModel(

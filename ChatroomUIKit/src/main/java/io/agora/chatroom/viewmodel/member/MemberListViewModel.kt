@@ -35,8 +35,10 @@ open class MemberListViewModel(
             }.contains(owner)
             val newList = list.toMutableList()
             if (!contains) {
+                Log.e("apex", "fetchRoomMembers fetch members owner: ${ChatroomUIKitClient.getInstance().getContext().getCurrentRoomInfo().roomOwner}")
                 newList.add(0, ChatroomUIKitClient.getInstance().getContext().getCurrentRoomInfo().roomOwner ?: UserEntity(owner))
             }
+            Log.e("apex", "fetchRoomMembers fetch members: $newList")
             add(newList)
             onSuccess.invoke(newList)
         }, onError = { code, message ->
@@ -219,10 +221,10 @@ open class MemberListViewModel(
             ChatroomUIKitClient.getInstance().getCacheManager().getRoomMuteList(roomId).let { list ->
                 val result = list.filter { userId ->
                     val user = ChatroomUIKitClient.getInstance().getCacheManager().getUserInfo(userId)
-                    if (user.nickName.isNullOrEmpty()) {
+                    if (user.nickname.isNullOrEmpty()) {
                         user.userId.contains(keyword)
                     } else {
-                        if (!user.nickName!!.contains(keyword)) {
+                        if (!user.nickname!!.contains(keyword)) {
                             user.userId.contains(keyword)
                         }else {
                             true
@@ -238,10 +240,10 @@ open class MemberListViewModel(
             ChatroomUIKitClient.getInstance().getCacheManager().getRoomMemberList(roomId).let { list ->
                 val result = list.filter { userId ->
                     val user = ChatroomUIKitClient.getInstance().getCacheManager().getUserInfo(userId)
-                    if (user.nickName.isNullOrEmpty()) {
+                    if (user.nickname.isNullOrEmpty()) {
                         user.userId.contains(keyword)
                     } else {
-                        if (!user.nickName!!.contains(keyword)) {
+                        if (!user.nickname!!.contains(keyword)) {
                             user.userId.contains(keyword)
                         }else {
                             true

@@ -5,6 +5,11 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
+/**
+ * Contains all the dimensions for components.
+ * @param messageItemMaxWidth Used for message item max width.
+ * @param titleBarHeight Used for title bar height.
+ */
 @Immutable
 class UIDimens(
     val messageItemMaxWidth: Dp,

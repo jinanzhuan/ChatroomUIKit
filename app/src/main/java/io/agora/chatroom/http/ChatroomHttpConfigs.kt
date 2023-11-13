@@ -1,7 +1,8 @@
 package io.agora.chatroom.http
 
+import io.agora.chatroom.BuildConfig
+
 
 val protocol: String = "https"
-val host: String = "a1.easemob.com"
-val baseUrl: String = "$protocol://$host/internal/appserver/"
+val baseUrl: String = "$protocol://${BuildConfig.REQUEST_HOST}/internal/appserver/"
 val baseAvatarUrl: String = "https://a1.easemob.com/easemob/chatroom-uikit/chatfiles/"

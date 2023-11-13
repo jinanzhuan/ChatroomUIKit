@@ -34,9 +34,9 @@ This guide presents an overview and usage examples of the ChatroomUIKit framewor
 
 # [Requirements](https://github.com/apex-wang/ChatroomUIKit#requirements)
 
-- iOS 13.0+
-- Xcode 13.0+
-- Swift 5.0+
+- Jetpack Compose The minimum support for Android API 21, which is version 5.0
+- Android Studio 4.0+
+- Must use kotlin language
 
 # [Installation](https://github.com/apex-wang/ChatroomUIKit#installation)
 
@@ -62,26 +62,26 @@ implementation 'ChatroomUIKit'
 
 ## 目录结构
 ```
-┌─ Example                      // SampleDemo目录
-│  ├─ ChatroomListActivity              // 主要提供 ChatroomUIKit 的房间列表页面
-│  ├─ ChatroomActivity                  // 显示 ChatroomUIKit room的核心页面
-│  ├─ compose                           // SampleDemo 中用的的一些小的 Compose
-│  ├─ http                              // 封装的网络请求 用于实现和app service交互
-│  └─ SplashActivity                    // 程序启动页
-├─ ChatroomService              // ChatroomUIKit协议模块
-│  ├─ model                              // ChatroomUIKit所用到的实体对象（用户、房间信息、配置信息）
-│  ├─ service                            // ChatroomUIKit所用到的协议和协议实现（房间协议、用户协议、礼物协议）
-│  │    └─ Protocol                      // Business protocol component.    
+┌─ Example                        // SampleDemo directory
+│  ├─ ChatroomListActivity              // Mainly providing room list Activity
+│  ├─ ChatroomActivity                  // display ChatroomUIKit chatroom Activity
+│  ├─ compose                           // SampleDemo 
+│  ├─ http                              // Encapsulated network requests for interaction with app services
+│  └─ SplashActivity                    // Program Launch Page
+├─ ChatroomService                // ChatroomUIKit Protocol module
+│  ├─ model                              // The entity objects used by ChatroomUIKit (user, room information, configuration information)
+│  ├─ service                            // The protocols and protocol implementations used by ChatroomUIKit (room protocol, user protocol, gift protocol)
+│  │    └─ Protocol                        
 │  │         ├─ GiftService              // Gift sending and receiving channel.
 │  │         ├─ UserService              // Component for user login and user attribute update.
 │  │         └─ ChatroomService          // Component for implementing the protocol for chat room management, including joining and leaving the chat room and sending and receiving messages.
 │  └─ ChatroomUIKit                      // ChatroomUIKit initialization class.
 └─ ChatroomUIKit            
-       ├─ compose                   	// 基础UI Compose组件(底部输入框、消息列表、礼物列表、底部抽屉)支持明暗主题换肤
-       ├─ theme                     	// 资源文件 提供项目需要的颜色、字体、主题、渐变、尺寸等属性
-       ├─ viewModel                 	// 数据处理
-       ├─ widget                    	// 小单元组件
-       └─ ui                        	// 搜索页面
+       ├─ compose                   	// UI Compose组件(底部输入框、消息列表、礼物列表、底部抽屉)支持明暗主题换肤
+       ├─ theme                     	// Resource files provide properties such as colors, fonts, themes, gradients, and sizes required for the project
+       ├─ viewModel                 	// data processing
+       ├─ widget                    	// input widget
+       └─ ui                        	// search activity
 ```
 
 # [Documentation](https://github.com/apex-wang/ChatroomUIKit#documentation)
@@ -166,7 +166,7 @@ Here are three examples of advanced usage.
 
 ### [1.Login](https://github.com/apex-wang/ChatroomUIKit#1login)
 
-```Swift
+``` Kotlin
 class YourAppUser: UserInfoProtocol {
     var userId: String = "your application user id"
             
@@ -181,7 +181,7 @@ class YourAppUser: UserInfoProtocol {
 }
 // Use the user information of the current user object that conforms to the UserInfoProtocol protocol to log in to ChatroomUIKit.
 // You need to get a user token from your app server. Alternatively, you can use a temporary token. To generate a temporary toke, visit https://docs.agora.io/en/agora-chat/get-started/enable?platform=ios#generate-a-user-token.
-ChatroomUIKitClient.getInstance().login(with: YourAppUser(), token: "token", completion: <#T##(ChatError?) -> Void#>)
+ChatroomUIKitClient.getInstance().login(YourAppUser, token, onSuccess = {}, onError = {code,error ->})
 ```
 
 
@@ -212,53 +212,12 @@ ChatroomUIKitClient.getInstance().registerRoomResultListener(this)
 
 # [Customization](https://github.com/apex-wang/ChatroomUIKit#customization)
 
-### [1.Modify configurable items](https://github.com/apex-wang/ChatroomUIKit#1modify-configurable-items)
-
-The following shows how to change the overall cell layout style of the chat area and how to create the ChatroomView.
-
-```
-// You can change the overall cell layout style of the chat area by setting the properties.
-Appearance.ChatMessageDisplayContentStyle = .all
-// Create the ChatroomView by passing in parameters like layout parameters and the bottom toolbar extension button model protocol array.
-let roomView = ChatroomUIKitClient.shared.launchRoomViewWithOptions(roomId: self.room?.chatroomId ?? "", frame: CGRect(x: 0, y: self.playView.frame.maxY, width: self.view.frame.width, height: 336+BottomBarHeight), ownerId: self.room?.owner ?? "")
-self.view.addSubView(roomView)
-```
-
-For details, see [Appearance](https://github.com/apex-wang/ChatroomUIKit/blob/main/Documentation/Appearance.md).
-
-### [2.Custom components](https://github.com/apex-wang/ChatroomUIKit#2custom-components)
-
-The following shows how to customize the gift message  cell.
-
-```
-class CustomGiftMessageCell: GiftMessageCell {
-    lazy var redDot: UIView = {
-        UIView().backgroundColor(.red).cornerRadius(.large)
-    }()
-    
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.addSubview(redDot)
-    }
-    
-    override func refresh(item: GiftEntityProtocol) {
-        super.refresh(item: item)
-        self.redDot.isHidden = item.selected
-    }
-}
-//Register the custom class that inherits the original class in ChatroomUIKit to replace the original one.
-//Call this method before creating a ChatroomView or using other UI components.
-ComponentsRegister.shared.GiftMessagesViewCell = CustomGiftMessageCell.self
-```
-
-For details, see [ComponentsRegister](https://github.com/apex-wang/ChatroomUIKit/blob/main/Documentation/ComponentsRegister.md).
-
-### [3.Switch original or custom theme](https://github.com/apex-wang/ChatroomUIKit#3switch-original-or-custom-theme)
+### [1.Switch original or custom theme](https://github.com/apex-wang/ChatroomUIKit#3switch-original-or-custom-theme)
 
 - Switch to the light or dark theme that comes with the ChatroomUIKit.
 
 ```
-Theme.switchTheme(style: .dark)` or `Theme.switchTheme(style: .light)
+ChatroomUIKitClient.getInstance().setCurrentTheme(isDarkTheme)
 ```
 
 - Switch to a custom theme.

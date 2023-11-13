@@ -24,7 +24,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import io.agora.chatroom.theme.ChatroomUIKitTheme
-import io.agora.chatroom.theme.LargeCorner
 import io.agora.chatroom.uikit.R
 import io.agora.chatroom.viewmodel.messages.MessageChatBarViewModel
 import kotlinx.coroutines.delay
@@ -121,8 +120,8 @@ fun WidgetInputField(
             .fillMaxSize()
             .focusRequester(focus)
             .focusModifier()
-            .background(ChatroomUIKitTheme.colors.neutralL95D20,LargeCorner)
-            .border(border = border, shape = LargeCorner)
+            .background(ChatroomUIKitTheme.colors.neutralL95D20,ChatroomUIKitTheme.shapes.large)
+            .border(border = border, shape = ChatroomUIKitTheme.shapes.large)
     )
 
     LaunchedEffect(viewModel.isShowKeyboard.value) {
