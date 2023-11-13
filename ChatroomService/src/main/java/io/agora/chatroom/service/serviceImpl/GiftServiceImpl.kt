@@ -1,9 +1,9 @@
 package io.agora.chatroom.service.serviceImpl
 
-import io.agora.CallBack
 import io.agora.chatroom.ChatroomResultEvent
 import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.model.UIConstant
+import io.agora.chatroom.service.ChatCallback
 import io.agora.chatroom.service.ChatClient
 import io.agora.chatroom.service.ChatCustomMessageBody
 import io.agora.chatroom.service.ChatError
@@ -50,7 +50,7 @@ class GiftServiceImpl: GiftService {
         message.chatType = ChatType.ChatRoom
         message.body = customBody
         message.to = ChatroomUIKitClient.getInstance().getContext().getCurrentRoomInfo().roomId
-        message.setMessageStatusCallback(object : CallBack{
+        message.setMessageStatusCallback(object : ChatCallback{
             override fun onSuccess() {
                 onSuccess.invoke(message)
                 ChatroomUIKitClient.getInstance().callbackEvent(ChatroomResultEvent.SEND_MESSAGE, ChatError.EM_NO_ERROR, "")

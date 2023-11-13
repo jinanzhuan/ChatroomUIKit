@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -48,6 +49,7 @@ import io.agora.chatroom.compose.VideoPlayerCompose
 import io.agora.chatroom.compose.avatar.Avatar
 import io.agora.chatroom.compose.defaultMembersViewModelFactory
 import io.agora.chatroom.compose.dialog.SimpleDialog
+import io.agora.chatroom.compose.marquee.ComposeGlobalBroadcast
 import io.agora.chatroom.compose.utils.WindowConfigUtils
 import io.agora.chatroom.model.UIChatroomInfo
 import io.agora.chatroom.service.UserEntity
@@ -58,6 +60,8 @@ import io.agora.chatroom.viewmodel.ChatroomFactory
 import io.agora.chatroom.viewmodel.ChatroomViewModel
 import io.agora.chatroom.viewmodel.dialog.DialogViewModel
 import io.agora.chatroom.viewmodel.gift.ComposeGiftListViewModel
+import io.agora.chatroom.viewmodel.broadcast.GlobalBroadcastViewModel
+import io.agora.chatroom.viewmodel.broadcast.GlobalBroadcastViewModelFactory
 import io.agora.chatroom.viewmodel.member.MembersBottomSheetViewModel
 import io.agora.chatroom.viewmodel.messages.MessagesViewModelFactory
 
@@ -77,6 +81,12 @@ class ChatroomActivity : ComponentActivity(), ChatroomResultListener {
         ViewModelProvider(this@ChatroomActivity as ComponentActivity,
             factory = MessagesViewModelFactory(context = this@ChatroomActivity, roomId = room.id,
                 service = service))[ComposeGiftListViewModel::class.java]
+    }
+
+    private val globalBroadcastModel by lazy {
+        ViewModelProvider(this@ChatroomActivity as ComponentActivity,
+            factory = GlobalBroadcastViewModelFactory(context = this@ChatroomActivity,
+                service = service))[GlobalBroadcastViewModel::class.java]
     }
 
     private val launcherToSearch: ActivityResultLauncher<Intent> =
@@ -243,6 +253,14 @@ class ChatroomActivity : ComponentActivity(), ChatroomResultListener {
                                         )
                                     )
                                 }
+                            )
+
+                            ComposeGlobalBroadcast(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 12.dp, end = 12.dp)
+                                ,
+                                viewModel = globalBroadcastModel
                             )
                         }
                     }

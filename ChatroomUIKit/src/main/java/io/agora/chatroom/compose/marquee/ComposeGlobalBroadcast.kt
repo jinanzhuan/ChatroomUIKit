@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -31,16 +32,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import io.agora.chatroom.theme.ChatroomUIKitTheme
 import io.agora.chatroom.uikit.R
-import io.agora.chatroom.viewmodel.marquee.MarqueeTextViewModel
+import io.agora.chatroom.viewmodel.broadcast.GlobalBroadcastViewModel
 import kotlinx.coroutines.delay
 
 @Composable
-fun MainScreen(
+fun ComposeGlobalBroadcast(
     modifier: Modifier = Modifier,
-    viewModel: MarqueeTextViewModel,
+    viewModel: GlobalBroadcastViewModel,
     marqueeBg: Color = ChatroomUIKitTheme.colors.primary,
     leftIcon: Painter = painterResource(id = R.drawable.icon_notification),
-    lIconModifier: Modifier =Modifier.size(16.dp).padding(2.dp)
+    lIconModifier: Modifier =Modifier.size(16.dp).padding(2.dp),
+    fontColor:Color = Color.White,
 ) {
     val content = viewModel.marqueeTextList
     val duration = viewModel.duration
@@ -56,6 +58,8 @@ fun MainScreen(
 
     val animateValue = remember { Animatable(initValue) }
 
+    viewModel.registerChatroomChangeListener()
+
     Box{
         Row(
             modifier = modifier
@@ -63,7 +67,7 @@ fun MainScreen(
                     color = marqueeBg,
                     ChatroomUIKitTheme.shapes.medium
                 )
-                .fillMaxWidth()
+                .wrapContentWidth()
                 .height(20.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -76,7 +80,8 @@ fun MainScreen(
             Canvas(modifier = Modifier
                 .weight(1f)
                 .padding(end = 10.dp)
-                .height(20.dp)) {
+                .height(20.dp)
+            ) {
 
                 offsetX.floatValue = size.width * animateValue.value
                 drawContext.canvas.nativeCanvas.apply {
@@ -88,7 +93,7 @@ fun MainScreen(
                         Paint().apply {
                             textAlign = Paint.Align.LEFT
                             textSize = 30f
-                            color = Color.White.toArgb()
+                            color = fontColor.toArgb()
                         }
                     )
                 }

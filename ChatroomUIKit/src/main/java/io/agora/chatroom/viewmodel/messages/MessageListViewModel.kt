@@ -66,6 +66,10 @@ class MessageListViewModel(
         addTextMessageByIndex(message = message)
     }
 
+    override fun onBroadcastReceived(message: ChatMessage) {
+        super.onBroadcastReceived(message)
+    }
+
     override fun onGiftReceived(roomId: String, gift: GiftEntityProtocol?, message: ChatMessage) {
         super.onGiftReceived(roomId, gift, message)
         if (ChatroomUIKitClient.getInstance().getUseGiftsInMsg()){

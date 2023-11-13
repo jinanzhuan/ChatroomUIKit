@@ -30,11 +30,11 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
-import io.agora.chat.TextMessageBody
 import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.compose.avatar.ImageAvatar
 import io.agora.chatroom.compose.utils.ExpressionUtils
 import io.agora.chatroom.model.emoji.UIRegexEntity
+import io.agora.chatroom.service.ChatTextMessageBody
 import io.agora.chatroom.service.GiftEntityProtocol
 import io.agora.chatroom.service.UserEntity
 import io.agora.chatroom.theme.ChatroomUIKitTheme
@@ -104,8 +104,8 @@ fun ComposeMessageItem(
 
         val dateSeparator = message?.msgTime?.let { convertMillisTo24HourFormat(it) }
 
-        val content =  if(message?.body is TextMessageBody){
-            (message.body as TextMessageBody).message
+        val content =  if(message?.body is ChatTextMessageBody){
+            (message.body as ChatTextMessageBody).message
         }else{
             ""
         }
