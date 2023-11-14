@@ -11,7 +11,7 @@ class ChatroomApplication : Application() {
         super.onCreate()
 
         val chatroomUIKitOptions = ChatroomUIKitOptions(
-            chatOptions = ChatSDKOptions(),
+            chatOptions = ChatSDKOptions(enableDebug = true),
             uiOptions = UiOptions(
                 targetLanguageList = listOf(GlobalConfig.targetLanguage.code),
                 useGiftsInList = false,

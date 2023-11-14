@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import io.agora.chatroom.model.UserInfoProtocol
 import io.agora.chatroom.service.ChatroomService
 import io.agora.chatroom.compose.utils.DispatcherProvider
-import io.agora.chatroom.widget.EaseSmileUtils
+import io.agora.chatroom.compose.utils.SmileUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -89,7 +89,7 @@ class ComposerChatBarController(
 
     fun setEmojiInput(value: String){
         this.input.value += value
-        val smiledText = EaseSmileUtils.getSmiledText(context, value)
+        val smiledText = SmileUtils.getSmiledText(context, value)
         if (smiledText != null) {
             this._emoji.value = smiledText
         }

@@ -1,5 +1,6 @@
 package io.agora.chatroom.viewmodel.broadcast
 
+import android.util.Log
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import io.agora.chatroom.UIChatroomService
@@ -28,13 +29,14 @@ class GlobalBroadcastViewModel(
      * Register chatroom change listener
      */
     fun registerChatroomChangeListener() {
+        Log.e("apex","registerChatroomChangeListener")
         service.getChatService().bindListener(this)
     }
 
     /**
      * Unregister chatroom change listener
      */
-    private fun unRegisterChatroomChangeListener() {
+     fun unRegisterChatroomChangeListener() {
         service.getChatService().unbindListener(this)
     }
 
@@ -45,8 +47,9 @@ class GlobalBroadcastViewModel(
 
     override fun onBroadcastReceived(message: ChatMessage) {
         super.onBroadcastReceived(message)
+        Log.e("apex","onBroadcastReceived ")
         if(message.body is ChatTextMessageBody){
-            _marqueeTextList.add((message.body as ChatTextMessageBody).message)
+            addMarqueeText((message.body as ChatTextMessageBody).message)
         }
     }
 }

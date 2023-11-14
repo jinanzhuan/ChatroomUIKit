@@ -8,7 +8,7 @@ In this project, there is a best practice demonstration project in the `Example`
 
 To experience functions of the ChatroomUIKit, you can scan the following QR code to try a demo.
 
-[![SampleDemo](https://github.com/apex-wang/ChatroomUIKit/raw/main/Documentation/demo.png)](https://github.com/apex-wang/ChatroomUIKit/blob/main/Documentation/demo.png).
+[![SampleDemo](https://github.com/apex-wang/ChatroomUIKit/image/demo.png)](https://github.com/apex-wang/ChatroomUIKit/image/demo.png).
 
 # [Chatroom UIKit Guide](https://github.com/apex-wang/ChatroomUIKit#chatroom-uikit-guide)
 
@@ -219,32 +219,18 @@ ChatroomUIKitClient.getInstance().registerRoomResultListener(this)
 ChatroomUIKitClient.getInstance().setCurrentTheme(isDarkTheme)
 ```
 
-- Switch to a custom theme.
+- ChatroomUIKitTheme 提供了可配置项，开发者只要替换对应的配置项即可实现自定义主题。如果不配置，则使用默认的主题。
 
-```
-/**
-How to customize a theme?
-
-To customize a theme, you need to define the hue values of the following five theme colors by reference to the theme color of the design document.
-
-All colors in ChatroomUIKit are defined with the HSLA color model that is a way of representing colors using hue, saturation, lightness, and alpha. 
-
-H (Hue): Hue, the basic attribute of color, is a degree on the color wheel from 0 to 360. 0 is red, 120 is green, and 240 is blue.
-
-S (Saturation): Saturation is the intensity and purity of a color. The higher the saturation is, the brighter the color is; the lower the saturation is, the closer the color gets to gray. Saturation is represented by a percentage value, ranging from 0% to 100%. 0% means a shade of gray, and 100% is the full color.
-
-L (Lightness): Lightness is the brightness or darkness of a color. The higher the brightness is, the brighter the color is; the lower the brightness is, the darker the color is. Lightness is represented by a percentage value, ranging from 0% to 100%. 0% indicates a black color and 100% will result in a white color.
-
-A (Alpha): Alpha is the transparency of a color. The value 1 means fully opaque and 0 is fully transparent.
-
-By adjusting the values of individual components of the HSLA model, you can achieve precise color control.
- */
-Appearance.primaryHue = 191/360.0
-Appearance.secondaryHue = 210/360.0
-Appearance.errorHue = 189/360.0
-Appearance.neutralHue = 191/360.0
-Appearance.neutralSpecialHue = 199/360.0
-Theme.switchTheme(style: .custom)
+```kotlin
+@Composable
+fun ChatroomUIKitTheme(
+    isDarkTheme: Boolean = isSystemInDarkTheme(),
+    colors: UIColors = if (!isDarkTheme) UIColors.defaultColors() else UIColors.defaultDarkColors(),
+    shapes: UIShapes = UIShapes.defaultShapes(),
+    dimens: UIDimens = UIDimens.defaultDimens(),
+    typography: UITypography = UITypography.defaultTypography(),
+    content: @Composable () -> Unit
+)
 ```
 
 Note that custom themes and built-in themes are mutually exclusive. 

@@ -58,7 +58,6 @@ fun ComposeGlobalBroadcast(
 
     val animateValue = remember { Animatable(initValue) }
 
-    viewModel.registerChatroomChangeListener()
 
     Box{
         Row(

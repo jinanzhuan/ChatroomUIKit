@@ -126,6 +126,7 @@ class ChatroomActivity : ComponentActivity(), ChatroomResultListener {
 
         ChatroomUIKitClient.getInstance().registerRoomResultListener(this)
         giftViewModel.openAutoClear()
+        globalBroadcastModel.registerChatroomChangeListener()
 
         roomViewModel.hideBg()
 
@@ -330,5 +331,7 @@ class ChatroomActivity : ComponentActivity(), ChatroomResultListener {
     override fun onDestroy() {
         super.onDestroy()
         roomViewModel.leaveChatroom()
+        globalBroadcastModel.unRegisterChatroomChangeListener()
+        ChatroomUIKitClient.getInstance().unregisterRoomResultListener(this)
     }
 }
