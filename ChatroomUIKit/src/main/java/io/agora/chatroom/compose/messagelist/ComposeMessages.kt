@@ -1,4 +1,4 @@
-package io.agora.chatroom.compose.chatmessagelist
+package io.agora.chatroom.compose.messagelist
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues

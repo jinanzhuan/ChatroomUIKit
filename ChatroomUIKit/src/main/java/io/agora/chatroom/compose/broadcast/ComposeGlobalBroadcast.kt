@@ -1,4 +1,4 @@
-package io.agora.chatroom.compose.marquee
+package io.agora.chatroom.compose.broadcast
 
 import android.graphics.Paint
 import android.graphics.Rect
@@ -9,7 +9,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -58,7 +57,6 @@ fun ComposeGlobalBroadcast(
 
     val animateValue = remember { Animatable(initValue) }
 
-    viewModel.registerChatroomChangeListener()
 
     Box{
         Row(

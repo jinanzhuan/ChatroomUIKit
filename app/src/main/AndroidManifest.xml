@@ -24,6 +24,7 @@
         <activity
             android:name="io.agora.chatroom.ChatroomActivity"
             android:exported="false"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"
             />
         <activity android:name="io.agora.chatroom.SplashActivity" android:exported="true">

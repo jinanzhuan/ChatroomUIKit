@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -40,7 +39,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import io.agora.chatroom.compose.drawer.ComposeBottomSheet
-import io.agora.chatroom.compose.tabrow.PagerWithTabs
+import io.agora.chatroom.compose.tabrow.ComposePagerWithTabs
 import io.agora.chatroom.model.report.UIReportEntity
 import io.agora.chatroom.theme.ChatroomUIKitTheme
 import io.agora.chatroom.uikit.R
@@ -97,7 +96,7 @@ fun DefaultReportContent(
 {
     val tabList = mutableListOf<TabInfo>()
     tabList += TabInfo("Report")
-    PagerWithTabs(
+    ComposePagerWithTabs(
         viewModel = PagerViewModel(tabList = tabList),
         modifier = modifier,
         tabIndicatorHeight = 4.dp,

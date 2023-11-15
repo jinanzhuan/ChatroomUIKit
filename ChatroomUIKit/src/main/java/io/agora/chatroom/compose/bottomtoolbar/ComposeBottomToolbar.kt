@@ -1,10 +1,9 @@
-package io.agora.chatroom.compose.chatbottombar
+package io.agora.chatroom.compose.bottomtoolbar
 
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.graphics.Rect
-import android.util.Log
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import android.widget.Toast
@@ -20,9 +19,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBars
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -89,7 +86,7 @@ import kotlinx.coroutines.launch
  * by default.
  */
 @Composable
-fun ComposeChatBottomBar(
+fun ComposeBottomToolbar(
     viewModel: MessageChatBarViewModel,
     modifier: Modifier = Modifier,
     showInput: Boolean = false,
@@ -98,7 +95,6 @@ fun ComposeChatBottomBar(
     menuItemResource: List<UIChatBarMenuItem> = viewModel.getMenuItem,
     onSendMessage: (String) -> Unit = { },
     onValueChange: (String) -> Unit = {
-        Log.e("apex","onValueChange: $it")
         viewModel.setMessageInput(it)
     },
     input: @Composable RowScope.(ComposerInputMessageState) -> Unit = { it ->
@@ -150,7 +146,7 @@ fun ComposeChatBottomBar(
 ) {
     val messageComposerState by viewModel.composerMessageState.collectAsState()
 
-    ComposeChatBottomBar(
+    ComposeBottomToolbar(
         viewModel = viewModel,
         isDarkTheme = viewModel.getTheme,
         modifier = modifier,
@@ -173,7 +169,7 @@ fun ComposeChatBottomBar(
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun ComposeChatBottomBar(
+fun ComposeBottomToolbar(
     isDarkTheme: Boolean?,
     viewModel: MessageChatBarViewModel,
     composerMessageState: ComposerInputMessageState,
@@ -373,7 +369,6 @@ fun DefaultComposerEmoji(
     maxH:Int,
     viewModel: MessageChatBarViewModel,
 ){
-    Log.e("apex","DefaultComposerEmoji: $maxH")
     Column(modifier = Modifier
         .fillMaxWidth()
         .height(maxH.dp)

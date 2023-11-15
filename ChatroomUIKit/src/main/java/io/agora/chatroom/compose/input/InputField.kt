@@ -68,7 +68,7 @@ fun InputField(
     trailingIcon: @Composable (() -> Unit)? = null,
     decorationBox: @Composable ((innerTextField: @Composable () -> Unit) -> Unit)? = null,
 ) {
-    var requestFocus by rememberSaveable { mutableStateOf(isRequestFocus) }
+    val requestFocus by rememberSaveable { mutableStateOf(isRequestFocus) }
     var textFieldValueState by remember { mutableStateOf(TextFieldValue(text = value)) }
 
     val focusManager = LocalFocusManager.current

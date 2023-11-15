@@ -17,7 +17,6 @@ class UIChatroomContext{
     }
 
     fun setCurrentRoomInfo(info: UIChatroomInfo){
-        Log.e("apex","setCurrentRoomInfo")
         mChatroomInfo = info
     }
 
@@ -33,7 +32,6 @@ class UIChatroomContext{
     }
 
     fun getCurrentRoomInfo(): UIChatroomInfo{
-        Log.e("apex","getCurrentRoomInfo")
         return mChatroomInfo
     }
 

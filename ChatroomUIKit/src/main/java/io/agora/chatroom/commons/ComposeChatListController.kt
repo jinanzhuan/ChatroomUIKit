@@ -1,10 +1,11 @@
 package io.agora.chatroom.commons
 
 import io.agora.chatroom.service.ChatMessage
-import io.agora.chatroom.compose.chatmessagelist.ComposeMessageItemState
-import io.agora.chatroom.compose.chatmessagelist.ComposeMessageListItemState
-import io.agora.chatroom.compose.chatmessagelist.GiftMessageState
-import io.agora.chatroom.compose.chatmessagelist.JoinedMessageState
+import io.agora.chatroom.compose.messagelist.ComposeMessageItemState
+import io.agora.chatroom.compose.messagelist.ComposeMessageListItemState
+import io.agora.chatroom.compose.messagelist.GiftMessageState
+import io.agora.chatroom.compose.messagelist.JoinedMessageState
+import io.agora.chatroom.service.ChatTextMessageBody
 import io.agora.chatroom.service.GiftEntityProtocol
 
 class ComposeChatListController(
@@ -17,19 +18,19 @@ class ComposeChatListController(
 
     fun addTextMessage(index:Int,message:ChatMessage){
         if (message.conversationId() == roomId){
-            messageState.addMessageByIndex(index,ComposeMessageItemState(message))
+            messageState.addMessageByIndex(index,ComposeMessageItemState(message,getTranslationContent(message)))
         }
     }
 
     fun addTextMessage(message:ChatMessage){
         if (message.conversationId() == roomId){
-            messageState.addMessage(ComposeMessageItemState(message))
+            messageState.addMessage(ComposeMessageItemState(message,getTranslationContent(message)))
         }
     }
 
     fun updateTextMessage(message: ChatMessage){
         if (message.conversationId() == roomId){
-            messageState.updateMessage(ComposeMessageItemState(message))
+            messageState.updateMessage(ComposeMessageItemState(message,getTranslationContent(message)))
         }
     }
 
@@ -77,5 +78,14 @@ class ComposeChatListController(
 
     fun clearMessage(){
         messageState.clearMessage()
+    }
+
+    private fun getTranslationContent(message:ChatMessage):String{
+        var translationContent = ""
+        val translations = (message.body as ChatTextMessageBody).translations
+        if (translations.size > 0){
+            translationContent = translations[0].translationText
+        }
+        return translationContent
     }
 }

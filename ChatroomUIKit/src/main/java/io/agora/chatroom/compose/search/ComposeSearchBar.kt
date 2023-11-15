@@ -27,7 +27,7 @@ import io.agora.chatroom.theme.ChatroomUIKitTheme
 import io.agora.chatroom.uikit.R
 
 @Composable
-fun SearchBar(
+fun ComposeSearchBar(
     modifier: Modifier = Modifier,
     iconResource: Int = R.drawable.icon_face,
     hint: String = "",
@@ -86,7 +86,7 @@ fun DefaultSearchBar(
 @Composable
 fun SearchBarPreview() {
     ChatroomUIKitTheme {
-        SearchBar(modifier = Modifier
+        ComposeSearchBar(modifier = Modifier
             .fillMaxWidth()
             .clip(ChatroomUIKitTheme.shapes.medium)
             .border(BorderStroke(1.dp, ChatroomUIKitTheme.colors.inputSurface))

@@ -44,7 +44,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.agora.chatroom.compose.input.InputField
-import io.agora.chatroom.compose.list.LazyColumnList
+import io.agora.chatroom.compose.gift.LazyColumnList
 import io.agora.chatroom.compose.utils.WindowConfigUtils
 import io.agora.chatroom.service.ChatCallback
 import io.agora.chatroom.service.ChatClient

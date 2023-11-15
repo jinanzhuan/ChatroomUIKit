@@ -49,7 +49,7 @@ import io.agora.chatroom.compose.VideoPlayerCompose
 import io.agora.chatroom.compose.avatar.Avatar
 import io.agora.chatroom.compose.defaultMembersViewModelFactory
 import io.agora.chatroom.compose.dialog.SimpleDialog
-import io.agora.chatroom.compose.marquee.ComposeGlobalBroadcast
+import io.agora.chatroom.compose.broadcast.ComposeGlobalBroadcast
 import io.agora.chatroom.compose.utils.WindowConfigUtils
 import io.agora.chatroom.model.UIChatroomInfo
 import io.agora.chatroom.service.UserEntity
@@ -126,6 +126,7 @@ class ChatroomActivity : ComponentActivity(), ChatroomResultListener {
 
         ChatroomUIKitClient.getInstance().registerRoomResultListener(this)
         giftViewModel.openAutoClear()
+        globalBroadcastModel.registerChatroomChangeListener()
 
         roomViewModel.hideBg()
 
@@ -330,5 +331,7 @@ class ChatroomActivity : ComponentActivity(), ChatroomResultListener {
     override fun onDestroy() {
         super.onDestroy()
         roomViewModel.leaveChatroom()
+        globalBroadcastModel.unRegisterChatroomChangeListener()
+        ChatroomUIKitClient.getInstance().unregisterRoomResultListener(this)
     }
 }

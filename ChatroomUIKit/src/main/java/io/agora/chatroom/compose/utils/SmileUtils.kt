@@ -1,4 +1,4 @@
-package io.agora.chatroom.widget
+package io.agora.chatroom.compose.utils
 
 import android.content.Context
 import android.net.Uri
@@ -8,7 +8,7 @@ import io.agora.chatroom.data.emojiMap
 import java.io.File
 import java.util.regex.Pattern
 
-object EaseSmileUtils {
+object SmileUtils {
     private val spannableFactory = Spannable.Factory
         .getInstance()
 

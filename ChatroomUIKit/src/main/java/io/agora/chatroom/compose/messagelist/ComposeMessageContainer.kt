@@ -1,4 +1,4 @@
-package io.agora.chatroom.compose.chatmessagelist
+package io.agora.chatroom.compose.messagelist
 
 import androidx.compose.runtime.Composable
 import io.agora.chatroom.viewmodel.messages.MessageListViewModel
@@ -12,7 +12,7 @@ import io.agora.chatroom.viewmodel.messages.MessageListViewModel
  * @param messageItemContent Composable that represents regular messages.
  */
 @Composable
-fun MessageContainer(
+fun ComposeMessageContainer(
     itemIndex: Int,
     viewModel: MessageListViewModel,
     messageListItem: ComposeMessageListItemState,

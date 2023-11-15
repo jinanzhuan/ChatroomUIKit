@@ -13,6 +13,7 @@ import io.agora.chatroom.service.ChatConnectionListener
 import io.agora.chatroom.service.ChatCustomMessageBody
 import io.agora.chatroom.service.ChatError
 import io.agora.chatroom.service.ChatException
+import io.agora.chatroom.service.ChatLog
 import io.agora.chatroom.service.ChatMessage
 import io.agora.chatroom.service.ChatMessageListener
 import io.agora.chatroom.service.ChatMessageType
@@ -278,7 +279,7 @@ class ChatroomUIKitClient {
         chatroomService.sendMessage(
             joinedMsg, onSuccess = {},
             onError = {code, error ->
-                Log.e("apex","sendJoinedMessage onError $code $error")
+                ChatLog.e("sendJoinedMessage","sendJoinedMessage onError $code $error")
             })
     }
 
@@ -499,56 +500,56 @@ class ChatroomUIKitClient {
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
-                }
-
-                if (it.type == ChatMessageType.TXT) {
-                    try {
-                        for (listener in eventListeners.iterator()) {
-                            listener.onMessageReceived(it)
+                }else{
+                    if (it.type == ChatMessageType.TXT) {
+                        try {
+                            for (listener in eventListeners.iterator()) {
+                                listener.onMessageReceived(it)
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
                         }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
                     }
-                }
-                // Check if it is a custom message first
-                if (it.type == ChatMessageType.CUSTOM) {
-                    val body = it.body as ChatCustomMessageBody
-                    val event = body.event()
-                    val msgType: UICustomMsgType? = getCustomMsgType(event)
+                    // Check if it is a custom message first
+                    if (it.type == ChatMessageType.CUSTOM) {
+                        val body = it.body as ChatCustomMessageBody
+                        val event = body.event()
+                        val msgType: UICustomMsgType? = getCustomMsgType(event)
 
-                    // Then exclude single chat
-                    if (it.chatType != ChatType.Chat){
-                        val username: String = it.to
-                        // Check if it is the same chat room or group and event is not empty
-                        if (TextUtils.equals(username,currentRoomContext.getCurrentRoomInfo().roomId) && !TextUtils.isEmpty(event)) {
-                            when (msgType) {
-                                UICustomMsgType.CHATROOMUIKITUSERJOIN -> {
-                                    try {
-                                        for (listener in eventListeners.iterator()) {
-                                            parseJoinedMsg(it)?.let { userInfo->
-                                                chatroomUser.setUserInfo(it.from,userInfo.toUser())
+                        // Then exclude single chat
+                        if (it.chatType != ChatType.Chat){
+                            val username: String = it.to
+                            // Check if it is the same chat room or group and event is not empty
+                            if (TextUtils.equals(username,currentRoomContext.getCurrentRoomInfo().roomId) && !TextUtils.isEmpty(event)) {
+                                when (msgType) {
+                                    UICustomMsgType.CHATROOMUIKITUSERJOIN -> {
+                                        try {
+                                            for (listener in eventListeners.iterator()) {
+                                                parseJoinedMsg(it)?.let { userInfo->
+                                                    chatroomUser.setUserInfo(it.from,userInfo.toUser())
+                                                }
+                                                listener.onUserJoined(it.conversationId(),it.from)
                                             }
-                                            listener.onUserJoined(it.conversationId(),it.from)
+                                        } catch (e: Exception) {
+                                            e.printStackTrace()
                                         }
-                                    } catch (e: Exception) {
-                                        e.printStackTrace()
                                     }
-                                }
-                                UICustomMsgType.CHATROOMUIKITGIFT -> {
-                                    try {
-                                        for (listener in giftListeners.iterator()) {
-                                            val giftEntity = parseGiftMsg(it)
-                                            listener.onGiftReceived(
-                                                roomId = currentRoomContext.getCurrentRoomInfo().roomId,
-                                                gift = giftEntity,
-                                                message = it
-                                            )
+                                    UICustomMsgType.CHATROOMUIKITGIFT -> {
+                                        try {
+                                            for (listener in giftListeners.iterator()) {
+                                                val giftEntity = parseGiftMsg(it)
+                                                listener.onGiftReceived(
+                                                    roomId = currentRoomContext.getCurrentRoomInfo().roomId,
+                                                    gift = giftEntity,
+                                                    message = it
+                                                )
+                                            }
+                                        } catch (e: Exception) {
+                                            e.printStackTrace()
                                         }
-                                    } catch (e: Exception) {
-                                        e.printStackTrace()
                                     }
+                                    else -> {}
                                 }
-                                else -> {}
                             }
                         }
                     }

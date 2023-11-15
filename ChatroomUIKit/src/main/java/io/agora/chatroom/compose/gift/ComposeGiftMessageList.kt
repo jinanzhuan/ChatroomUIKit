@@ -29,14 +29,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.compose.avatar.ImageAvatar
-import io.agora.chatroom.compose.list.ComposeBaseList
 import io.agora.chatroom.compose.utils.rememberStreamImagePainter
 import io.agora.chatroom.theme.ChatroomUIKitTheme
 import io.agora.chatroom.uikit.R
 import io.agora.chatroom.viewmodel.gift.ComposeGiftListViewModel
 
 @Composable
-fun ComposeGiftList(
+fun ComposeGiftMessageList(
     viewModel:ComposeGiftListViewModel,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(vertical = 16.dp),
