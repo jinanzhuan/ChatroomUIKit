@@ -6,6 +6,7 @@ import io.agora.chatroom.http.ChatroomHttpManager
 import io.agora.chatroom.service.OnError
 import io.agora.chatroom.service.OnSuccess
 import io.agora.chatroom.UIChatroomService
+import io.agora.chatroom.service.ChatLog
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -24,7 +25,7 @@ class ChatroomViewModel(
             override fun onResponse(call: Call<String>, response: Response<String>) {
                 if (response.isSuccessful) {
                     onSuccess.invoke()
-                    Log.e("apex","destroyRoom onSuccess")
+                    ChatLog.e("destroyRoom","destroyRoom onSuccess")
                 }else{
                     onError.invoke(-1,"Service exception")
                 }

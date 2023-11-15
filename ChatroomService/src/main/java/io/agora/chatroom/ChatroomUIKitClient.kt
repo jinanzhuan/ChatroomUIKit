@@ -13,6 +13,7 @@ import io.agora.chatroom.service.ChatConnectionListener
 import io.agora.chatroom.service.ChatCustomMessageBody
 import io.agora.chatroom.service.ChatError
 import io.agora.chatroom.service.ChatException
+import io.agora.chatroom.service.ChatLog
 import io.agora.chatroom.service.ChatMessage
 import io.agora.chatroom.service.ChatMessageListener
 import io.agora.chatroom.service.ChatMessageType
@@ -278,7 +279,7 @@ class ChatroomUIKitClient {
         chatroomService.sendMessage(
             joinedMsg, onSuccess = {},
             onError = {code, error ->
-                Log.e("apex","sendJoinedMessage onError $code $error")
+                ChatLog.e("sendJoinedMessage","sendJoinedMessage onError $code $error")
             })
     }
 
@@ -491,7 +492,6 @@ class ChatroomUIKitClient {
 
         override fun onMessageReceived(messages: MutableList<ChatMessage>?) {
             messages?.forEach {
-                Log.e("apex","onMessageReceived: ${it.isBroadcast} - $it")
                 if (it.isBroadcast){
                     try {
                         for (listener in eventListeners.iterator()) {

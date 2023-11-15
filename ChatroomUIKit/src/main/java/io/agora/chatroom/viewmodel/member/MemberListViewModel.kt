@@ -35,10 +35,8 @@ open class MemberListViewModel(
             }.contains(owner)
             val newList = list.toMutableList()
             if (!contains) {
-                Log.e("apex", "fetchRoomMembers fetch members owner: ${ChatroomUIKitClient.getInstance().getContext().getCurrentRoomInfo().roomOwner}")
                 newList.add(0, ChatroomUIKitClient.getInstance().getContext().getCurrentRoomInfo().roomOwner ?: UserEntity(owner))
             }
-            Log.e("apex", "fetchRoomMembers fetch members: $newList")
             add(newList)
             onSuccess.invoke(newList)
         }, onError = { code, message ->
@@ -146,7 +144,6 @@ open class MemberListViewModel(
      * Fetches user information based on visible items on the page.
      */
     fun fetchUsersInfo(firstVisibleIndex: Int, lastVisibleIndex: Int) {
-        Log.e("apex", "fetchUsersInfo: $firstVisibleIndex, $lastVisibleIndex")
         items.subList(firstVisibleIndex, lastVisibleIndex).filter { user ->
             !ChatroomUIKitClient.getInstance().getCacheManager().inCache(user.userId)
         }.let { list ->

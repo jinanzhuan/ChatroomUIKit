@@ -2,6 +2,8 @@ package io.agora.chatroom
 
 import android.app.Application
 import io.agora.chatroom.commons.GlobalConfig
+import io.agora.chatroom.data.LanguageType
+import java.util.Locale
 
 class ChatroomApplication : Application() {
 
@@ -9,11 +11,28 @@ class ChatroomApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-
+        val locale: Locale = Locale.getDefault()
+        val language: String = locale.language
+        var currentLanguage = when (language) {
+            "zh" -> {
+                LanguageType.Chinese.code
+            }
+            "en" -> {
+                LanguageType.English.code
+            }
+            else -> {
+                GlobalConfig.targetLanguage.code
+            }
+        }
+        for (value in LanguageType.values()) {
+            if (language == value.code){
+                currentLanguage = language
+            }
+        }
         val chatroomUIKitOptions = ChatroomUIKitOptions(
             chatOptions = ChatSDKOptions(enableDebug = true),
             uiOptions = UiOptions(
-                targetLanguageList = listOf(GlobalConfig.targetLanguage.code),
+                targetLanguageList = listOf(currentLanguage),
                 useGiftsInList = false,
             )
         )

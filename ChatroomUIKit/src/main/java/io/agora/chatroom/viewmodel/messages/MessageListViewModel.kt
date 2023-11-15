@@ -1,5 +1,6 @@
 package io.agora.chatroom.viewmodel.messages
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.service.ChatMessage
@@ -105,11 +106,15 @@ class MessageListViewModel(
         }, onError)
     }
 
-    fun translateMessage(message: ChatMessage) {
+    fun translateMessage(message: ChatMessage,onSuccess: OnSuccess = {},onError: OnError = {code,error ->}) {
         chatService.getChatService().translateTextMessage(message, onSuccess = {
                 msg ->
             updateTextMessage(message = msg)
-        }, onError = {code, error ->})
+            onSuccess.invoke()
+        }, onError = {code, error ->
+            Log.e("MessageListViewModel","translateMessage onError $code $error")
+            onError.invoke(code,error)
+        })
     }
 
     fun removeMessage(message: ChatMessage?, onSuccess: OnSuccess, onError: OnError) {

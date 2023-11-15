@@ -175,7 +175,6 @@ class UISearchActivity : ComponentActivity() {
                         modifier = Modifier.safeDrawingPadding(),
                         viewModel = memberMenuViewModel,
                         onListItemClick = { index,item ->
-                            Log.e("apex"," default item: $index ${item.title}")
                             when(index){
                                 0 -> {
                                     if (item.title == context.getString(R.string.menu_item_mute)){

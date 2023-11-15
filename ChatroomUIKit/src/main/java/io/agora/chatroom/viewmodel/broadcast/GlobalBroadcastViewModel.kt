@@ -29,7 +29,6 @@ class GlobalBroadcastViewModel(
      * Register chatroom change listener
      */
     fun registerChatroomChangeListener() {
-        Log.e("apex","registerChatroomChangeListener")
         service.getChatService().bindListener(this)
     }
 
@@ -47,7 +46,6 @@ class GlobalBroadcastViewModel(
 
     override fun onBroadcastReceived(message: ChatMessage) {
         super.onBroadcastReceived(message)
-        Log.e("apex","onBroadcastReceived ")
         if(message.body is ChatTextMessageBody){
             addMarqueeText((message.body as ChatTextMessageBody).message)
         }

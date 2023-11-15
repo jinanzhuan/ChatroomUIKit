@@ -35,6 +35,7 @@ data class GiftMessageState(
  */
 data class ComposeMessageItemState(
     val message: ChatMessage,
+    val translateContent:String,
     val focusState: MessageFocusState? = null,
 ) : ComposeMessageListItemState(message.msgId, message.conversationId())
 

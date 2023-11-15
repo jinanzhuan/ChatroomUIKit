@@ -98,7 +98,6 @@ fun ComposeChatBottomBar(
     menuItemResource: List<UIChatBarMenuItem> = viewModel.getMenuItem,
     onSendMessage: (String) -> Unit = { },
     onValueChange: (String) -> Unit = {
-        Log.e("apex","onValueChange: $it")
         viewModel.setMessageInput(it)
     },
     input: @Composable RowScope.(ComposerInputMessageState) -> Unit = { it ->
@@ -373,7 +372,6 @@ fun DefaultComposerEmoji(
     maxH:Int,
     viewModel: MessageChatBarViewModel,
 ){
-    Log.e("apex","DefaultComposerEmoji: $maxH")
     Column(modifier = Modifier
         .fillMaxWidth()
         .height(maxH.dp)

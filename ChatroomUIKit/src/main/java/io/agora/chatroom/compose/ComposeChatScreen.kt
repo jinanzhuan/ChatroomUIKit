@@ -166,7 +166,8 @@ fun ComposeChatScreen(
                 memberListViewModel = memberListViewModel,
                 reportViewModel = reportViewModel,
                 messageListViewModel = messageListViewModel,
-                onMessageMenuClick = onMessageMenuClick)
+                onMessageMenuClick = onMessageMenuClick
+            )
 
             ComposeMessageReport(
                 modifier = Modifier.height((LocalConfiguration.current.screenHeightDp/2).dp),
@@ -331,12 +332,19 @@ fun ShowComposeMenuDrawer(
         onListItemClick = { index, menu ->
             onMessageMenuClick?.invoke(index, menu)
                 ?: run {
-                    ChatLog.d("apex", " default item: $index ${menu.title}")
+                    ChatLog.d("ComposeMenuBottomSheet", " default item: $index ${menu.title}")
                     when (menu.id) {
                         R.id.action_menu_translate -> {
                             (menuViewModel.getSelectedBean() as ChatMessage).let {
                                     message ->
-                                messageListViewModel.translateMessage(message)
+                                messageListViewModel.translateMessage(message,
+                                    onSuccess = {
+                                        menuViewModel.closeDrawer()
+                                    },
+                                    onError = {code, error ->
+                                        menuViewModel.closeDrawer()
+                                    }
+                                )
                             }
 
                         }

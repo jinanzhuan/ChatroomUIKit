@@ -17,6 +17,8 @@ import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.foundation.text.appendInlineContent
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
@@ -54,6 +56,14 @@ fun ComposeMessageItem(
     itemType: ComposeItemType = ComposeItemType.NORMAL,
     onLongItemClick: (Int, ComposeMessageListItemState) -> Unit,
 ){
+
+    val translationContent = remember {
+        mutableStateOf("")
+    }
+    if (messageItem is ComposeMessageItemState){
+        translationContent.value = messageItem.translateContent
+    }
+
     val message = when (itemType) {
         ComposeItemType.NORMAL -> {
             (messageItem as ComposeMessageItemState).message
@@ -105,7 +115,9 @@ fun ComposeMessageItem(
         val dateSeparator = message?.msgTime?.let { convertMillisTo24HourFormat(it) }
 
         val content =  if(message?.body is ChatTextMessageBody){
-            (message.body as ChatTextMessageBody).message
+            translationContent.value.ifEmpty {
+                (message.body as ChatTextMessageBody).message
+            }
         }else{
             ""
         }
@@ -274,7 +286,6 @@ fun DrawLabelImage(userInfo:UserEntity?) {
 }
 @Composable
 fun DrawAvatarImage(userInfo:UserEntity?){
-    Log.e("apex","DrawAvatarImage $userInfo ")
     var avatarUrl:String? = ""
     userInfo?.let {
         avatarUrl = it.avatarURL
