@@ -35,7 +35,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import io.agora.chatroom.compose.tabrow.PagerWithTabs
+import io.agora.chatroom.compose.tabrow.ComposePagerWithTabs
 import io.agora.chatroom.compose.utils.rememberStreamImagePainter
 import io.agora.chatroom.data.parsingGift
 import io.agora.chatroom.model.gift.selected
@@ -58,7 +58,7 @@ fun <T> ComposeTabLayoutWithViewPager(
         .padding(top = 5.dp)
         .background(ChatroomUIKitTheme.colors.background)
     ) {
-        PagerWithTabs(
+        ComposePagerWithTabs(
             viewModel = PagerViewModel(tabList = tabList),
             modifier = modifier,
             tabIndicatorHeight = 4.dp,

@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
@@ -42,8 +41,8 @@ import io.agora.chatroom.UIChatroomService
 import io.agora.chatroom.compose.dialog.SimpleDialog
 import io.agora.chatroom.compose.drawer.ComposeMenuBottomSheet
 import io.agora.chatroom.compose.input.SearchInputFiled
-import io.agora.chatroom.compose.member.MembersPage
-import io.agora.chatroom.compose.member.MutedListPage
+import io.agora.chatroom.compose.participant.MembersPage
+import io.agora.chatroom.compose.participant.MutedListPage
 import io.agora.chatroom.compose.utils.WindowConfigUtils
 import io.agora.chatroom.service.ChatLog
 import io.agora.chatroom.theme.ChatroomUIKitTheme

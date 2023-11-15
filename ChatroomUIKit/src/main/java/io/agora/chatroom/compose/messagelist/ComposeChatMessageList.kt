@@ -1,4 +1,4 @@
-package io.agora.chatroom.compose.chatmessagelist
+package io.agora.chatroom.compose.messagelist
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -140,7 +140,7 @@ internal fun DefaultMessageContainer(
     messageListItem: ComposeMessageListItemState,
     onLongItemClick: (Int, ComposeMessageListItemState) -> Unit,
 ) {
-    MessageContainer(
+    ComposeMessageContainer(
         itemIndex = itemIndex,
         viewModel = viewModel,
         messageListItem = messageListItem,

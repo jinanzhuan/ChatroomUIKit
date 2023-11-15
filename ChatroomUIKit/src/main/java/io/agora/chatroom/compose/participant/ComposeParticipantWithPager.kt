@@ -1,7 +1,6 @@
-package io.agora.chatroom.compose.member
+package io.agora.chatroom.compose.participant
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,7 +23,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import io.agora.chatroom.compose.drawer.ComposeBottomSheet
 import io.agora.chatroom.compose.drawer.DefaultDragHandle
 import io.agora.chatroom.compose.search.DefaultSearchBar
-import io.agora.chatroom.compose.tabrow.PagerWithTabs
+import io.agora.chatroom.compose.tabrow.ComposePagerWithTabs
 import io.agora.chatroom.service.UserEntity
 import io.agora.chatroom.theme.ChatroomUIKitTheme
 import io.agora.chatroom.UIChatroomService
@@ -38,7 +37,7 @@ import io.agora.chatroom.viewmodel.pager.TabInfo
 
 @ExperimentalFoundationApi
 @Composable
-fun MembersWithPager(
+fun ComposeParticipantWithPager(
     modifier: Modifier = Modifier,
     roomId: String,
     roomService: UIChatroomService,
@@ -58,7 +57,7 @@ fun MembersWithPager(
     memberViewModel.enableLoadMore(true)
     mutedViewModel.enableLoadMore(true)
 
-    PagerWithTabs(
+    ComposePagerWithTabs(
         viewModel = PagerViewModel(tabList = tabList),
         modifier = modifier,
         tabIndicatorHeight = 4.dp,
@@ -116,7 +115,7 @@ fun MembersPage(
                 }
             )
         }
-        MemberList(
+        ComposeParticipantList(
             viewModel = viewModel,
             modifier = Modifier
                 .fillMaxSize(),
@@ -162,7 +161,7 @@ fun MutedListPage(
                 }
             )
         }
-        MemberList(
+        ComposeParticipantList(
             viewModel = viewModel,
             modifier = Modifier
                 .fillMaxSize(),
@@ -191,7 +190,7 @@ fun ComposeMembersBottomSheet(
     onExtendClick: ((String, UserEntity) -> Unit)? = null,
     onSearchClick: ((String) -> Unit)? = null,
     drawerContent: @Composable () -> Unit = {
-        MembersWithPager(
+        ComposeParticipantWithPager(
             roomId = viewModel.roomId,
             roomService = viewModel.roomService,
             isAdmin = viewModel.isAdmin,

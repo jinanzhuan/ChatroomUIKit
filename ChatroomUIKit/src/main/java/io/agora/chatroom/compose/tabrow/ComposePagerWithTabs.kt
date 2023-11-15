@@ -56,7 +56,7 @@ import kotlinx.coroutines.launch
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun PagerWithTabs(
+fun ComposePagerWithTabs(
     viewModel: PagerViewModel,
     modifier: Modifier = Modifier,
     setupWithTabs: Boolean = true,
@@ -174,7 +174,7 @@ fun DefaultTabContent(index: Int, selectedTabIndex: Int, tabContent: TabInfo) {
 fun PreviewHorizontalPagerWithTabs() {
     ChatroomUIKitTheme {
         val viewModel = PagerViewModel(tabList = mutableListOf(TabInfo("Tab1"), TabInfo("tab2"), TabInfo("tab3")))
-        PagerWithTabs(
+        ComposePagerWithTabs(
             viewModel = viewModel,
         ) { page ->
             val currentTab = viewModel.tabList[page]

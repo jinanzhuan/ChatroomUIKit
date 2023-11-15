@@ -26,15 +26,15 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.agora.chatroom.ChatroomUIKitClient
-import io.agora.chatroom.compose.chatbottombar.ComposeChatBottomBar
-import io.agora.chatroom.compose.chatmessagelist.ComposeChatMessageList
-import io.agora.chatroom.compose.chatmessagelist.ComposeMessageItemState
+import io.agora.chatroom.compose.bottomtoolbar.ComposeBottomToolbar
+import io.agora.chatroom.compose.messagelist.ComposeChatMessageList
+import io.agora.chatroom.compose.messagelist.ComposeMessageItemState
 import io.agora.chatroom.compose.dialog.SimpleDialog
 import io.agora.chatroom.compose.drawer.ComposeMenuBottomSheet
 import io.agora.chatroom.compose.gift.ComposeGiftBottomSheet
 import io.agora.chatroom.compose.gift.ComposeGiftItemState
-import io.agora.chatroom.compose.gift.ComposeGiftList
-import io.agora.chatroom.compose.member.ComposeMembersBottomSheet
+import io.agora.chatroom.compose.gift.ComposeGiftMessageList
+import io.agora.chatroom.compose.participant.ComposeMembersBottomSheet
 import io.agora.chatroom.compose.report.ComposeMessageReport
 import io.agora.chatroom.model.UIChatroomInfo
 import io.agora.chatroom.model.UIComposeSheetItem
@@ -260,7 +260,7 @@ fun ComposeChatScreen(
                 )
             )
 
-            ComposeGiftList(
+            ComposeGiftMessageList(
                 modifier = Modifier
                     .wrapContentWidth()
                     .height(84.dp)
@@ -288,7 +288,7 @@ fun ComposeChatScreen(
                 }
             )
 
-            ComposeChatBottomBar(
+            ComposeBottomToolbar(
                 modifier = Modifier
                     .constrainAs(bottomBar) {
                         bottom.linkTo(parent.bottom)

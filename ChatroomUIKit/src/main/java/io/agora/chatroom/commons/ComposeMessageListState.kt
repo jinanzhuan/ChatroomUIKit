@@ -2,8 +2,8 @@ package io.agora.chatroom.commons
 
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.unit.IntSize
-import io.agora.chatroom.compose.chatmessagelist.ComposeMessageListItemState
-import io.agora.chatroom.compose.chatmessagelist.ComposeSelectedMessageState
+import io.agora.chatroom.compose.messagelist.ComposeMessageListItemState
+import io.agora.chatroom.compose.messagelist.ComposeSelectedMessageState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 

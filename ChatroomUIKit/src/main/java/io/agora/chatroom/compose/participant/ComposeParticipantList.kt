@@ -1,4 +1,4 @@
-package io.agora.chatroom.compose.member
+package io.agora.chatroom.compose.participant
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,10 +10,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.compose.indicator.LoadingIndicator
-import io.agora.chatroom.compose.list.LazyColumnList
-import io.agora.chatroom.compose.list.LazyColumnListState
+import io.agora.chatroom.compose.gift.LazyColumnList
+import io.agora.chatroom.compose.gift.LazyColumnListState
 import io.agora.chatroom.service.UserEntity
 import io.agora.chatroom.uikit.R
 import io.agora.chatroom.viewmodel.LoadMoreState
@@ -22,7 +21,7 @@ import io.agora.chatroom.viewmodel.RequestState
 import io.agora.chatroom.viewmodel.member.MemberListViewModel
 
 @Composable
-fun MemberList(
+fun ComposeParticipantList(
     viewModel: MemberListViewModel,
     modifier: Modifier = Modifier,
     listState: LazyListState = rememberLazyListState(),

@@ -1,18 +1,7 @@
-package io.agora.chatroom.compose.chatbottombar
+package io.agora.chatroom.compose.bottomtoolbar
 
-import android.util.Log
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.KeyboardCapitalization
-import androidx.compose.ui.unit.dp
 import io.agora.chatroom.commons.ComposerInputMessageState
 import io.agora.chatroom.viewmodel.messages.MessageChatBarViewModel
 import io.agora.chatroom.widget.WidgetInputField

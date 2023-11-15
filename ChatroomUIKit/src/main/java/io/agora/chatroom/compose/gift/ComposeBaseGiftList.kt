@@ -1,4 +1,4 @@
-package io.agora.chatroom.compose.list
+package io.agora.chatroom.compose.gift
 
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
@@ -122,7 +122,7 @@ fun <T> LazyColumnList(
         if (!reverseLayout) Arrangement.Top else Arrangement.Bottom,
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
     contentPadding: PaddingValues = PaddingValues(0.dp),
-    onScrollChange: (LazyColumnListState) -> Unit = {_ -> },
+    onScrollChange: (LazyColumnListState) -> Unit = { _ -> },
     bottomContent: @Composable (() -> Unit)? = null,
     itemContent: @Composable (Int, T) -> Unit
 ) {

@@ -1,10 +1,10 @@
 package io.agora.chatroom.commons
 
 import io.agora.chatroom.service.ChatMessage
-import io.agora.chatroom.compose.chatmessagelist.ComposeMessageItemState
-import io.agora.chatroom.compose.chatmessagelist.ComposeMessageListItemState
-import io.agora.chatroom.compose.chatmessagelist.GiftMessageState
-import io.agora.chatroom.compose.chatmessagelist.JoinedMessageState
+import io.agora.chatroom.compose.messagelist.ComposeMessageItemState
+import io.agora.chatroom.compose.messagelist.ComposeMessageListItemState
+import io.agora.chatroom.compose.messagelist.GiftMessageState
+import io.agora.chatroom.compose.messagelist.JoinedMessageState
 import io.agora.chatroom.service.ChatTextMessageBody
 import io.agora.chatroom.service.GiftEntityProtocol
 

@@ -1,4 +1,4 @@
-package io.agora.chatroom.compose.chatmessagelist
+package io.agora.chatroom.compose.messagelist
 
 /**
  * Represents the message focus state, in case the user jumps to a message.

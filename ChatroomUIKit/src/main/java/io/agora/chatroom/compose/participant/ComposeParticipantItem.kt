@@ -1,4 +1,4 @@
-package io.agora.chatroom.compose.member
+package io.agora.chatroom.compose.participant
 
 import android.util.Log
 import androidx.compose.foundation.background
@@ -37,7 +37,7 @@ import io.agora.chatroom.theme.ChatroomUIKitTheme
 import io.agora.chatroom.uikit.R
 
 @Composable
-fun MemberItem(
+fun ComposeParticipantItem(
     member: UserEntity,
     modifier: Modifier,
     labelContent: @Composable ((UserEntity) -> Unit)? = null,
@@ -160,7 +160,7 @@ fun DefaultMemberItem(
     },
     showDivider: Boolean = true
 ) {
-    MemberItem(
+    ComposeParticipantItem(
         user,
         modifier = Modifier
             .fillMaxWidth()

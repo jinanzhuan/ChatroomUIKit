@@ -6,7 +6,7 @@ import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.service.ChatMessage
 import io.agora.chatroom.commons.ComposeChatListController
 import io.agora.chatroom.commons.ComposeMessageListState
-import io.agora.chatroom.compose.chatmessagelist.ComposeMessageListItemState
+import io.agora.chatroom.compose.messagelist.ComposeMessageListItemState
 import io.agora.chatroom.service.ChatroomChangeListener
 import io.agora.chatroom.service.GiftEntityProtocol
 import io.agora.chatroom.service.GiftReceiveListener

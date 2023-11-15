@@ -13,8 +13,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.agora.chatroom.bean.RoomDetailBean
 import io.agora.chatroom.compose.indicator.LoadingIndicator
-import io.agora.chatroom.compose.list.LazyColumnList
-import io.agora.chatroom.compose.list.LazyColumnListState
+import io.agora.chatroom.compose.gift.LazyColumnList
+import io.agora.chatroom.compose.gift.LazyColumnListState
 import io.agora.chatroom.uikit.R
 import io.agora.chatroom.viewmodel.ChatroomListViewModel
 import io.agora.chatroom.viewmodel.LoadMoreState
