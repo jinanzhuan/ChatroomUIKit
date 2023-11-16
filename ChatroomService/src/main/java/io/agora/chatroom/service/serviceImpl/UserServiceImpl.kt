@@ -1,13 +1,11 @@
 package io.agora.chatroom.service.serviceImpl
 
-import io.agora.chatroom.ChatroomResultEvent
 import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.model.UserInfoProtocol
 import io.agora.chatroom.model.toUser
 import io.agora.chatroom.model.transfer
 import io.agora.chatroom.service.CallbackImpl
 import io.agora.chatroom.service.ChatClient
-import io.agora.chatroom.service.ChatError
 import io.agora.chatroom.service.ChatUserInfo
 import io.agora.chatroom.service.ChatValueCallback
 import io.agora.chatroom.service.OnError

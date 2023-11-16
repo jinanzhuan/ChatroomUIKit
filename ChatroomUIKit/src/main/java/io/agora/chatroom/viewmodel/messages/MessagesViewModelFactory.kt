@@ -27,7 +27,6 @@ class MessagesViewModelFactory(
     private val showAvatar: Boolean = true,
     private val emojiColumns:Int = 7,
     private val menuItemResource: List<UIChatBarMenuItem> = listOf(
-        UIChatBarMenuItem(R.drawable.icon_bottom_bar_more, 1),
         UIChatBarMenuItem(R.drawable.icon_bottom_bar_gift, 0)
     ),
     private val giftTabInfo: List<AUIGiftTabInfo> = parsingGift(context)
