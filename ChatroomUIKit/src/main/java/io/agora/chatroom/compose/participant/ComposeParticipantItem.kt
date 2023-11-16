@@ -121,7 +121,7 @@ fun DefaultMemberItem(
                 .fillMaxHeight()
         ) {
             Text(
-                text = user.nickname?.let {
+                text = user.nickName?.let {
                     it.ifBlank { user.userId }
                 } ?: user.userId ,
                 modifier = Modifier
@@ -195,7 +195,7 @@ fun MemberItemPreview() {
     ChatroomUIKitTheme {
         DefaultMemberItem(user = UserEntity(
             userId = "123",
-            nickname = "nickname",
+            nickName = "nickname",
             avatarURL = "",
             identify = ""
         ))

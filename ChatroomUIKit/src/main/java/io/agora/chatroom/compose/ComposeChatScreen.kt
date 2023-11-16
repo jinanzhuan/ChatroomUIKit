@@ -226,7 +226,7 @@ fun ComposeChatScreen(
                                 )
                             }
                             R.id.action_menu_remove -> {
-                                dialogViewModel.title = context.getString(R.string.dialog_title_remove_user, memberMenuViewModel.user.nickname)
+                                dialogViewModel.title = context.getString(R.string.dialog_title_remove_user, memberMenuViewModel.user.nickName)
                                 dialogViewModel.showCancel = true
                                 dialogViewModel.showDialog()
                             }
@@ -305,8 +305,6 @@ fun ComposeChatScreen(
                     ChatLog.d(TAG,"onMenuClick: tag: $it")
                     if (it == 0){
                         giftBottomSheetViewModel.openDrawer()
-                    } else if (it == 1){
-                        membersBottomSheetViewModel.openDrawer()
                     }
                 },
                 onInputClick = {

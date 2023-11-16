@@ -105,7 +105,7 @@ fun ComposeMessageItem(
         if (userId != null) {
             if (  userId.isNotEmpty() && userId.isNotBlank()){
                 userInfo = ChatroomUIKitClient.getInstance().getChatroomUser().getUserInfo(userId)
-                userName = userInfo.nickname?.let {
+                userName = userInfo.nickName?.let {
                     it.ifEmpty { userInfo.userId }
                 } ?: userInfo.userId
             }

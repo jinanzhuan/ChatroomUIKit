@@ -114,7 +114,7 @@ class ChatroomActivity : ComponentActivity(), ChatroomResultListener {
 
         val owner = UserEntity(
             userId = ownerId,
-            nickname = room.nickname,
+            nickName = room.nickname,
             avatarURL = room.iconKey
         )
 
