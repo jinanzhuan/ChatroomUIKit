@@ -15,6 +15,10 @@ class DialogViewModel(
     var showCancel: Boolean = false,
 ): ViewModel() {
     private val _showDialog = mutableStateOf(false)
+    private val _action = mutableStateOf("")
+
+    val getAction:String
+        get() = _action.value
 
     val isShowDialog: Boolean
         get() = _showDialog.value
@@ -25,5 +29,9 @@ class DialogViewModel(
 
     fun dismissDialog() {
         _showDialog.value = false
+    }
+
+    fun setAction(action:String){
+        _action.value = action
     }
 }

@@ -2,171 +2,249 @@
 
 *English | [中文](ChatroomUIKit_zh.md)*
 
-VoiceRoomUIKit is a voice chat room scene component, which provides room management and the ability to pull up the voice chat room scene page. Developers can use this component to quickly build a chat room application.
+# [Sample Demo](https://github.com/apex-wang/ChatroomUIKit#sample-demo)
 
+In this project, there is a best practice demonstration project in the `Example` folder for you to build your own business capabilities.
 
-## Quick Started
-> Please make sure you have successfully run the project according to this [tutorial](../Example/AUIKitVoiceRoom/README.md) before integrating.。
+To experience functions of the ChatroomUIKit, you can scan the following QR code to try a demo.
 
-### 1. Add Source Code
+[![SampleDemo](https://github.com/apex-wang/ChatroomUIKit/image/demo.png)](https://github.com/apex-wang/ChatroomUIKit/image/demo.png).
 
-**Copy the following source code into your own project：**
+# [Chatroom UIKit Guide](https://github.com/apex-wang/ChatroomUIKit#chatroom-uikit-guide)
 
-- [AUIKit](../AUIKit)
-- [AScenesKit](../AScenesKit)
+## [Introduction](https://github.com/apex-wang/ChatroomUIKit#introduction)
 
-**Add dependencies on AScenesKit and AUIKit in the Setting.gradle file**
+This guide presents an overview and usage examples of the ChatroomUIKit framework in Android development, as well as describes various components and features of this UIKit, enabling developers to have a good understanding of the UIKit and make effective use of it.
 
-```gradle
-  rootProject.name = "AUIKitVoiceRoom"
-  def uiKitPath = new File(settingsDir, '../AUIKit/Android/auikit')
-  if(!uiKitPath.exists()){
-    throw new RuntimeException("Please run `git submodule update --init` in AUIKitVoiceRoom root direction.")
-  }
+## [Table of Contents](https://github.com/apex-wang/ChatroomUIKit#table-of-contents)
 
-  include ':auikit'
-  project(':auikit').projectDir = uiKitPath
-  include ':asceneskit'
+- [Requirements](https://github.com/apex-wang/ChatroomUIKit#requirements)
+- [Installation](https://github.com/apex-wang/ChatroomUIKit#installation)
+- [Structure](https://github.com/apex-wang/ChatroomUIKit#structure)
+- [QuickStart](https://github.com/apex-wang/ChatroomUIKit#quickStart)
+- [AdvancedUsage](https://github.com/apex-wang/ChatroomUIKit#advancedusage)
+- [CustomTheme](https://github.com/apex-wang/ChatroomUIKit#customTheme)
+- [BusinessFlowchart](https://github.com/apex-wang/ChatroomUIKit#businessflowchart)
+- [ApiSequenceDiagram](https://github.com/apex-wang/ChatroomUIKit#apisequencediagram)
+- [DesignGuidelines](https://github.com/apex-wang/ChatroomUIKit#designguidelines)
+- [Contributing](https://github.com/apex-wang/ChatroomUIKit#contributing)
+- [License](https://github.com/apex-wang/ChatroomUIKit#license)
+
+# [Requirements](https://github.com/apex-wang/ChatroomUIKit#requirements)
+
+- Jetpack Compose The minimum support for Android API 21, which is version 5.0
+- Android Studio 4.0+
+- Must use kotlin language
+
+# [Installation](https://github.com/apex-wang/ChatroomUIKit#installation)
+
+You can use build.gradle to rely on the ChatroomUIKit library as a dependency for app projects.
+
+## [Local_module_dependencies](https://github.com/apex-wang/ChatroomUIKit#Local_module_dependencies)
+
+1. Open your project in Android Studio.
+
+2. Choose **File** > **import Module**.
+
+3. Search for **ChatroomUIKit** and select it.
+
+## [Build_gradle](https://github.com/apex-wang/ChatroomUIKit#Build_gradle)
+
+```
+implementation 'ChatroomUIKit'
 ```
 
+# [Structure](https://github.com/apex-wang/ChatroomUIKit#structure)
 
-### 2. Initialize VoiceRoomUIKit
-```kotlin
-    //VoiceRoomUIKit Set basic information
+### [ChatroomUIKit Basic Components](https://github.com/apex-wang/ChatroomUIKit#chatroomuikit-basic-components)
 
-    // Create Common Config
-    val config = AUICommonConfig()
-        config.context = application
-        config.appId = BuildConfig.AGORA_APP_ID
-        config.userId = mUserId
-        config.userName = "user_$mUserId"
-        config.userAvatar = randomAvatar()
-
-    // init AUiKit
-    AUIVoiceRoomUikit.init(
-        config = config, // must
-        rtmClient = null, // option
-        rtcEngineEx = null, // option
-        ktvApi = null,// option
-        serverHost = BuildConfig.SERVER_HOST
-    )
+## 目录结构
 ```
-
-### 3. Get room list
-```kotlin
-    AUIVoiceRoomUikit.getRoomList(
-        lastCreateTime: Long?,
-        pageSize: Int,
-        success: (List<AUIRoomInfo>) -> Unit,
-        failure: (AUIException) -> Unit
-    )
+┌─ Example                        // SampleDemo directory
+│  ├─ ChatroomListActivity              // Mainly providing room list Activity
+│  ├─ ChatroomActivity                  // display ChatroomUIKit chatroom Activity
+│  ├─ compose                           // SampleDemo 
+│  ├─ http                              // Encapsulated network requests for interaction with app services
+│  └─ SplashActivity                    // Program Launch Page
+├─ ChatroomService                // ChatroomUIKit Protocol module
+│  ├─ model                              // The entity objects used by ChatroomUIKit (user, room information, configuration information)
+│  ├─ service                            // The protocols and protocol implementations used by ChatroomUIKit (room protocol, user protocol, gift protocol)
+│  │    └─ Protocol                        
+│  │         ├─ GiftService              // Gift sending and receiving channel.
+│  │         ├─ UserService              // Component for user login and user attribute update.
+│  │         └─ ChatroomService          // Component for implementing the protocol for chat room management, including joining and leaving the chat room and sending and receiving messages.
+│  └─ ChatroomUIKit                      // ChatroomUIKit initialization class.
+└─ ChatroomUIKit            
+       ├─ compose                   	// UI Compose(Bottom input box, message list, gift list, bottom drawer)
+       ├─ theme                     	// Resource files provide properties such as colors, fonts, themes, gradients, and sizes required for the project
+       ├─ viewModel                 	// data processing
+       ├─ widget                    	// input widget
+       └─ ui                        	// search activity
 ```
+# [QuickStart](https://github.com/apex-wang/ChatroomUIKit#quickstart)
 
-### 4. Create room
+This guide provides several usage examples for different ChatroomUIKit components. Refer to the `Examples` folder for detailed code snippets and projects showing various use cases.
+
+Please refer to the following steps to run the Android platform application in Android Studio
+
+* First download the demo to the local location
+* Then configure the CHATROOM_APP_KEY and REQUEST_HOST in the local.properties folder in the root directory
+* Run demo
+
+### [Step 1: Initialize ChatroomUIKit](https://github.com/apex-wang/ChatroomUIKit#step-1-initialize-chatroomuikit)
+
 ```kotlin
-    val createRoomInfo = AUICreateRoomInfo()
-        createRoomInfo.roomName = roomName
-        createRoomInfo.micSeatCount = seatCount
-        createRoomInfo.micSeatStyle = seatStyle
-        AUIVoiceRoomUikit.createRoom(
-            createRoomInfo,
-            success = { roomInfo ->
-                gotoRoomDetailPage(AUIVoiceRoomUikit.LaunchType.CREATE,roomInfo)
-            },
-            failure = {
-                Toast.makeText(this@VoiceRoomListActivity, "Create room failed!", Toast.LENGTH_SHORT)
-                    .show()
-            }
+class ChatroomApplication : Application() {
+    override fun onCreate() {
+    
+        val chatroomUIKitOptions = ChatroomUIKitOptions(
+            uiOptions = UiOptions(
+                targetLanguageList = listOf(GlobalConfig.targetLanguage.code),
+                useGiftsInList = false,
+            )
         )
-```
-
-### 5. Check permissions and Launch room
-```kotlin
-    mPermissionHelp.checkMicPerm(
-            {
-                generateToken { config ->
-                    AUIVoiceRoomUikit.launchRoom(
-                        lunchType,
-                        roomInfo,
-                        config,
-                        mViewBinding.VoiceRoomView,
-                        AUIVoiceRoomUikit.RoomEventHandler {
-
-                        })
-                    AUIVoiceRoomUikit.subscribeError(roomInfo.roomId, this)
-                    AUIVoiceRoomUikit.bindRespDelegate(this)
-                }
-            },
-            {
-                finish()
-            },
-            true
+        
+        ChatroomUIKitClient.getInstance().setUp(
+            applicationContext = this,
+            options = chatroomUIKitOptions,
+            appKey = BuildConfig.CHATROOM_APP_KEY
         )
-```
-
-### 6. Exit the room
-#### 6.1 Proactively exiting
-```kotlin
-//AUIVoiceChatRoomView provides a closure for onClickOffButton
- private fun shutDownRoom() {
-        roomInfo?.roomId?.let { roomId ->
-            AUIVoiceRoomUikit.destroyRoom(roomId)
-            AUIVoiceRoomUikit.unsubscribeError(roomId, this@VoiceRoomActivity)
-            AUIVoiceRoomUikit.unbindRespDelegate(this@VoiceRoomActivity)
-        }
-        finish()
     }
-```
-
-#### 6.2 Room destruction passive exit
-Please refer to [Room Destruction] (# 7.2-Room-Destruction)
-
-
-### 7. Exception handling
-#### 7.1 Token expiration processing
-```kotlin
-//Subscribe to the callback for AUIRtmErrorProxyDelegate after AUIVoiceRoomUikit.subscribeError
-AUIVoiceRoomUikit.subscribeError(roomInfo.roomId, this)
-
-//Unsubscribe when exiting the room
-AUIVoiceRoomUikit.unsubscribeError(roomId, this@VoiceRoomActivity)
-
-//Then use the onTokenPrivilegeWillExpire callback method in the AUIRtmErrorProxyDelegate callback to renew all tokens
-override fun onTokenPrivilegeWillExpire(channelName: String?) {
-        generateToken(channelName, onSuccess = {
-            AUIRoomContext.shared().roomConfig = it
-        })
-    }
-```
-
-#### 7.2 Room destruction
-```kotlin
-//Subscribe to the callback for AUIRoomManagerRespDelegate after VoiceRoomUIKit. shared. launchRoom
-mVoiceService.getRoomManager().bindRespDelegate(this)
-
-//Unsubscribe when exiting the room
-mVoiceService?.getRoomManager()?.unbindRespDelegate(this)
-
-//Process room destruction through onRoomDestroy in the AUIRoomManagerRespDelegate callback method
-override fun onRoomDestroy(roomId: String) {
-    //Processing room was destroyed
 }
-
-override fun onRoomUserBeKicked(roomId: String?, userId: String?) {
-        if (roomId == mVoiceService?.getRoomInfo()?.roomId){
-            AUIAlertDialog(context).apply {
-                setTitle("You have been kicked out of the room")
-                setPositiveButton("confirm") {
-                    dismiss()
-                    mOnRoomDestroyEvent?.invoke()
-                }
-                show()
-            }
-        }
-    }
 ```
 
-## License
-Copyright © Agora Corporation. All rights reserved.
-Licensed under the [MIT license](../LICENSE).
+### [Step 2: Login](https://github.com/apex-wang/ChatroomUIKit#step-2-login)
 
+```kotlin
+// Log in to the ChatroomUIKit with the user information of the current user object that conforms to the `UserInfoProtocol` protocol.
+// The token needs to be obtained from your app server. You can also log in with a temporary token generated on the Agora Console.
+// To generate a user and a temporary user token on the Agora Console, see https://docs.agora.io/en/agora-chat/get-started/enable?platform=ios#manage-users-and-generate-tokens.
+ChatroomUIKitClient.getInstance().login("user id","token")
+```
+
+### [Step 3: Create chat room](https://github.com/apex-wang/ChatroomUIKit#step-3-create-chat-room-view)
+
+```kotlin
+// 1. Get a chat room list and join a chat room. Alternatively, create a chat room on the Agora Console.
+// Choose ProjectManager > Operation Manager > Chat Room and click Create Chat Room and set parameters in the displayed dialog box to create a chat room. Get the chat room ID to pass it in to the following `launchRoomView` method.
+// 2. Load ComposeChatroom with setContent in activity. ComposeChatroom is a fully packaged chatroom scenario component that we have packaged. 
+// 3. Set the parameters required for ComposeChatroom
+// 4. Add users to the chat room on the Console.
+// Choose ProjectManager > Operation Manager > Chat Room. Select View Chat Room Members in the Action column of a chat room and add users to the chat room in the displayed dialog box.  
+// 5.Load the ComposeChatroom view and pass in the roomId and the UserEntity object of the room owner
+class ChatroomActivity : ComponentActivity(){
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            ComposeChatroom(roomId = roomId,roomOwner = ownerInfo)
+        }
+    }
+}
+```
+
+[![CreateChatroom](https://github.com/apex-wang/ChatroomUIKit/image/CreateChatroom.png)](https://github.com/apex-wang/ChatroomUIKit/image/CreateChatroom.png).
+
+# [AdvancedUsage](https://github.com/apex-wang/ChatroomUIKit#advancedusage)
+
+Here are three examples of advanced usage.
+
+### [1.Login](https://github.com/apex-wang/ChatroomUIKit#1login)
+
+```kotlin
+class YourAppUser: UserInfoProtocol {
+    var userId: String = "your application user id"
+            
+    var nickName: String = "you user nick name"
+            
+    var avatarURL: String = "you user avatar url"
+            
+    var gender: Int = 1
+            
+    var identity: String =  "you user level symbol url"
+            
+}
+// Use the user information of the current user object that conforms to the UserInfoProtocol protocol to log in to ChatroomUIKit.
+// You need to get a user token from your app server. Alternatively, you can use a temporary token. To generate a temporary toke, visit https://docs.agora.io/en/agora-chat/get-started/enable?platform=ios#generate-a-user-token.
+ChatroomUIKitClient.getInstance().login(YourAppUser, token, onSuccess = {}, onError = {code,error ->})
+```
+
+
+### [2.Initializing the chat room compose](https://github.com/apex-wang/ChatroomUIKit#2initializing-the-chat-room-view)
+
+```kotlin
+    val chatroomUIKitOptions = ChatroomUIKitOptions(
+            chatOptions = ChatSDKOptions(),
+            uiOptions = UiOptions(
+                targetLanguageList = listOf(GlobalConfig.targetLanguage.code),
+                useGiftsInList = false,
+            )
+        )
+
+    ChatroomUIKitClient.getInstance().setUp(applicationContext = applicationContext,appKey = "Your AppKey",options = chatroomUIKitOptions)
+```
+
+### [3.Listening to ChatroomUIKit events and errors](https://github.com/apex-wang/ChatroomUIKit#3listening-to-chatroomuikit-events-and-errors)
+
+You can call the `registerRoomResultListener` method to listen for ChatroomUIKit events and errors.
+
+```kotlin
+ChatroomUIKitClient.getInstance().registerRoomResultListener(this)
+```
+
+# [CustomTheme](https://github.com/apex-wang/ChatroomUIKit#customTheme)
+
+### [Switch original or custom theme](https://github.com/apex-wang/ChatroomUIKit#3switch-original-or-custom-theme)
+
+- Switch to the light or dark theme that comes with the ChatroomUIKit.
+
+```kotlin
+ChatroomUIKitClient.getInstance().setCurrentTheme(isDarkTheme)
+```
+
+- ChatroomUIKitTheme ChatroomUIKitTheme provides configurable items,
+- and developers can implement custom themes by replacing the corresponding configuration items.
+- If not configured, the default theme will be used.
+
+```kotlin
+@Composable
+fun ChatroomUIKitTheme(
+    isDarkTheme: Boolean = isSystemInDarkTheme(),
+    colors: UIColors = if (!isDarkTheme) UIColors.defaultColors() else UIColors.defaultDarkColors(),
+    shapes: UIShapes = UIShapes.defaultShapes(),
+    dimens: UIDimens = UIDimens.defaultDimens(),
+    typography: UITypography = UITypography.defaultTypography(),
+    content: @Composable () -> Unit
+)
+```
+
+# [BusinessFlowchart](https://github.com/apex-wang/ChatroomUIKit#businessflowchart)
+
+The following figure presents the entire logic of business requests and callbacks.
+
+![Overall flow diagram of business logic](https://github.com/apex-wang/ChatroomUIKit/image/BusinessFlowchart.png)
+
+# [ApiSequenceDiagram](https://github.com/apex-wang/ChatroomUIKit#apisequencediagram)
+
+The following figure is the best-practice API calling sequence diagram in the `Example` project.
+
+![APIUML](https://github.com/apex-wang/ChatroomUIKit/image/Api.png)
+
+# [DesignGuidelines](https://github.com/apex-wang/ChatroomUIKit#designguidelines)
+
+For any questions about design guidelines and details, you can add comments to the Figma design draft and mention our designer Stevie Jiang.
+
+See the [UI design drawing](https://www.figma.com/file/OX2dUdilAKHahAh9VwX8aI/Streamuikit?node-id=137%3A38589&mode=dev).
+
+See the [UI design guidelines](https://www.figma.com/file/OX2dUdilAKHahAh9VwX8aI/Streamuikit?node-id=137)
+
+# [Contributing](https://github.com/apex-wang/ChatroomUIKit#contributing)
+
+Contributions and feedback are welcome! For any issues or improvement suggestions, you can open an issue or submit a pull request.
+
+## [Author](https://github.com/apex-wang/ChatroomUIKit#author)
+
+apex-wang, [1746807718@qq.com](mailto:1746807718@qq.com)
+
+## [License](https://github.com/apex-wang/ChatroomUIKit#license)
+
+ChatroomUIKit is available under the MIT license. See the LICENSE file for more information.
