@@ -33,8 +33,10 @@ This guide presents an overview and usage examples of the ChatroomUIKit framewor
 # [Requirements](https://github.com/apex-wang/ChatroomUIKit#requirements)
 
 - Jetpack Compose The minimum support for Android API 21, which is version 5.0
-- Android Studio 4.0+
-- Must use kotlin language
+- Android Studio Arctic Fox (2020.3.1) or Higher version
+- Use kotlin language
+- JDK version 1.8 and above
+- Gradle version 7.0.0 and above.
 
 # [Installation](https://github.com/apex-wang/ChatroomUIKit#installation)
 
@@ -48,7 +50,7 @@ You can use build.gradle to rely on the ChatroomUIKit library as a dependency fo
 
 3. Search for **ChatroomUIKit** and select it.
 
-## [Build_gradle](https://github.com/apex-wang/ChatroomUIKit#Build_gradle)
+## [Build.gradle](https://github.com/apex-wang/ChatroomUIKit#Build.gradle)
 
 ```
 implementation 'ChatroomUIKit'
@@ -73,13 +75,13 @@ implementation 'ChatroomUIKit'
 │  │         ├─ GiftService              // Gift sending and receiving channel.
 │  │         ├─ UserService              // Component for user login and user attribute update.
 │  │         └─ ChatroomService          // Component for implementing the protocol for chat room management, including joining and leaving the chat room and sending and receiving messages.
-│  └─ ChatroomUIKit                      // ChatroomUIKit initialization class.
+│  └─ ChatroomUIKitClient                // ChatroomUIKit initialization class.
 └─ ChatroomUIKit            
-       ├─ compose                   	// UI Compose(Bottom input box, message list, gift list, bottom drawer)
-       ├─ theme                     	// Resource files provide properties such as colors, fonts, themes, gradients, and sizes required for the project
-       ├─ viewModel                 	// data processing
-       ├─ widget                    	// input widget
-       └─ ui                        	// search activity
+       ├─ compose                        // UI Compose(Bottom input box, message list, gift list, bottom drawer)
+       ├─ theme                          // Resource files provide properties such as colors, fonts, themes, gradients, and sizes required for the project
+       ├─ viewModel                      // data processing
+       ├─ widget                         // input widget
+       └─ ui                             // search activity
 ```
 # [QuickStart](https://github.com/apex-wang/ChatroomUIKit#quickstart)
 
@@ -148,7 +150,21 @@ class ChatroomActivity : ComponentActivity(){
 
 Here are three examples of advanced usage.
 
-### [1.Login](https://github.com/apex-wang/ChatroomUIKit#1login)
+### [1.Initializing the chat room compose](https://github.com/apex-wang/ChatroomUIKit#2initializing-the-chat-room-view)
+
+```kotlin
+    val chatroomUIKitOptions = ChatroomUIKitOptions(
+            chatOptions = ChatSDKOptions(),
+            uiOptions = UiOptions(
+                targetLanguageList = listOf(GlobalConfig.targetLanguage.code),
+                useGiftsInList = false,
+            )
+        )
+
+    ChatroomUIKitClient.getInstance().setUp(applicationContext = applicationContext,appKey = "Your AppKey",options = chatroomUIKitOptions)
+```
+
+### [2.Login](https://github.com/apex-wang/ChatroomUIKit#1login)
 
 ```kotlin
 class YourAppUser: UserInfoProtocol {
@@ -166,21 +182,6 @@ class YourAppUser: UserInfoProtocol {
 // Use the user information of the current user object that conforms to the UserInfoProtocol protocol to log in to ChatroomUIKit.
 // You need to get a user token from your app server. Alternatively, you can use a temporary token. To generate a temporary toke, visit https://docs.agora.io/en/agora-chat/get-started/enable?platform=ios#generate-a-user-token.
 ChatroomUIKitClient.getInstance().login(YourAppUser, token, onSuccess = {}, onError = {code,error ->})
-```
-
-
-### [2.Initializing the chat room compose](https://github.com/apex-wang/ChatroomUIKit#2initializing-the-chat-room-view)
-
-```kotlin
-    val chatroomUIKitOptions = ChatroomUIKitOptions(
-            chatOptions = ChatSDKOptions(),
-            uiOptions = UiOptions(
-                targetLanguageList = listOf(GlobalConfig.targetLanguage.code),
-                useGiftsInList = false,
-            )
-        )
-
-    ChatroomUIKitClient.getInstance().setUp(applicationContext = applicationContext,appKey = "Your AppKey",options = chatroomUIKitOptions)
 ```
 
 ### [3.Listening to ChatroomUIKit events and errors](https://github.com/apex-wang/ChatroomUIKit#3listening-to-chatroomuikit-events-and-errors)
