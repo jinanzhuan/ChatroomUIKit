@@ -45,7 +45,28 @@ dependencies {
 # 结构
 
 ## UIKit 项目结构
-// TODO 补充项目结构
+```
+┌─ Example                        // SampleDemo directory
+│  ├─ ChatroomListActivity              // Mainly providing room list Activity
+│  ├─ ChatroomActivity                  // display ChatroomUIKit chatroom Activity
+│  ├─ compose                           // SampleDemo 
+│  ├─ http                              // Encapsulated network requests for interaction with app services
+│  └─ SplashActivity                    // Program Launch Page
+├─ ChatroomService                // ChatroomUIKit Protocol module
+│  ├─ model                              // The entity objects used by ChatroomUIKit (user, room information, configuration information)
+│  ├─ service                            // The protocols and protocol implementations used by ChatroomUIKit (room protocol, user protocol, gift protocol)
+│  │    └─ Protocol                        
+│  │         ├─ GiftService              // Gift sending and receiving channel.
+│  │         ├─ UserService              // Component for user login and user attribute update.
+│  │         └─ ChatroomService          // Component for implementing the protocol for chat room management, including joining and leaving the chat room and sending and receiving messages.
+│  └─ ChatroomUIKitClient                // ChatroomUIKit initialization class.
+└─ ChatroomUIKit            
+       ├─ compose                        // UI Compose(Bottom input box, message list, gift list, bottom drawer)
+       ├─ theme                          // Resource files provide properties such as colors, fonts, themes, gradients, and sizes required for the project
+       ├─ viewModel                      // data processing
+       ├─ widget                         // input widget
+       └─ ui                             // search activity
+```
 
 # 快速开始
 
@@ -167,9 +188,28 @@ ChatroomUIKitClient.getInstance().unregisterRoomResultListener(roomResultListene
 
 ## 1.修改可配置项
 
-## 2.自定义组件
+```kotlin
+// 通过 UiOptions 配置 举例： UiOptions 中可以配置 礼物是否在消息列表中展示等
+val chatroomUIKitOptions = ChatroomUIKitOptions(
+      uiOptions = UiOptions(
+      targetLanguageList = listOf(GlobalConfig.targetLanguage.code),
+      useGiftsInList = false,
+    )
+)
 
-## 3.自定义主题
+// 通过 ViewModel 配置 举例：MessageListViewModel 中可以配置是否显示时间、头像等
+class MessageListViewModel(
+  private val isDarkTheme: Boolean? = false,
+  private val showDateSeparators: Boolean = true,
+  private val showLabel: Boolean = true,
+  private val showAvatar: Boolean = true,
+  private val roomId: String,
+  private val chatService: UIChatroomService,
+  private val composeChatListController: ComposeChatListController
+)
+```
+
+## 2.自定义主题
 ChatroomUIKitTheme 提供了可配置项，开发者只要替换对应的配置项即可实现自定义主题。如果不配置，则使用默认的主题。
 ```kotlin
 @Composable
@@ -184,7 +224,12 @@ fun ChatroomUIKitTheme(
 ```
 
 # 业务流程
+![Overall flow diagram of business logic](https://github.com/apex-wang/ChatroomUIKit/blob/main/image/BusinessFlowchart.png)
 
 # API 时序图
+![APIUML](https://github.com/apex-wang/ChatroomUIKit/blob/main/image/Api.png)
 
 # 设计指南
+关于设计指南和细节的任何问题，您可以在Figma设计草案中添加评论，并提及我们的设计师Stevie Jiang。
+请查阅 [UI design drawing](https://www.figma.com/file/OX2dUdilAKHahAh9VwX8aI/Streamuikit?node-id=137%3A38589&mode=dev).
+请查阅 [UI design guidelines](https://www.figma.com/file/OX2dUdilAKHahAh9VwX8aI/Streamuikit?node-id=137)
