@@ -230,6 +230,4 @@ fun ChatroomUIKitTheme(
 ![APIUML](https://github.com/apex-wang/ChatroomUIKit/blob/main/image/Api.png)
 
 # 设计指南
-关于设计指南和细节的任何问题，您可以在Figma设计草案中添加评论，并提及我们的设计师Stevie Jiang。
-请查阅 [UI design drawing](https://www.figma.com/file/OX2dUdilAKHahAh9VwX8aI/Streamuikit?node-id=137%3A38589&mode=dev).
-请查阅 [UI design guidelines](https://www.figma.com/file/OX2dUdilAKHahAh9VwX8aI/Streamuikit?node-id=137)
+关于[设计指南](https://www.figma.com/file/OX2dUdilAKHahAh9VwX8aI/Streamuikit?node-id=137)和细节的任何问题，您可以在Figma设计草案中添加评论，并提及我们的设计师Stevie Jiang。
