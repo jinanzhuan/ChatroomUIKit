@@ -8,7 +8,7 @@ In this project, there is a best practice demonstration project in the `Example`
 
 To experience functions of the ChatroomUIKit, you can scan the following QR code to try a demo.
 
-[![SampleDemo](https://github.com/apex-wang/ChatroomUIKit/image/demo.png)](https://github.com/apex-wang/ChatroomUIKit/image/demo.png).
+[![SampleDemo](https://github.com/apex-wang/ChatroomUIKit/blob/main/image/demo.png)](https://github.com/apex-wang/ChatroomUIKit/blob/main/image/demo.png).
 
 # [Chatroom UIKit Guide](https://github.com/apex-wang/ChatroomUIKit#chatroom-uikit-guide)
 
@@ -142,7 +142,7 @@ class ChatroomActivity : ComponentActivity(){
 }
 ```
 
-[![CreateChatroom](https://github.com/apex-wang/ChatroomUIKit/image/CreateChatroom.png)](https://github.com/apex-wang/ChatroomUIKit/image/CreateChatroom.png).
+[![CreateChatroom](https://github.com/apex-wang/ChatroomUIKit/blob/main/image/CreateChatroom.png)](https://github.com/apex-wang/ChatroomUIKit/blob/main/image/CreateChatroom.png).
 
 # [AdvancedUsage](https://github.com/apex-wang/ChatroomUIKit#advancedusage)
 
@@ -221,13 +221,13 @@ fun ChatroomUIKitTheme(
 
 The following figure presents the entire logic of business requests and callbacks.
 
-![Overall flow diagram of business logic](https://github.com/apex-wang/ChatroomUIKit/image/BusinessFlowchart.png)
+![Overall flow diagram of business logic](https://github.com/apex-wang/ChatroomUIKit/blob/main/image/BusinessFlowchart.png)
 
 # [ApiSequenceDiagram](https://github.com/apex-wang/ChatroomUIKit#apisequencediagram)
 
 The following figure is the best-practice API calling sequence diagram in the `Example` project.
 
-![APIUML](https://github.com/apex-wang/ChatroomUIKit/image/Api.png)
+![APIUML](https://github.com/apex-wang/ChatroomUIKit/blob/main/image/Api.png)
 
 # [DesignGuidelines](https://github.com/apex-wang/ChatroomUIKit#designguidelines)
 
