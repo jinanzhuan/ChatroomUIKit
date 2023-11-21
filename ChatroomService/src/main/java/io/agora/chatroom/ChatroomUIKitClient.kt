@@ -53,7 +53,6 @@ class ChatroomUIKitClient {
     private val userStateChangeListener by lazy { InnerUserStateChangeListener() }
     private val userService: UserService by lazy { UserServiceImpl() }
     private val chatroomService: ChatroomService by lazy { ChatroomServiceImpl() }
-    private val giftService: GiftService by lazy { GiftServiceImpl() }
     private var uiOptions: UiOptions = UiOptions()
 
     companion object {
