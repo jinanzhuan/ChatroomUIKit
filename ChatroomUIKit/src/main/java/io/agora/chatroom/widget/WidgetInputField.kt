@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -58,6 +59,7 @@ fun WidgetInputField(
     val emoji = viewModel.emoji
     val isInsertEmoji = viewModel.isInsertEmoji
     val textColor = ChatroomUIKitTheme.colors.onBackground
+    val hintColor = ChatroomUIKitTheme.colors.onBackground
 
     val focusManager = LocalFocusManager.current
 
@@ -77,13 +79,14 @@ fun WidgetInputField(
                     ViewGroup.LayoutParams.MATCH_PARENT
                 )
                 this.gravity = Gravity.CENTER_VERTICAL
-                this.setPadding(12,0,12,0)
+                this.setPadding(14,0,12,0)
                 inputType = InputType.TYPE_CLASS_TEXT
                 imeOptions = EditorInfo.IME_ACTION_DONE
                 this.maxLines = maxLines
                 this.isEnabled = enabled
                 this.background = null
                 this.hint = hint
+                this.setHintTextColor(hintColor.toArgb())
                 this.textSize = 20f
                 this.setTextColor(textColor.toArgb())
                 this.layoutParams = layoutParams

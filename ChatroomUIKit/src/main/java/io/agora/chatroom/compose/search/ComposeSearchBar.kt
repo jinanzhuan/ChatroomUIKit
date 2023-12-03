@@ -62,11 +62,13 @@ fun DefaultSearchBar(
                 color = ChatroomUIKitTheme.colors.inputSurface,
                 shape = RoundedCornerShape(size = 22.dp)
             )
-            .height(44.dp)
             .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+        ) {
             Icon(
                 painter = painterResource(id = iconResource),
                 modifier = Modifier.size(22.dp),

@@ -8,7 +8,10 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemColors
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
@@ -65,7 +68,7 @@ fun <T> ComposeBottomSheet(
             onDismissRequest = onDismissRequest,
             sheetState = bottomSheetState,
             shape = shape,
-            containerColor = containerColor,
+            containerColor = ChatroomUIKitTheme.colors.background,
             contentColor = contentColor,
             tonalElevation = tonalElevation,
             scrimColor = scrimColor,
@@ -93,12 +96,13 @@ fun <T> ComposeBottomSheet(
                 drawerContent()
 
                 if (isShowCancel) {
-                    Divider(
+                    HorizontalDivider(
+                        thickness = 8.dp,
+                        color = ChatroomUIKitTheme.colors.neutralL95D00,
                         modifier = Modifier
-                            .height(8.dp)
-                            .background(ChatroomUIKitTheme.colors.onBackground)
                     )
                     Box(modifier = Modifier
+                        .background(ChatroomUIKitTheme.colors.background)
                         .fillMaxWidth()
                         .height(56.dp)
                         .clickable {
@@ -203,23 +207,26 @@ fun DefaultDrawerContent(viewModel: MenuViewModel, onListItemClick: (Int, UIComp
     LazyColumn(
         modifier = Modifier
             .padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
+            .background(ChatroomUIKitTheme.colors.background)
             .fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         itemsIndexed(viewModel.list){ index, item ->
             if (index > 0){
-                Divider(
-                    modifier = Modifier
-                        .height(0.5.dp)
-                        .background(ChatroomUIKitTheme.colors.outlineVariant)
-                        .fillMaxWidth()
-                        .padding(top = 10.dp, bottom = 10.dp)
+                HorizontalDivider(
+                    thickness = 0.5.dp,
+                    color = ChatroomUIKitTheme.colors.outlineVariant,
+                    modifier = Modifier.padding(top = 5.dp, bottom = 5.dp)
                 )
             }
             ListItem(
+                colors = ListItemDefaults.colors(
+                    containerColor = ChatroomUIKitTheme.colors.background
+                ),
                 headlineContent = {
                     Text(
                         modifier = Modifier
+                            .background(ChatroomUIKitTheme.colors.background)
                             .fillMaxWidth()
                             .padding(top = 10.dp, bottom = 10.dp),
                         textAlign = TextAlign.Center,
@@ -229,7 +236,6 @@ fun DefaultDrawerContent(viewModel: MenuViewModel, onListItemClick: (Int, UIComp
                     )
                 },
                 modifier = Modifier
-                    .background(ChatroomUIKitTheme.colors.onBackground)
                     .clickable {
                         onListItemClick(index, item)
                     }

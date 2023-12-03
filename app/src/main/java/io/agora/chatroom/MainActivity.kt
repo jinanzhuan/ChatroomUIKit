@@ -97,7 +97,7 @@ class MainActivity : ComponentActivity() {
                             } else {
                                 Box(modifier = Modifier.clickable { roomListViewModel.fetchRoomList() }) {
                                     Icon(
-                                        painter = painterResource(id = R.drawable.progress),
+                                        painter = painterResource(id = R.drawable.icon_refresh),
                                         contentDescription = null,
                                         modifier = Modifier.size(20.dp),
                                         tint = ChatroomUIKitTheme.colors.onBackground

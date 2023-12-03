@@ -24,6 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,6 +35,7 @@ import io.agora.chatroom.compose.image.AsyncImage
 import io.agora.chatroom.service.ChatClient
 import io.agora.chatroom.service.UserEntity
 import io.agora.chatroom.theme.ChatroomUIKitTheme
+import io.agora.chatroom.theme.neutralColor20
 import io.agora.chatroom.uikit.R
 
 @Composable
@@ -76,9 +78,10 @@ fun ComposeParticipantItem(
             }
 
             if (showDivider) {
-                Divider(thickness = 1.dp, modifier = Modifier
-                    .fillMaxWidth()
-                    .background(ChatroomUIKitTheme.colors.outlineVariant))
+                Divider(thickness = 0.5.dp,
+                    color = ChatroomUIKitTheme.colors.outlineVariant,
+                    modifier = Modifier
+                    .fillMaxWidth())
             }
         }
 
