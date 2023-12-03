@@ -357,7 +357,7 @@ fun ShowComposeMenuDrawer(
                             (menuViewModel.getSelectedBean() as ChatMessage).let {
                                     message ->
                                 if (ChatroomUIKitClient.getInstance().isCurrentRoomOwner()){
-                                    memberListViewModel.removeUser(message.from)
+                                    memberListViewModel.muteUser(message.from)
                                 }
                             }
 

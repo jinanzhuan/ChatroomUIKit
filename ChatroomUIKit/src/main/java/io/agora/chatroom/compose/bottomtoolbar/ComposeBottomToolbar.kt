@@ -233,6 +233,8 @@ fun ComposeBottomToolbar(
     )
 
     val scope = CoroutineScope(Dispatchers.Default)
+    val kh =  remember { mutableIntStateOf(-1) }
+    val exKh by kh
 
     val exH =  remember { mutableIntStateOf(0) }
     val exHeight by exH
@@ -251,7 +253,11 @@ fun ComposeBottomToolbar(
                 val keypadHeight = screenHeight - rect.bottom
                 if (keypadHeight > screenHeight * 0.15) { // A threshold to filter the visibility of the keypad
                     kbHeight.intValue = keypadHeight
+                    if (kh.intValue == -1){
+                        kh.intValue = DisplayUtils.pxToDp(keyboardHeight - navigationBarsHeight).toInt()
+                    }
                 }else{
+                    kbHeight.intValue = 0
                     viewModel.hideKeyBoard()
                     exH.intValue = 0
                 }
@@ -304,7 +310,7 @@ fun ComposeBottomToolbar(
 
                 if (viewModel.isShowEmoji.value){
                     DefaultComposerEmoji(
-                        maxH = exHeight,
+                        maxH = exKh,
                         emojis = emojiList,
                         viewModel = viewModel
                     )
@@ -365,11 +371,12 @@ fun ComposeBottomToolbar(
 
 @Composable
 fun DefaultComposerEmoji(
+    modifier: Modifier = Modifier,
     emojis:List<UIExpressionEntity>,
     maxH:Int,
     viewModel: MessageChatBarViewModel,
 ){
-    Column(modifier = Modifier
+    Column(modifier = modifier
         .fillMaxWidth()
         .height(maxH.dp)
         .background(ChatroomUIKitTheme.colors.background)
