@@ -1,6 +1,7 @@
 package io.agora.chatroom
 
 import android.app.Activity
+import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -37,6 +38,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
@@ -56,6 +58,7 @@ import io.agora.chatroom.service.UserEntity
 import io.agora.chatroom.service.transfer
 import io.agora.chatroom.theme.ChatroomUIKitTheme
 import io.agora.chatroom.ui.UISearchActivity
+import io.agora.chatroom.utils.SPUtils
 import io.agora.chatroom.viewmodel.ChatroomFactory
 import io.agora.chatroom.viewmodel.ChatroomViewModel
 import io.agora.chatroom.viewmodel.dialog.DialogViewModel
@@ -132,9 +135,11 @@ class ChatroomActivity : ComponentActivity(), ChatroomResultListener {
 
         setContent {
             ChatroomUIKitTheme{
+                val isDarkTheme = SPUtils.getInstance(LocalContext.current.applicationContext as Application).getCurrentThemeStyle()
                 WindowConfigUtils(
+                    isDarkTheme = !isDarkTheme,
                     statusBarColor = Color.Transparent,
-                    nativeBarColor = Color.Transparent,
+                    nativeBarColor = ChatroomUIKitTheme.colors.background
                 )
 
                 val membersBottomSheetViewModel: MembersBottomSheetViewModel = viewModel(MembersBottomSheetViewModel::class.java,

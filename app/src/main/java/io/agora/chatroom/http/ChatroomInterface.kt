@@ -6,9 +6,10 @@ import io.agora.chatroom.bean.RequestListResp
 import io.agora.chatroom.bean.RoomDetailBean
 import retrofit2.Call
 import retrofit2.http.Body
-import retrofit2.http.Field
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 interface ChatroomInterface {
     @POST("liverooms/user/login")
@@ -23,6 +24,6 @@ interface ChatroomInterface {
     @POST("liverooms/broadcast")
     fun broadcast(@Body req: Any): Call<BroadcastReq>
 
-    @POST("room/leave")
-    fun destroyRoom(): Call<String>
+    @DELETE("liverooms/{liveroomid}")
+    fun destroyRoom(@Path("liveroomid") id:String): Call<RoomDetailBean>
 }

@@ -194,7 +194,9 @@ fun DefaultGiftVpContent(
                                     .fillMaxWidth()
                                     .wrapContentHeight(),
                                 text = emoji.giftName,
-                                style = ChatroomUIKitTheme.typography.titleSmall
+                                style = ChatroomUIKitTheme.typography.titleSmall.copy(
+                                    color = ChatroomUIKitTheme.colors.onBackground
+                                )
                             )
                         }
                         Row(
@@ -219,7 +221,9 @@ fun DefaultGiftVpContent(
                                     .wrapContentWidth()
                                     .wrapContentHeight(),
                                 text = emoji.giftName,
-                                style = ChatroomUIKitTheme.typography.labelExtraSmall
+                                style = ChatroomUIKitTheme.typography.labelExtraSmall.copy(
+                                    color = ChatroomUIKitTheme.colors.onBackground
+                                )
                             )
                         }
 

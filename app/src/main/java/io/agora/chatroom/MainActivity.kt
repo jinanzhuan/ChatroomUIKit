@@ -39,7 +39,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.ViewModelProvider
 import io.agora.chatroom.bean.RoomDetailBean
 import io.agora.chatroom.compose.ChatroomList
 import io.agora.chatroom.compose.avatar.Avatar
@@ -50,10 +50,16 @@ import io.agora.chatroom.model.UserInfoProtocol
 import io.agora.chatroom.service.ChatLog
 import io.agora.chatroom.theme.ChatroomUIKitTheme
 import io.agora.chatroom.utils.SPUtils
+import io.agora.chatroom.viewmodel.ChatroomFactory
 import io.agora.chatroom.viewmodel.ChatroomListViewModel
+import io.agora.chatroom.viewmodel.ChatroomViewModel
 import io.agora.chatroom.viewmodel.RequestState
 
 class MainActivity : ComponentActivity() {
+
+    private val roomListViewModel by lazy {
+        ViewModelProvider(this@MainActivity as ComponentActivity)[ChatroomListViewModel::class.java]
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
@@ -63,7 +69,7 @@ class MainActivity : ComponentActivity() {
             var isDarkTheme by rememberSaveable {
                 mutableStateOf(isDark)
             }
-            val roomListViewModel = viewModel(modelClass = ChatroomListViewModel::class.java)
+//            val roomListViewModel = viewModel(modelClass = ChatroomListViewModel::class.java)
             roomListViewModel.fetchRoomList()
             val userDetail = SPUtils.getInstance(LocalContext.current.applicationContext as Application).getUerInfo()
             SPUtils.getInstance(LocalContext.current.applicationContext as Application).saveCurrentThemeStyle(isDarkTheme)
@@ -174,13 +180,13 @@ class MainActivity : ComponentActivity() {
                                     painter = painterResource(id = R.drawable.video_camera_splus),
                                     contentDescription = null,
                                     modifier = Modifier.size(SwitchDefaults.IconSize),
-                                    tint = ChatroomUIKitTheme.colors.background
+                                    tint = ChatroomUIKitTheme.colors.onSplashBg
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(
                                     text = "Create",
                                     style = ChatroomUIKitTheme.typography.bodyMedium,
-                                    color = ChatroomUIKitTheme.colors.background
+                                    color = ChatroomUIKitTheme.colors.onSplashBg
                                 )
                             }
 
@@ -227,5 +233,10 @@ class MainActivity : ComponentActivity() {
                 room = roomDetail,
             )
         )
+    }
+
+    override fun onResume() {
+        super.onResume()
+        roomListViewModel.refresh()
     }
 }

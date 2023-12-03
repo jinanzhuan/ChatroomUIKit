@@ -85,7 +85,7 @@ class SplashActivity: ComponentActivity() {
                         }.navigationBarsPadding(),
                         text = stringResource(id = R.string.app_name),
                         style = ChatroomUIKitTheme.typography.titleLarge,
-                        color = ChatroomUIKitTheme.colors.background,
+                        color = ChatroomUIKitTheme.colors.onSplashBg,
                         fontWeight = FontWeight(500),
                         fontSize = 24.sp,
                         letterSpacing = 10.sp
@@ -104,7 +104,7 @@ class SplashActivity: ComponentActivity() {
                             color = Color(0xFF6C7192),
                             textAlign = TextAlign.Center,
                         ),
-                        color = ChatroomUIKitTheme.colors.background
+                        color = ChatroomUIKitTheme.colors.onSplashBg
                     )
 
                     if (viewModel.isLoading()) {

@@ -362,7 +362,10 @@ fun ShowComposeMenuDrawer(
                             }
 
                         }
-                        R.id.action_menu_report -> { reportViewModel.openDrawer() }
+                        R.id.action_menu_report -> {
+                            reportViewModel.openDrawer()
+                            menuViewModel.closeDrawer()
+                        }
                     }
                 }
         },
