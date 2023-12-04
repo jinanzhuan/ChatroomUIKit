@@ -73,7 +73,7 @@ class UISearchActivity : ComponentActivity() {
                 WindowConfigUtils(
                     isDarkTheme = !ChatroomUIKitClient.getInstance().getCurrentTheme(),
                     statusBarColor = Color.Transparent,
-                    nativeBarColor = Color.Transparent,
+                    nativeBarColor = ChatroomUIKitTheme.colors.background,
                 )
                 SearchScaffold(this, roomId!!, title!!)
             }
@@ -120,6 +120,7 @@ class UISearchActivity : ComponentActivity() {
                     title = {
                         SearchInputFiled(
                             value = "",
+                            isRequestFocus = true,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(end = 16.dp)

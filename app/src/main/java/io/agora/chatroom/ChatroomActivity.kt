@@ -1,6 +1,7 @@
 package io.agora.chatroom
 
 import android.app.Activity
+import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -37,6 +38,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
@@ -52,10 +54,12 @@ import io.agora.chatroom.compose.dialog.SimpleDialog
 import io.agora.chatroom.compose.broadcast.ComposeGlobalBroadcast
 import io.agora.chatroom.compose.utils.WindowConfigUtils
 import io.agora.chatroom.model.UIChatroomInfo
+import io.agora.chatroom.service.ChatroomChangeListener
 import io.agora.chatroom.service.UserEntity
 import io.agora.chatroom.service.transfer
 import io.agora.chatroom.theme.ChatroomUIKitTheme
 import io.agora.chatroom.ui.UISearchActivity
+import io.agora.chatroom.utils.SPUtils
 import io.agora.chatroom.viewmodel.ChatroomFactory
 import io.agora.chatroom.viewmodel.ChatroomViewModel
 import io.agora.chatroom.viewmodel.dialog.DialogViewModel
@@ -65,7 +69,7 @@ import io.agora.chatroom.viewmodel.broadcast.GlobalBroadcastViewModelFactory
 import io.agora.chatroom.viewmodel.member.MembersBottomSheetViewModel
 import io.agora.chatroom.viewmodel.messages.MessagesViewModelFactory
 
-class ChatroomActivity : ComponentActivity(), ChatroomResultListener {
+class ChatroomActivity : ComponentActivity(), ChatroomResultListener, ChatroomChangeListener {
 
     private lateinit var room: RoomDetailBean
     private lateinit var service: UIChatroomService
@@ -125,6 +129,8 @@ class ChatroomActivity : ComponentActivity(), ChatroomResultListener {
         service = UIChatroomService(uiChatroomInfo)
 
         ChatroomUIKitClient.getInstance().registerRoomResultListener(this)
+        service.getChatService().bindListener(this)
+        roomViewModel.registerChatroomChangeListener()
         giftViewModel.openAutoClear()
         globalBroadcastModel.registerChatroomChangeListener()
 
@@ -132,9 +138,11 @@ class ChatroomActivity : ComponentActivity(), ChatroomResultListener {
 
         setContent {
             ChatroomUIKitTheme{
+                val isDarkTheme = SPUtils.getInstance(LocalContext.current.applicationContext as Application).getCurrentThemeStyle()
                 WindowConfigUtils(
+                    isDarkTheme = !isDarkTheme,
                     statusBarColor = Color.Transparent,
-                    nativeBarColor = Color.Transparent,
+                    nativeBarColor = ChatroomUIKitTheme.colors.background
                 )
 
                 val membersBottomSheetViewModel: MembersBottomSheetViewModel = viewModel(MembersBottomSheetViewModel::class.java,
@@ -328,8 +336,15 @@ class ChatroomActivity : ComponentActivity(), ChatroomResultListener {
         }
     }
 
+    override fun onUserBeKicked(roomId: String, userId: String) {
+        if (roomId == room.id && userId == ChatroomUIKitClient.getInstance().getCurrentUser().userId){
+            finish()
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
+        service.getChatService().unbindListener(this)
         roomViewModel.leaveChatroom()
         globalBroadcastModel.unRegisterChatroomChangeListener()
         ChatroomUIKitClient.getInstance().unregisterRoomResultListener(this)

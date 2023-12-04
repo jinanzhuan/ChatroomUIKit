@@ -2,7 +2,9 @@ package io.agora.chatroom.compose.gift
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -15,6 +17,7 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -83,6 +86,7 @@ fun ComposeGiftItem(
     itemIndex:Int,
     item:ComposeGiftListItemState,
     onItemClick: (Int,ComposeGiftListItemState) -> Unit,
+    onItemLongClick:(Int,ComposeGiftListItemState) -> Unit = {index,state ->}
 ){
     val gift = (item as ComposeGiftItemState).gift
 
@@ -91,8 +95,12 @@ fun ComposeGiftItem(
         modifier = Modifier
             .padding(start = 16.dp, top = 3.dp, bottom = 3.dp, end = 16.dp)
             .combinedClickable(
-                onLongClick = { }
-            ) {
+                onLongClick = { onItemLongClick(itemIndex, item)}
+            ) {}
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() },
+            ){
                 onItemClick(itemIndex, item)
             }
             .wrapContentWidth()

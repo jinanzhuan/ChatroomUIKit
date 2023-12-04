@@ -6,6 +6,7 @@ import io.agora.chatroom.http.ChatroomHttpManager
 import io.agora.chatroom.service.OnError
 import io.agora.chatroom.service.OnSuccess
 import io.agora.chatroom.UIChatroomService
+import io.agora.chatroom.bean.RoomDetailBean
 import io.agora.chatroom.service.ChatLog
 import retrofit2.Call
 import retrofit2.Callback
@@ -20,9 +21,10 @@ class ChatroomViewModel(
         onSuccess: OnSuccess = {},
         onError: OnError = { _, _ ->}
     ){
-        val call = ChatroomHttpManager.getService().destroyRoom()
-        call.enqueue(object : Callback<String> {
-            override fun onResponse(call: Call<String>, response: Response<String>) {
+        val roomId = ChatroomUIKitClient.getInstance().getContext().getCurrentRoomInfo().roomId
+        val call = ChatroomHttpManager.getService().destroyRoom(roomId)
+        call.enqueue(object : Callback<RoomDetailBean> {
+            override fun onResponse(call: Call<RoomDetailBean>, response: Response<RoomDetailBean>) {
                 if (response.isSuccessful) {
                     onSuccess.invoke()
                     ChatLog.e("destroyRoom","destroyRoom onSuccess")
@@ -31,7 +33,7 @@ class ChatroomViewModel(
                 }
             }
 
-            override fun onFailure(call: Call<String>, t: Throwable) {
+            override fun onFailure(call: Call<RoomDetailBean>, t: Throwable) {
                 onError.invoke(-1, t.message)
             }
         })
@@ -44,15 +46,17 @@ class ChatroomViewModel(
         onSuccess: OnSuccess = {},
         onError: OnError = { _, _ ->}
     ){
-        service.getChatService().destroyChatroom(
-            roomId = ChatroomUIKitClient.getInstance().getContext().getCurrentRoomInfo().roomId,
-            onSuccess = {
-                destroyRoom(onSuccess,onError)
-            },
-            onError = {code, error ->
-                onError.invoke(code, error)
-            }
-        )
+        destroyRoom(onSuccess,onError)
+//        service.getChatService().destroyChatroom(
+//            roomId = ChatroomUIKitClient.getInstance().getContext().getCurrentRoomInfo().roomId,
+//            onSuccess = {
+//                Log.e("apex","endLive onSuccess")
+//            },
+//            onError = {code, error ->
+//                Log.e("apex","endLive onError $code $error")
+//                onError.invoke(code, error)
+//            }
+//        )
     }
 
     fun leaveChatroom(

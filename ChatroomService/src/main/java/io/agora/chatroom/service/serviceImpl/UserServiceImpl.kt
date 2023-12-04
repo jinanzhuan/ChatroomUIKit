@@ -1,5 +1,6 @@
 package io.agora.chatroom.service.serviceImpl
 
+import android.util.Log
 import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.model.UserInfoProtocol
 import io.agora.chatroom.model.toUser
@@ -66,6 +67,9 @@ class UserServiceImpl: UserService {
         onSuccess: OnSuccess,
         onError: OnError
     ) {
+        Log.e("apex","updateUserInfo $userEntity")
+        val transfer = userEntity.transfer()
+        Log.e("apex","updateUserInfo1 ${transfer.userId} ${transfer.avatarUrl} ${transfer.nickname}")
         userInfoManager.updateOwnInfo(userEntity.transfer(), object :ChatValueCallback<String> {
             override fun onSuccess(value: String?) {
                 onSuccess.invoke()

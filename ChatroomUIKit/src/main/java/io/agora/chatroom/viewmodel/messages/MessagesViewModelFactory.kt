@@ -8,7 +8,7 @@ import io.agora.chatroom.UIChatroomService
 import io.agora.chatroom.commons.ComposeChatListController
 import io.agora.chatroom.commons.ComposeMessageListState
 import io.agora.chatroom.commons.ComposerChatBarController
-import io.agora.chatroom.data.parsingGift
+import io.agora.chatroom.compose.utils.parsingGift
 import io.agora.chatroom.model.UICapabilities
 import io.agora.chatroom.model.UIChatBarMenuItem
 import io.agora.chatroom.model.gift.AUIGiftTabInfo
@@ -23,7 +23,7 @@ class MessagesViewModelFactory(
     private val service: UIChatroomService,
     private val isDarkTheme: Boolean? = ChatroomUIKitClient.getInstance().getCurrentTheme(),
     private val showDateSeparators: Boolean = true,
-    private val showLabel: Boolean = true,
+    private val showLabel: Boolean = false,
     private val showAvatar: Boolean = true,
     private val emojiColumns:Int = 7,
     private val menuItemResource: List<UIChatBarMenuItem> = listOf(

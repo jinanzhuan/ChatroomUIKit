@@ -53,12 +53,12 @@ class MessageMenuViewModel(
             val messageMenuList = mutableListOf<UIComposeSheetItem>()
             if (ChatroomUIKitClient.getInstance().getCacheManager().inMuteCache(bean.conversationId(), bean.from)) {
                 messageMenuList.add(UIComposeSheetItem(id = R.id.action_menu_translate, title =  context.getString(R.string.menu_item_translate)))
-                messageMenuList.add(UIComposeSheetItem(id = R.id.action_menu_delete, title =  context.getString(R.string.menu_item_delete)))
+                messageMenuList.add(UIComposeSheetItem(id = R.id.action_menu_recall, title =  context.getString(R.string.menu_item_recall)))
                 messageMenuList.add(UIComposeSheetItem(id = R.id.action_menu_unmute, title =  context.getString(R.string.menu_item_unmute)))
                 messageMenuList.add(UIComposeSheetItem(id = R.id.action_menu_report, title =  context.getString(R.string.menu_item_report), isError = true))
             } else {
                 messageMenuList.add(UIComposeSheetItem(id = R.id.action_menu_translate, title =  context.getString(R.string.menu_item_translate)))
-                messageMenuList.add(UIComposeSheetItem(id = R.id.action_menu_delete, title =  context.getString(R.string.menu_item_delete)))
+                messageMenuList.add(UIComposeSheetItem(id = R.id.action_menu_recall, title =  context.getString(R.string.menu_item_recall)))
                 messageMenuList.add(UIComposeSheetItem(id = R.id.action_menu_mute, title =  context.getString(R.string.menu_item_mute)))
                 messageMenuList.add(UIComposeSheetItem(id = R.id.action_menu_report, title =  context.getString(R.string.menu_item_report), isError = true))
             }

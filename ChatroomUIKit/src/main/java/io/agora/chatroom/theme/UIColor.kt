@@ -223,6 +223,7 @@ data class UIColors(
     val onBackgroundHigh: Color,
     val onBackgroundHighest: Color,
     val onBackgroundSpecial: Color,
+    val onSplashBg:Color,
     val error: Color,
     val onError: Color,
     val outline: Color,
@@ -239,6 +240,7 @@ data class UIColors(
     val primaryL95D20:Color,
     val primaryL80D80:Color,
     val secondaryL80D70:Color,
+    val neutralL95D00:Color,
 
 ) {
     companion object {
@@ -256,6 +258,7 @@ data class UIColors(
             onBackgroundHigh = neutralColor30,
             onBackgroundHighest = neutralColor70,
             onBackgroundSpecial = neutralSpecialColor50,
+            onSplashBg = neutralColor98,
             error = errorColor50,
             onError = errorColor100,
             outline = neutralColor70,
@@ -269,6 +272,7 @@ data class UIColors(
             barrageL20D10 = barrageLightColor20,
             secondaryL80D70 = secondaryColor80,
             primaryL80D80 = primaryColor80,
+            neutralL95D00 = neutralColor95,
             neutralL50D50 = neutralColor50,
             neutralL70D40 = neutralColor70,
             neutralL95D20 = neutralColor95,
@@ -288,6 +292,7 @@ data class UIColors(
             onBackgroundHigh = neutralColor80,
             onBackgroundHighest = neutralColor60,
             onBackgroundSpecial = neutralSpecialColor60,
+            onSplashBg = neutralColor98,
             error = errorColor60,
             onError = errorColor100,
             outline = neutralColor70,
@@ -301,6 +306,7 @@ data class UIColors(
             barrageL20D10 = barrageDarkColor10,
             secondaryL80D70 = secondaryColor70,
             primaryL80D80 = primaryColor80,
+            neutralL95D00 = neutralColor0,
             neutralL50D50 = neutralColor50,
             neutralL70D40 = neutralColor40,
             neutralL95D20 = neutralColor20,

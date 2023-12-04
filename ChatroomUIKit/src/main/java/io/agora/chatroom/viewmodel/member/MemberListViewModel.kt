@@ -1,6 +1,7 @@
 package io.agora.chatroom.viewmodel.member
 
-import android.util.Log
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import io.agora.chatroom.ChatroomUIKitClient
 import io.agora.chatroom.model.toUser
 import io.agora.chatroom.service.ChatLog
@@ -15,10 +16,15 @@ open class MemberListViewModel(
     private val roomId: String,
     private val service: UIChatroomService,
     private val pageSize: Int = 10,
-    private val atLeastShowingTime: Long = 1000L
+    private val atLeastShowingTime: Long = 1000L,
+    private val showLabel:Boolean = false,
 ): RequestListViewModel<UserEntity>(atLeastShowingTime = atLeastShowingTime) {
     private var cursor: String? = null
     private var hasMore: Boolean = true
+
+    private val _showLabel : MutableState<Boolean> = mutableStateOf(showLabel)
+    var isShowLabel = _showLabel
+
     fun fetchRoomMembers(
         onSuccess: OnValueSuccess<List<UserEntity>> = {},
         onError: OnError = { _, _ ->}

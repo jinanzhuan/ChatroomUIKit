@@ -24,17 +24,22 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import io.agora.chatroom.ChatroomUIKitClient
+import io.agora.chatroom.UIChatroomService
 import io.agora.chatroom.compose.avatar.Avatar
 import io.agora.chatroom.compose.image.AsyncImage
+import io.agora.chatroom.model.UIChatroomInfo
 import io.agora.chatroom.service.ChatClient
 import io.agora.chatroom.service.UserEntity
 import io.agora.chatroom.theme.ChatroomUIKitTheme
+import io.agora.chatroom.theme.neutralColor20
 import io.agora.chatroom.uikit.R
+import io.agora.chatroom.viewmodel.member.MemberListViewModel
 
 @Composable
 fun ComposeParticipantItem(
@@ -76,9 +81,10 @@ fun ComposeParticipantItem(
             }
 
             if (showDivider) {
-                Divider(thickness = 1.dp, modifier = Modifier
-                    .fillMaxWidth()
-                    .background(ChatroomUIKitTheme.colors.outlineVariant))
+                Divider(thickness = 0.5.dp,
+                    color = ChatroomUIKitTheme.colors.outlineVariant,
+                    modifier = Modifier
+                    .fillMaxWidth())
             }
         }
 
@@ -87,17 +93,20 @@ fun ComposeParticipantItem(
 
 @Composable
 fun DefaultMemberItem(
+    viewModel: MemberListViewModel,
     user: UserEntity,
     labelContent: @Composable ((UserEntity) -> Unit)? = { user ->
-        user.identify?.let {
-            if (it.isNotBlank()) {
-                AsyncImage(
-                    imageUrl = it,
-                    modifier = Modifier
-                        .size(width = 36.dp, height = 24.dp).padding(start = 12.dp),
-                    shape = RoundedCornerShape(0.dp),
-                    placeholderPainter = painterResource(id = R.drawable.icon_default_label)
-                )
+        if (viewModel.isShowLabel.value){
+            user.identify?.let {
+                if (it.isNotBlank()) {
+                    AsyncImage(
+                        imageUrl = it,
+                        modifier = Modifier
+                            .size(width = 36.dp, height = 24.dp).padding(start = 12.dp),
+                        shape = RoundedCornerShape(0.dp),
+                        placeholderPainter = painterResource(id = R.drawable.icon_default_label)
+                    )
+                }
             }
         }
     },
@@ -152,7 +161,8 @@ fun DefaultMemberItem(
                 onClick = { onExtendClick?.invoke(user) }) {
                 Icon(
                     painter = painterResource(id = R.drawable.icon_more),
-                    contentDescription = null
+                    contentDescription = null,
+                    tint = ChatroomUIKitTheme.colors.onBackground
                 )
             }
             Spacer(modifier = Modifier.width(12.dp))
@@ -177,12 +187,14 @@ fun DefaultMemberItem(
 
 @Composable
 fun DefaultMuteListItem(
+    viewModel: MemberListViewModel,
     user: UserEntity,
     onItemClick: ((UserEntity) -> Unit)? = null,
     onExtendClick: ((UserEntity) -> Unit)? = null,
 ) {
     DefaultMemberItem(
-        user,
+        viewModel = viewModel,
+        user = user,
         onItemClick = onItemClick,
         onExtendClick = onExtendClick,
         labelContent = null,
@@ -193,11 +205,16 @@ fun DefaultMuteListItem(
 @Composable
 fun MemberItemPreview() {
     ChatroomUIKitTheme {
-        DefaultMemberItem(user = UserEntity(
-            userId = "123",
-            nickName = "nickname",
-            avatarURL = "",
-            identify = ""
-        ))
+        DefaultMemberItem(
+            viewModel = MemberListViewModel(
+                "roomID",
+                UIChatroomService(UIChatroomInfo("roomID",UserEntity("userId")))),
+            user = UserEntity(
+                userId = "123",
+                nickName = "nickname",
+                avatarURL = "",
+                identify = ""
+            )
+        )
     }
 }

@@ -3,6 +3,7 @@ package io.agora.chatroom.compose.messagelist
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -88,10 +89,11 @@ fun ComposeMessageItem(
         modifier = Modifier
             .padding(start = 16.dp, top = 2.dp, bottom = 2.dp, end = 16.dp)
             .combinedClickable(
-                onLongClick = { onLongItemClick(itemIndex, messageItem) }
-            ) {
-                // onClick
-            }
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() },
+                onLongClick = { onLongItemClick(itemIndex, messageItem) },
+                onClick = {}
+            )
             .wrapContentWidth()
             .wrapContentHeight()
             .background(

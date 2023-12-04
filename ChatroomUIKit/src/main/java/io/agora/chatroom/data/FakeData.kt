@@ -9,7 +9,7 @@ import java.nio.charset.Charset
 
 val initialLongClickMenu = listOf(
     UIComposeSheetItem(id = R.id.action_menu_translate, title = "Translate"),
-    UIComposeSheetItem(id = R.id.action_menu_delete, title = "Delete"),
+    UIComposeSheetItem(id = R.id.action_menu_recall, title = "Delete"),
     UIComposeSheetItem(id = R.id.action_menu_mute, title = "Mute"),
     UIComposeSheetItem(id = R.id.action_menu_report, title = "Report", isError = true)
 )
@@ -42,22 +42,6 @@ val reportTagList = listOf(
     "Child abuse",
     "Harassment or bullying",
 )
-
-fun parsingGift(context: Context): List<AUIGiftTabInfo> {
-    val assetManager = context.assets
-    val jsonFile = "giftEntity.json" // JSON文件名
-    // 读取JSON文件到字符串
-    val inputStream = assetManager.open(jsonFile)
-    val size = inputStream.available()
-    val buffer = ByteArray(size)
-    inputStream.read(buffer)
-    inputStream.close()
-    val jsonString = String(buffer, Charset.forName("UTF-8"))
-
-    // 使用Gson解析JSON字符串
-    val gson = Gson()
-    return gson.fromJson(jsonString, Array<AUIGiftTabInfo>::class.java).toList()
-}
 
 enum class LanguageType(val code: String) {
     Chinese("zh-Hans"),

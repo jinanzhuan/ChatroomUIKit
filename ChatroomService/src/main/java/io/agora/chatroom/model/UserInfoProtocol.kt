@@ -4,11 +4,12 @@ import io.agora.chatroom.service.ChatUserInfo
 import io.agora.chatroom.service.UserEntity
 
 fun UserInfoProtocol.transfer() = ChatUserInfo().run {
-    this.userId = userId
-    this.nickname = nickname
-    this.avatarUrl = avatarUrl
-    this.gender = gender
-    this.ext = identify
+
+    this.userId = this@transfer.userId
+    this.nickname = this@transfer.nickName
+    this.avatarUrl = this@transfer.avatarURL
+    this.gender = this@transfer.gender
+    this.ext = this@transfer.identify
     this
 }
 
@@ -17,6 +18,6 @@ data class UserInfoProtocol(
     val userId: String,
     val nickName: String? = "",
     val avatarURL: String? = "",
-    val gender: Int? = 0,
+    val gender: Int = 0,
     var identify:String? = ""
 )

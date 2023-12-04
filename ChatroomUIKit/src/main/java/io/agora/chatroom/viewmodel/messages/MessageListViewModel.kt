@@ -18,7 +18,7 @@ import io.agora.chatroom.UIChatroomService
 class MessageListViewModel(
     private val isDarkTheme: Boolean? = false,
     private val showDateSeparators: Boolean = true,
-    private val showLabel: Boolean = true,
+    private val showLabel: Boolean = false,
     private val showAvatar: Boolean = true,
     private val roomId: String,
     private val chatService: UIChatroomService,
@@ -69,6 +69,19 @@ class MessageListViewModel(
 
     override fun onBroadcastReceived(message: ChatMessage) {
         super.onBroadcastReceived(message)
+    }
+
+    override fun onRecallMessageReceived(message: ChatMessage) {
+        super.onRecallMessageReceived(message)
+        if (message.conversationId() == ChatroomUIKitClient.getInstance().getContext().getCurrentRoomInfo().roomId){
+            removeMessage(message = message)
+        }
+    }
+
+    override fun onUserJoined(roomId: String, userId: String) {
+        addJoinedMessageByIndex(
+            message = ChatroomUIKitClient.getInstance().insertJoinedMessage(roomId,userId)
+        )
     }
 
     override fun onGiftReceived(roomId: String, gift: GiftEntityProtocol?, message: ChatMessage) {

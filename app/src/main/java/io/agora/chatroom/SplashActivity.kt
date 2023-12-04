@@ -74,39 +74,7 @@ class SplashActivity: ComponentActivity() {
                     contentDescription = "splash background")
 
                 ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-                    val (logo, powered, indicator) = createRefs()
-
-                    Text(
-                        modifier = Modifier.constrainAs(logo) {
-                            top.linkTo(parent.top)
-                            bottom.linkTo(parent.bottom)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                        }.navigationBarsPadding(),
-                        text = stringResource(id = R.string.app_name),
-                        style = ChatroomUIKitTheme.typography.titleLarge,
-                        color = ChatroomUIKitTheme.colors.background,
-                        fontWeight = FontWeight(500),
-                        fontSize = 24.sp,
-                        letterSpacing = 10.sp
-                    )
-
-                    Text(
-                        modifier = Modifier.constrainAs(powered) {
-                            bottom.linkTo(parent.bottom, margin = 60.dp)
-                            start.linkTo(parent.start)
-                            end.linkTo(parent.end)
-                        }.navigationBarsPadding(),
-                        text = stringResource(id = R.string.powered_by),
-                        style = TextStyle(
-                            fontSize = 13.sp,
-                            fontWeight = FontWeight(400),
-                            color = Color(0xFF6C7192),
-                            textAlign = TextAlign.Center,
-                        ),
-                        color = ChatroomUIKitTheme.colors.background
-                    )
-
+                    val (powered, indicator) = createRefs()
                     if (viewModel.isLoading()) {
                         LoadingIndicator(
                             modifier = Modifier.constrainAs(indicator) {
@@ -116,7 +84,6 @@ class SplashActivity: ComponentActivity() {
                             }
                         )
                     }
-
                 }
 
                 SimpleDialog(viewModel = dialogViewModel,

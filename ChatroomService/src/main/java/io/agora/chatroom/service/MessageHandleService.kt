@@ -106,6 +106,12 @@ interface MessageListener {
     fun onMessageReceived(message: ChatMessage){}
 
     /**
+     * The callback for receiving recall messages
+     * @param message The recall message.
+     */
+    fun onRecallMessageReceived(message: ChatMessage){}
+
+    /**
      * The callback to indicate a broadcast message is received.
      * @param message The broadcast message received.
      */

@@ -36,8 +36,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import io.agora.chatroom.compose.tabrow.ComposePagerWithTabs
+import io.agora.chatroom.compose.utils.parsingGift
 import io.agora.chatroom.compose.utils.rememberStreamImagePainter
-import io.agora.chatroom.data.parsingGift
 import io.agora.chatroom.model.gift.selected
 import io.agora.chatroom.service.GiftEntityProtocol
 import io.agora.chatroom.theme.ChatroomUIKitTheme
@@ -194,7 +194,9 @@ fun DefaultGiftVpContent(
                                     .fillMaxWidth()
                                     .wrapContentHeight(),
                                 text = emoji.giftName,
-                                style = ChatroomUIKitTheme.typography.titleSmall
+                                style = ChatroomUIKitTheme.typography.titleSmall.copy(
+                                    color = ChatroomUIKitTheme.colors.onBackground
+                                )
                             )
                         }
                         Row(
@@ -218,8 +220,10 @@ fun DefaultGiftVpContent(
                                     .padding(start = 2.dp)
                                     .wrapContentWidth()
                                     .wrapContentHeight(),
-                                text = emoji.giftName,
-                                style = ChatroomUIKitTheme.typography.labelExtraSmall
+                                text = emoji.giftPrice.toString(),
+                                style = ChatroomUIKitTheme.typography.labelExtraSmall.copy(
+                                    color = ChatroomUIKitTheme.colors.onBackground
+                                )
                             )
                         }
 
@@ -257,7 +261,7 @@ fun DefaultGiftVpContent(
                                     fontWeight = FontWeight.Bold,
                                     color = ChatroomUIKitTheme.colors.neutralL98D98
                                 ),
-                                text = "Send"
+                                text = LocalContext.current.resources.getString(R.string.compose_message_gift_sent)
                             )
                         }
 

@@ -45,10 +45,22 @@ class SplashViewModel(
                 if (body != null) {
                     Log.e("SplashViewModel", "onResponse: $body")
                     SPUtils.getInstance(context).saveToken(body.access_token)
+                    val userInfoProtocol = UserInfoProtocol(loginReq.username, loginReq.nickname, loginReq.icon_key)
                     ChatroomUIKitClient.getInstance().login(
-                        UserInfoProtocol(loginReq.username, loginReq.nickname, loginReq.icon_key),
+                        userInfoProtocol,
                         body.access_token,
-                        onSuccess = { onValueSuccess.invoke(body) },
+                        onSuccess = {
+                            ChatroomUIKitClient.getInstance().updateUserInfo(
+                                userInfoProtocol,
+                                onSuccess = {
+                                    Log.e("SplashViewModel","updateUserInfo onSuccess")
+                                },
+                                onError = { error,code->
+                                    Log.e("SplashViewModel","updateUserInfo onError $error $code")
+                                }
+                            )
+                            onValueSuccess.invoke(body)
+                        },
                         onError= { code, msg ->
                             if (code == ChatError.USER_ALREADY_LOGIN) {
                                 ChatroomUIKitClient.getInstance().logout(onSuccess = {
