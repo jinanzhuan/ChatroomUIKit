@@ -33,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -94,8 +95,9 @@ fun DefaultReportContent(
     onConfirmClick: (UIReportEntity) -> Unit,
     onCancelClick: () -> Unit)
 {
+    val context = LocalContext.current
     val tabList = mutableListOf<TabInfo>()
-    tabList += TabInfo("Report")
+    tabList += TabInfo(context.resources.getString(R.string.compose_message_report))
     ComposePagerWithTabs(
         viewModel = PagerViewModel(tabList = tabList),
         modifier = modifier,
@@ -121,7 +123,7 @@ fun DefaultReportContent(
                         start.linkTo(parent.start)
                     }
                 ,
-                text = "Violation",
+                text = context.resources.getString(R.string.compose_message_report_violation),
                 style = ChatroomUIKitTheme.typography.titleSmall.copy(
                     color = ChatroomUIKitTheme.colors.neutralL50D50
                 )

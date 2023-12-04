@@ -71,6 +71,19 @@ class MessageListViewModel(
         super.onBroadcastReceived(message)
     }
 
+    override fun onRecallMessageReceived(message: ChatMessage) {
+        super.onRecallMessageReceived(message)
+        if (message.conversationId() == ChatroomUIKitClient.getInstance().getContext().getCurrentRoomInfo().roomId){
+            removeMessage(message = message)
+        }
+    }
+
+    override fun onUserJoined(roomId: String, userId: String) {
+        addJoinedMessageByIndex(
+            message = ChatroomUIKitClient.getInstance().insertJoinedMessage(roomId,userId)
+        )
+    }
+
     override fun onGiftReceived(roomId: String, gift: GiftEntityProtocol?, message: ChatMessage) {
         super.onGiftReceived(roomId, gift, message)
         if (ChatroomUIKitClient.getInstance().getUseGiftsInMsg()){

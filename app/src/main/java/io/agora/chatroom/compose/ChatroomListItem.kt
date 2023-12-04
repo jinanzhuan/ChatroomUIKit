@@ -101,7 +101,7 @@ fun ChatroomListItem(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "Enter",
+                            text = LocalContext.current.resources.getString(R.string.chatroom_enter),
                             style = ChatroomUIKitTheme.typography.labelSmall,
                             color = ChatroomUIKitTheme.colors.onBackground
                         )

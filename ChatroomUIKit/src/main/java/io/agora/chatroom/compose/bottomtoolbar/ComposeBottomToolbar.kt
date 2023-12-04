@@ -594,7 +594,7 @@ internal fun DefaultChatBarComposerContent(
     )
 
     Text(
-        text = "Input",
+        text = LocalContext.current.resources.getString(R.string.compose_bottom_toolbar_tag),
         style = TextStyle(
             fontFamily = FontFamily.Default,
             fontWeight = FontWeight.Normal,

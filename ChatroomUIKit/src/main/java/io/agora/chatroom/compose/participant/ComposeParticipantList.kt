@@ -34,6 +34,7 @@ fun ComposeParticipantList(
     bottomContent: @Composable (() -> Unit)? = null,
     itemContent: @Composable (Int, UserEntity) -> Unit = { index, item ->
         DefaultMemberItem(
+            viewModel = viewModel,
             user = item,
             showRole = showRole,
             onItemClick = onItemClick,

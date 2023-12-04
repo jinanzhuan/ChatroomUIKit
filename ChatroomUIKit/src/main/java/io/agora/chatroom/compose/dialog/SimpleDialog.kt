@@ -61,7 +61,7 @@ fun SimpleDialog(
                     containerColor = colors.primary,
                 ),
                 onClick = { onConfirmClick() }) {
-                Text(text = viewModel.confirmText.ifEmpty { stringResource(id = R.string.Confirm) }, color = colors.background)
+                Text(text = viewModel.confirmText.ifEmpty { stringResource(id = R.string.confirm) }, color = colors.onSplashBg)
             }
         },
         modifier = modifier,

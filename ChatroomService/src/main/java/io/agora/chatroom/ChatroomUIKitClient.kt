@@ -3,6 +3,7 @@ package io.agora.chatroom
 import android.content.Context
 import android.text.TextUtils
 import android.util.Log
+import com.hyphenate.chat.EMMessage
 import io.agora.chatroom.model.UIChatroomInfo
 import io.agora.chatroom.model.UIConstant
 import io.agora.chatroom.model.UserInfoProtocol
@@ -527,6 +528,7 @@ class ChatroomUIKitClient {
                                                 parseJoinedMsg(it)?.let { userInfo->
                                                     chatroomUser.setUserInfo(it.from,userInfo.toUser())
                                                 }
+                                                Log.e("apex","CHATROOMUIKITUSERJOIN ${it.from}")
                                                 listener.onUserJoined(it.conversationId(),it.from)
                                             }
                                         } catch (e: Exception) {
@@ -552,6 +554,18 @@ class ChatroomUIKitClient {
                             }
                         }
                     }
+                }
+            }
+        }
+
+        override fun onMessageRecalled(messages: MutableList<EMMessage>?) {
+            messages?.forEach {
+                try {
+                    for (listener in eventListeners.iterator()) {
+                        listener.onRecallMessageReceived(it)
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
             }
         }

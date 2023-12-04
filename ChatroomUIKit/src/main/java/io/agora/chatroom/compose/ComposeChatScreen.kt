@@ -346,7 +346,7 @@ fun ShowComposeMenuDrawer(
                             }
 
                         }
-                        R.id.action_menu_delete -> {
+                        R.id.action_menu_recall -> {
                             (menuViewModel.getSelectedBean() as ChatMessage).let {
                                     message ->
                                 messageListViewModel.removeMessage(message, onSuccess = {}, onError = {code, error ->})

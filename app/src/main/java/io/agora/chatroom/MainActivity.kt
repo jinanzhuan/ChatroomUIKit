@@ -50,9 +50,7 @@ import io.agora.chatroom.model.UserInfoProtocol
 import io.agora.chatroom.service.ChatLog
 import io.agora.chatroom.theme.ChatroomUIKitTheme
 import io.agora.chatroom.utils.SPUtils
-import io.agora.chatroom.viewmodel.ChatroomFactory
 import io.agora.chatroom.viewmodel.ChatroomListViewModel
-import io.agora.chatroom.viewmodel.ChatroomViewModel
 import io.agora.chatroom.viewmodel.RequestState
 
 class MainActivity : ComponentActivity() {
@@ -69,7 +67,6 @@ class MainActivity : ComponentActivity() {
             var isDarkTheme by rememberSaveable {
                 mutableStateOf(isDark)
             }
-//            val roomListViewModel = viewModel(modelClass = ChatroomListViewModel::class.java)
             roomListViewModel.fetchRoomList()
             val userDetail = SPUtils.getInstance(LocalContext.current.applicationContext as Application).getUerInfo()
             SPUtils.getInstance(LocalContext.current.applicationContext as Application).saveCurrentThemeStyle(isDarkTheme)
@@ -91,7 +88,7 @@ class MainActivity : ComponentActivity() {
                             verticalAlignment = Alignment.CenterVertically) {
 
                             Text(
-                                text = "Channel list",
+                                text = resources.getString(R.string.chatroom_list),
                                 style = ChatroomUIKitTheme.typography.headlineLarge,
                                 color = ChatroomUIKitTheme.colors.onBackground
                             )
@@ -184,7 +181,7 @@ class MainActivity : ComponentActivity() {
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(
-                                    text = "Create",
+                                    text = resources.getString(R.string.chatroom_create),
                                     style = ChatroomUIKitTheme.typography.bodyMedium,
                                     color = ChatroomUIKitTheme.colors.onSplashBg
                                 )

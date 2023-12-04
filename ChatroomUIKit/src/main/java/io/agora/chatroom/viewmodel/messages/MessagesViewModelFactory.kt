@@ -8,7 +8,7 @@ import io.agora.chatroom.UIChatroomService
 import io.agora.chatroom.commons.ComposeChatListController
 import io.agora.chatroom.commons.ComposeMessageListState
 import io.agora.chatroom.commons.ComposerChatBarController
-import io.agora.chatroom.data.parsingGift
+import io.agora.chatroom.compose.utils.parsingGift
 import io.agora.chatroom.model.UICapabilities
 import io.agora.chatroom.model.UIChatBarMenuItem
 import io.agora.chatroom.model.gift.AUIGiftTabInfo
