@@ -23,7 +23,7 @@ class MessagesViewModelFactory(
     private val service: UIChatroomService,
     private val isDarkTheme: Boolean? = ChatroomUIKitClient.getInstance().getCurrentTheme(),
     private val showDateSeparators: Boolean = true,
-    private val showLabel: Boolean = true,
+    private val showLabel: Boolean = false,
     private val showAvatar: Boolean = true,
     private val emojiColumns:Int = 7,
     private val menuItemResource: List<UIChatBarMenuItem> = listOf(

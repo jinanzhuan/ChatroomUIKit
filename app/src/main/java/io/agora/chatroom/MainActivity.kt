@@ -52,6 +52,11 @@ import io.agora.chatroom.theme.ChatroomUIKitTheme
 import io.agora.chatroom.utils.SPUtils
 import io.agora.chatroom.viewmodel.ChatroomListViewModel
 import io.agora.chatroom.viewmodel.RequestState
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class MainActivity : ComponentActivity() {
 
@@ -232,8 +237,15 @@ class MainActivity : ComponentActivity() {
         )
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onResume() {
         super.onResume()
-        roomListViewModel.refresh()
+        GlobalScope.launch {
+            delay(200L)
+            roomListViewModel.refresh()
+        }
+        runBlocking {
+            delay(300L)
+        }
     }
 }

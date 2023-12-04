@@ -14,8 +14,7 @@
         <activity
             android:name="io.agora.chatroom.MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.ChatroomUIKit">
+            android:label="@string/app_name">
         </activity>
         <activity android:name="io.agora.chatroom.ChatroomListActivity"/>
         <activity

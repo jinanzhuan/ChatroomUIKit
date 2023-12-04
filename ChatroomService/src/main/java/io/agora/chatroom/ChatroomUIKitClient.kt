@@ -182,6 +182,10 @@ class ChatroomUIKitClient {
         }
     }
 
+    fun updateUserInfo(userEntity: UserInfoProtocol, onSuccess: OnSuccess, onError: OnError){
+        userService.updateUserInfo(userEntity,onSuccess,onError)
+    }
+
     fun setCurrentTheme(isDark:Boolean){
         cacheManager.setCurrentTheme(isDark)
     }

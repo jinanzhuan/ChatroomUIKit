@@ -54,6 +54,7 @@ import io.agora.chatroom.compose.dialog.SimpleDialog
 import io.agora.chatroom.compose.broadcast.ComposeGlobalBroadcast
 import io.agora.chatroom.compose.utils.WindowConfigUtils
 import io.agora.chatroom.model.UIChatroomInfo
+import io.agora.chatroom.service.ChatroomChangeListener
 import io.agora.chatroom.service.UserEntity
 import io.agora.chatroom.service.transfer
 import io.agora.chatroom.theme.ChatroomUIKitTheme
@@ -68,7 +69,7 @@ import io.agora.chatroom.viewmodel.broadcast.GlobalBroadcastViewModelFactory
 import io.agora.chatroom.viewmodel.member.MembersBottomSheetViewModel
 import io.agora.chatroom.viewmodel.messages.MessagesViewModelFactory
 
-class ChatroomActivity : ComponentActivity(), ChatroomResultListener {
+class ChatroomActivity : ComponentActivity(), ChatroomResultListener, ChatroomChangeListener {
 
     private lateinit var room: RoomDetailBean
     private lateinit var service: UIChatroomService
@@ -128,6 +129,8 @@ class ChatroomActivity : ComponentActivity(), ChatroomResultListener {
         service = UIChatroomService(uiChatroomInfo)
 
         ChatroomUIKitClient.getInstance().registerRoomResultListener(this)
+        service.getChatService().bindListener(this)
+        roomViewModel.registerChatroomChangeListener()
         giftViewModel.openAutoClear()
         globalBroadcastModel.registerChatroomChangeListener()
 
@@ -333,8 +336,15 @@ class ChatroomActivity : ComponentActivity(), ChatroomResultListener {
         }
     }
 
+    override fun onUserBeKicked(roomId: String, userId: String) {
+        if (roomId == room.id && userId == ChatroomUIKitClient.getInstance().getCurrentUser().userId){
+            finish()
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
+        service.getChatService().unbindListener(this)
         roomViewModel.leaveChatroom()
         globalBroadcastModel.unRegisterChatroomChangeListener()
         ChatroomUIKitClient.getInstance().unregisterRoomResultListener(this)

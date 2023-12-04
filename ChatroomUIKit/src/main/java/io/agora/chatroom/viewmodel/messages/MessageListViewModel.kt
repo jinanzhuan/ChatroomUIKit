@@ -18,7 +18,7 @@ import io.agora.chatroom.UIChatroomService
 class MessageListViewModel(
     private val isDarkTheme: Boolean? = false,
     private val showDateSeparators: Boolean = true,
-    private val showLabel: Boolean = true,
+    private val showLabel: Boolean = false,
     private val showAvatar: Boolean = true,
     private val roomId: String,
     private val chatService: UIChatroomService,

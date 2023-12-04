@@ -441,7 +441,7 @@ internal fun DefaultMessageComposerTrailingContent(
             Icon(
                 modifier = Modifier.mirrorRtl(layoutDirection = layoutDirection),
                 painter = painterResource(id = R.drawable.icon_send),
-                contentDescription = stringResource(id = R.string.stream_compose_send_message),
+                contentDescription = stringResource(id = R.string.stream_compose_cd_send_button),
                 tint = ChatroomUIKitTheme.colors.primary
             )
         },
@@ -471,7 +471,7 @@ internal fun DefaultMessageComposerVoiceContent(
                         .mirrorRtl(layoutDirection = layoutDirection)
                         .size(30.dp, 30.dp),
                     painter = painterResource(id = R.drawable.icon_wave_in_circle),
-                    contentDescription = stringResource(id = R.string.stream_compose_send_message),
+                    contentDescription = stringResource(id = R.string.stream_compose_cd_voice_button),
                     tint = ChatroomUIKitTheme.colors.onBackground
                 )
             },
@@ -504,7 +504,7 @@ internal fun DefaultMessageComposerEmojiContent(
                     .mirrorRtl(layoutDirection = layoutDirection)
                     .size(30.dp, 30.dp),
                 painter = painterResource(id = resource),
-                contentDescription = stringResource(id = R.string.stream_compose_send_message),
+                contentDescription = stringResource(id = R.string.stream_compose_cd_emoji_button),
                 tint = ChatroomUIKitTheme.colors.onBackground
             )
         },

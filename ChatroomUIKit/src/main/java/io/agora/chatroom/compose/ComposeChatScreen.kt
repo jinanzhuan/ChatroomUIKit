@@ -142,7 +142,8 @@ fun ComposeChatScreen(
                 containerColor = ChatroomUIKitTheme.colors.background,
                 screenContent = {},
                 onGiftItemClick = {
-                    messageListViewModel.sendGift(it, onSuccess = {
+                    messageListViewModel.sendGift(it,
+                        onSuccess = {
                             message ->
                             run {
                                 it.sendUser = ChatroomUIKitClient.getInstance().getCurrentUser().transfer()
@@ -152,7 +153,11 @@ fun ComposeChatScreen(
                                     giftListViewModel.addDateToIndex(data = ComposeGiftItemState(it))
                                 }
                             }
-                        }, onError = {_, _ ->}
+                            giftBottomSheetViewModel.closeDrawer()
+                        },
+                        onError = {_, _ ->
+
+                        }
                     )
                     onGiftBottomSheetItemClick(it)
                 },
@@ -300,6 +305,9 @@ fun ComposeChatScreen(
                 onSendMessage = { input->
                     ChatLog.d(TAG,"onSendMessage")
                     messageListViewModel.sendTextMessage(input)
+                    isShowInput.value = false
+                    val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    inputMethodManager.hideSoftInputFromWindow((context as Activity).currentFocus?.windowToken, 0)
                 },
                 onMenuClick = {
                     ChatLog.d(TAG,"onMenuClick: tag: $it")

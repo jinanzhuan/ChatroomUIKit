@@ -5,21 +5,13 @@
 
     <string name="stream_compose_message_label">Aa</string>
 
-    <string name="stream_compose_cd_send_button" translatable="false">Send button</string>
-    <string name="stream_compose_cd_voice_button" translatable="false">Voice button</string>
-    <string name="stream_compose_cd_emoji_button" translatable="false">Emoji button</string>
-
-    <string name="stream_compose_send_message">Send</string>
-
-    <string name="stream_compose_ok">OK</string>
+    <string name="stream_compose_cd_send_button" translatable="false">发送按钮</string>
+    <string name="stream_compose_cd_voice_button" translatable="false">语音按钮</string>
+    <string name="stream_compose_cd_emoji_button" translatable="false">表情按钮</string>
 
     <!-- Message Composer -->
-    <string name="stream_compose_message_composer_error_message_length">Max message length (%1$d) exceeded.</string>
-
-    <string name="stream_compose_message_list_empty_messages">No messages</string>
-
-    <string name="stream_compose_cd_message_item" translatable="false">Message item</string>
-
+    <string name="stream_compose_message_composer_error_message_length">消息长度超过限制.</string>
+    <string name="stream_compose_message_list_empty_messages">暂无消息</string>
 
     <!-- Compose default text -->
     <string name="compose_bottom_drawer_cancel">取消</string>
@@ -48,7 +40,7 @@
     <string name="compose_bottom_toolbar_tag">发条弹幕吧~</string>
 
     <!-- Gift  -->
-    <string name="compose_gift_item_subtitle">Sent %1$s </string>
+    <string name="compose_gift_item_subtitle">赠送 %1$s </string>
 
     <!-- Message  -->
     <string name="compose_message_item_joined">进入直播间</string>

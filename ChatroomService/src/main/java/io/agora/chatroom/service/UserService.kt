@@ -61,7 +61,7 @@ data class UserEntity(
     val userId: String,
     var nickName: String? = "",
     val avatarURL: String? = "",
-    val gender: Int? = 0,
+    val gender: Int = 0,
     val identify: String? = "",
 )
 

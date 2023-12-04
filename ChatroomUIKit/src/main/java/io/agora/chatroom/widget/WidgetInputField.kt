@@ -79,7 +79,7 @@ fun WidgetInputField(
                     ViewGroup.LayoutParams.MATCH_PARENT
                 )
                 this.gravity = Gravity.CENTER_VERTICAL
-                this.setPadding(14,0,12,0)
+                this.setPadding(16,0,12,0)
                 inputType = InputType.TYPE_CLASS_TEXT
                 imeOptions = EditorInfo.IME_ACTION_DONE
                 this.maxLines = maxLines
