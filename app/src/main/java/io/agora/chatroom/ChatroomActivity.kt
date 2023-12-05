@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
@@ -309,7 +310,7 @@ class ChatroomActivity : ComponentActivity(), ChatroomResultListener, ChatroomCh
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_DOWN) {
-            finish()
+            exitRoom()
             return true
         }
         return super.onKeyDown(keyCode, event)
@@ -331,8 +332,7 @@ class ChatroomActivity : ComponentActivity(), ChatroomResultListener, ChatroomCh
 
     override fun onEventResult(event: ChatroomResultEvent, errorCode: Int, errorMessage: String?) {
         if (event == ChatroomResultEvent.DESTROY_ROOM){
-            ChatroomUIKitClient.getInstance().unregisterRoomResultListener(this)
-            finish()
+            exitRoom()
         }
     }
 
@@ -345,8 +345,25 @@ class ChatroomActivity : ComponentActivity(), ChatroomResultListener, ChatroomCh
     override fun onDestroy() {
         super.onDestroy()
         service.getChatService().unbindListener(this)
-        roomViewModel.leaveChatroom()
         globalBroadcastModel.unRegisterChatroomChangeListener()
         ChatroomUIKitClient.getInstance().unregisterRoomResultListener(this)
+    }
+
+    private fun exitRoom(){
+        if (ChatroomUIKitClient.getInstance().isCurrentRoomOwner()){
+            roomViewModel.endLive(
+                onSuccess = {
+                    finish()
+                },
+                onError = {code,error->
+                    runOnUiThread {
+                        Toast.makeText(this,error, Toast.LENGTH_SHORT).show()
+                    }
+                    finish()
+                }
+            )
+        }else{
+            roomViewModel.leaveChatroom()
+        }
     }
 }
