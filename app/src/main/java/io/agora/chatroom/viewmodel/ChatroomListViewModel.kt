@@ -6,7 +6,6 @@ import io.agora.chatroom.bean.RequestListResp
 import io.agora.chatroom.bean.RoomDetailBean
 import io.agora.chatroom.http.ChatroomHttpManager
 import io.agora.chatroom.service.OnError
-import io.agora.chatroom.service.OnSuccess
 import io.agora.chatroom.service.OnValueSuccess
 import retrofit2.Call
 import retrofit2.Callback
