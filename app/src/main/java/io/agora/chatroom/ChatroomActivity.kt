@@ -55,6 +55,7 @@ import io.agora.chatroom.compose.dialog.SimpleDialog
 import io.agora.chatroom.compose.broadcast.ComposeGlobalBroadcast
 import io.agora.chatroom.compose.utils.WindowConfigUtils
 import io.agora.chatroom.model.UIChatroomInfo
+import io.agora.chatroom.service.ChatError
 import io.agora.chatroom.service.ChatroomChangeListener
 import io.agora.chatroom.service.UserEntity
 import io.agora.chatroom.service.transfer
@@ -333,6 +334,16 @@ class ChatroomActivity : ComponentActivity(), ChatroomResultListener, ChatroomCh
     override fun onEventResult(event: ChatroomResultEvent, errorCode: Int, errorMessage: String?) {
         if (event == ChatroomResultEvent.DESTROY_ROOM){
             exitRoom()
+        }else if (event == ChatroomResultEvent.REPORT){
+            if (errorCode == ChatError.EM_NO_ERROR){
+                runOnUiThread {
+                    Toast.makeText(this,resources.getString(R.string.chatroom_report_success), Toast.LENGTH_SHORT).show()
+                }
+            }else{
+                runOnUiThread {
+                    Toast.makeText(this,resources.getString(R.string.chatroom_report_fail,"$errorCode $errorMessage"), Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 

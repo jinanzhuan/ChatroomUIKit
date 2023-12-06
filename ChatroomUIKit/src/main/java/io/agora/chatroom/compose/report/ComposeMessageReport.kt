@@ -242,7 +242,7 @@ fun DefaultReportContent(
                         disabledContentColor = Color.Transparent,
                     ),
                     onClick = {
-                    onConfirmClick(UIReportEntity(tagList[selectedOption],"",))
+                    onConfirmClick(UIReportEntity(msgId =viewModel.reportMsgId.value , tag = tagList[selectedOption]))
                 }) {
                     Text(
                         textAlign = TextAlign.Center,
